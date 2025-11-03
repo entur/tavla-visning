@@ -1,6 +1,5 @@
 import type { BoardDB } from "./Shared/types/db-types/boards";
-import type { FolderDB } from "./Shared/types/db-types/folders";
-import { getBoard, getFolderForBoard } from "./Board/scenarios/Board/firebase";
+import { getBoard } from "./Board/scenarios/Board/firebase";
 import { useEffect, useState } from "react";
 import { Header } from "./Shared/components/Header";
 import { Board } from "./Board/scenarios/Board";
@@ -52,15 +51,15 @@ function BoardPage() {
 
   return (
     <div
-      className="w-full h-full min-h-screen box-inherit text-[3vmin] bg-(--main-background-color)"
-      data-theme={updatedBoard.theme ?? "light"}
+      className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color) text-[3vmin]"
+      data-theme={updatedBoard.theme}
       data-transport-palette={updatedBoard.transportPalette}
     >
       <div>
-        <title>{title}</title>
+        <title>{updatedBoard.theme}</title>
       </div>
 
-      <div className="flex flex-col h-screen w-full overflow-hidden p-3.5">
+      <div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
         <Header
           theme={updatedBoard.theme}
           folderLogo={undefined}
