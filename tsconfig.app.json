@@ -22,7 +22,23 @@
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    
+    /* Path mapping */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@src/*": ["./src/*"],
+      "@shared/*": ["./src/Shared/*"],
+      "@board/*": ["./src/Board/*"],
+      "@components/*": ["./src/Shared/components/*"],
+      "@hooks/*": ["./src/Shared/hooks/*"],
+      "@utils/*": ["./src/Shared/utils/*"],
+      "@types/*": ["./src/Shared/types/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@graphql/*": ["./src/Shared/graphql/*"],
+      "@assets/*": ["./src/Shared/assets/*"]
+    }
   },
   "include": ["src"]
 }

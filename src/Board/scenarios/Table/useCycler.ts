@@ -20,33 +20,33 @@ import { useEffect, useState } from 'react'
  * ```
  */
 export function useCycler<T>(array: T[] | undefined, step = 5000) {
-    const [index, setIndex] = useState(0)
+	const [index, setIndex] = useState(0)
 
-    const length = array?.length ?? 0
+	const length = array?.length ?? 0
 
-    useEffect(() => {
-        if (length <= 1) {
-            return
-        }
-        const interval = setInterval(() => {
-            setIndex((i) => (i + 1) % length)
-        }, step)
-        return () => clearInterval(interval)
-    }, [length, step])
+	useEffect(() => {
+		if (length <= 1) {
+			return
+		}
+		const interval = setInterval(() => {
+			setIndex((i) => (i + 1) % length)
+		}, step)
+		return () => clearInterval(interval)
+	}, [length, step])
 
-    // Reset index if array length changes and current index is out of bounds
-    useEffect(() => {
-        // Avoid unnecessary state update when length is 0 and index already 0
-        if (length === 0) {
-            if (index !== 0) {
-                setIndex(0)
-            }
-            return
-        }
-        if (index >= length) {
-            setIndex(0)
-        }
-    }, [length, index])
+	// Reset index if array length changes and current index is out of bounds
+	useEffect(() => {
+		// Avoid unnecessary state update when length is 0 and index already 0
+		if (length === 0) {
+			if (index !== 0) {
+				setIndex(0)
+			}
+			return
+		}
+		if (index >= length) {
+			setIndex(0)
+		}
+	}, [length, index])
 
-    return index
+	return index
 }

@@ -3,19 +3,18 @@ import {
   StopPlaceQuery,
   type TDepartureFragment,
   type TSituationFragment,
-} from "../../Shared/graphql";
-import { useQueries, useQuery } from "../../Shared/hooks/useQuery";
-import type {
-  BoardTileDB,
-  QuayTileDB,
-  StopPlaceTileDB,
-} from "../../Shared/types/db-types/boards";
-import { isNotNullOrUndefined } from "../../Shared/utils/typeguards";
+} from "@/Shared/graphql";
 import {
   combineSituations,
   getAccumulatedTileSituations,
   type TileSituation,
 } from "../scenarios/Board/utils";
+import type {
+  BoardTileDB,
+  QuayTileDB,
+  StopPlaceTileDB,
+} from "@/Shared/types/db-types/boards";
+import { useQueries, useQuery } from "@/Shared/hooks/useQuery";
 import { useCycler } from "../scenarios/Table/useCycler";
 
 interface BaseTileData {
@@ -160,7 +159,8 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
     const timeA = new Date(a.expectedDepartureTime).getTime();
     const timeB = new Date(b.expectedDepartureTime).getTime();
     return (
-      (isNaN(timeA) ? Infinity : timeA) - (isNaN(timeB) ? Infinity : timeB)
+      (Number.isNaN(timeA) ? Infinity : timeA) -
+      (Number.isNaN(timeB) ? Infinity : timeB)
     );
   });
 
@@ -204,4 +204,11 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
     error: quayError || stopPlaceError,
     hasData: !!(quayData?.length || stopPlaceData?.length),
   };
+}
+function isNotNullOrUndefined(
+  value: string | null | undefined,
+  _index: number,
+  _array: (string | null | undefined)[]
+): value is string {
+  return value !== null && value !== undefined;
 }

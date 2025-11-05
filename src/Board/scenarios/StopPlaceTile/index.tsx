@@ -1,20 +1,17 @@
-import type {
-  StopPlaceTileDB,
-  TileColumnDB,
-} from "../../../Shared/types/db-types/boards";
-import { BaseTile } from "../../components/BaseTile";
-import { useStopPlaceTileData } from "../../hooks/useTileData";
+import { BaseTile } from '@/Board/components/BaseTile'
+import { useStopPlaceTileData } from '@/Board/hooks/useTileData'
+import type { StopPlaceTileDB, TileColumnDB } from '@/Shared/types/db-types/boards'
 
 export function StopPlaceTile(props: StopPlaceTileDB & { className?: string }) {
-  const tileData = useStopPlaceTileData(props);
-  const DEFAULT_COLUMNS: TileColumnDB[] = ["line", "destination", "time"];
+	const tileData = useStopPlaceTileData(props)
+	const DEFAULT_COLUMNS: TileColumnDB[] = ['line', 'destination', 'time']
 
-  return (
-    <BaseTile
-      className={props.className}
-      {...tileData}
-      columns={props.columns ?? DEFAULT_COLUMNS}
-      walkingDistance={props.walkingDistance}
-    />
-  );
+	return (
+		<BaseTile
+			className={props.className}
+			{...tileData}
+			columns={props.columns ?? DEFAULT_COLUMNS}
+			walkingDistance={props.walkingDistance}
+		/>
+	)
 }
