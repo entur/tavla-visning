@@ -13,5 +13,5 @@
 ### ✅ Sjekkliste
 
 - [ ] Testet i Chrome, Firefox og Safari
-- [ ] Testet i BrowserStack (hvis endring på tavlevisning)
+- [ ] Testet i BrowserStack
 - [ ] Oppdatert dokumentasjon (hvis relevant)
