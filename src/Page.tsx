@@ -1,38 +1,21 @@
-import type { BoardDB } from "./Shared/types/db-types/boards";
-import { getBoard } from "./Board/scenarios/Board/firebase";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Header } from "./Shared/components/Header";
 import { Board } from "./Board/scenarios/Board";
 import { InfoMessage } from "./Shared/components/InfoMessage";
+import { useGetBoard } from "./Shared/hooks/useGetBoard";
 
 function BoardPage() {
-  const [board, setBoard] = useState<BoardDB | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
+  const getBoardId = () => {
     const pathParts = window.location.pathname.split("/");
-    const id =
-      pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
-    if (!id) return;
+    return (
+      pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2] || ""
+    );
+  };
 
-    async function fetchData() {
-      setLoading(true);
-      const boardData = await getBoard(id);
-      if (!boardData) {
-        setBoard(null);
-        setLoading(false);
-        return;
-      }
-      setBoard(boardData);
-      setLoading(false);
-    }
-    fetchData();
-  }, []);
+  const { board, loading, error } = useGetBoard(getBoardId());
 
-  const updatedBoard = board;
-
-  const title = updatedBoard?.meta?.title
-    ? updatedBoard.meta.title + " | Entur tavla"
+  const title = board?.meta?.title
+    ? `${board.meta.title} | Entur tavla`
     : "Entur Tavla";
 
   useEffect(() => {
@@ -45,34 +28,36 @@ function BoardPage() {
   if (loading) {
     return <div>Laster tavle...</div>;
   }
-  if (!updatedBoard) {
+
+  if (error) {
+    return <div>Feil ved lasting av tavle: {error}</div>;
+  }
+
+  if (!board) {
     return <div>Fant ikke tavle</div>;
   }
 
   return (
     <div
       className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color) text-[3vmin]"
-      data-theme={updatedBoard.theme}
-      data-transport-palette={updatedBoard.transportPalette}
+      data-theme={board.theme}
+      data-transport-palette={board.transportPalette}
     >
       <div>
-        <title>{updatedBoard.theme}</title>
+        <title>{title}</title>
       </div>
 
       <div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
         <Header
-          theme={updatedBoard.theme}
+          theme={board.theme}
           folderLogo={undefined}
-          hideClock={updatedBoard?.hideClock}
-          hideLogo={updatedBoard?.hideLogo}
+          hideClock={board?.hideClock}
+          hideLogo={board?.hideLogo}
         />
 
-        <Board board={updatedBoard} />
+        <Board board={board} />
 
-        <InfoMessage
-          board={updatedBoard}
-          showEnturLogo={updatedBoard?.hideLogo}
-        />
+        <InfoMessage board={board} showEnturLogo={board?.hideLogo} />
       </div>
     </div>
   );

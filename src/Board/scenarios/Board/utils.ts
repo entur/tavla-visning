@@ -1,37 +1,31 @@
-import type {
-  TDepartureFragment,
-  TSituationFragment,
-} from "../../../Shared/graphql";
-import type {
-  BoardDB,
-  BoardFontSize,
-} from "../../../Shared/types/db-types/boards";
-import type { TTransportMode } from "../../../Shared/types/graphql-schema";
-import { sortPublicCodes } from "../../../utils/transportMode";
+import type { TSituationFragment, TDepartureFragment } from '@/Shared/graphql'
+import type { BoardDB, BoardFontSize } from '@/Shared/types/db-types/boards'
+import type { TTransportMode } from '@/Shared/types/graphql-schema'
+import { sortPublicCodes } from '@/utils/transportMode'
 
 export function getFontScale(fontSize: BoardFontSize | undefined) {
-  switch (fontSize) {
-    case "small":
-      return "text-em-xs";
-    case "medium":
-      return "text-em-base";
-    case "large":
-      return "text-em-xl";
-    default:
-      return "text-em-base";
-  }
+	switch (fontSize) {
+		case 'small':
+			return 'text-em-xs'
+		case 'medium':
+			return 'text-em-base'
+		case 'large':
+			return 'text-em-xl'
+		default:
+			return 'text-em-base'
+	}
 }
 export function defaultFontSize(board: BoardDB) {
-  if (!board.tiles || board.tiles.length === 0) return "medium";
+	if (!board.tiles || board.tiles.length === 0) return 'medium'
 
-  switch (board.tiles.length) {
-    case 1:
-      return "large";
-    case 2:
-      return "medium";
-    default:
-      return "small";
-  }
+	switch (board.tiles.length) {
+		case 1:
+			return 'large'
+		case 2:
+			return 'medium'
+		default:
+			return 'small'
+	}
 }
 
 /**
@@ -41,21 +35,21 @@ export function defaultFontSize(board: BoardDB) {
  * @returns A filtered array of situations from the departure, excluding any situations that match those in the stopPlaceSituations.
  */
 export function removeStopPlaceSituations(
-  departureSituations: TSituationFragment[],
-  stopPlaceSituations?: TSituationFragment[]
+	departureSituations: TSituationFragment[],
+	stopPlaceSituations?: TSituationFragment[],
 ) {
-  if (!stopPlaceSituations || !departureSituations) {
-    return departureSituations ?? [];
-  }
+	if (!stopPlaceSituations || !departureSituations) {
+		return departureSituations ?? []
+	}
 
-  const filteredSituations = departureSituations.filter(
-    (departureSituation) =>
-      !stopPlaceSituations.some(
-        (stopPlaceSituation) => departureSituation.id === stopPlaceSituation.id
-      )
-  );
+	const filteredSituations = departureSituations.filter(
+		(departureSituation) =>
+			!stopPlaceSituations.some(
+				(stopPlaceSituation) => departureSituation.id === stopPlaceSituation.id,
+			),
+	)
 
-  return filteredSituations;
+	return filteredSituations
 }
 
 /**
@@ -67,41 +61,41 @@ export function removeStopPlaceSituations(
  * @returns An array of combined `TSituationFragment` objects with unique `id`s.
  */
 export function combineSituations(situations: TSituationFragment[]) {
-  const situationById: { [id: string]: TSituationFragment } = {};
+	const situationById: { [id: string]: TSituationFragment } = {}
 
-  situations.map((situation) => {
-    const id = situation.id;
-    if (situationById[id]) {
-      const existingOrigins = situationById[id].origin
-        ?.split(", ")
-        .concat([situation.origin ?? ""])
-        .sort();
+	situations.forEach((situation) => {
+		const id = situation.id
+		if (situationById[id]) {
+			const existingOrigins = situationById[id].origin
+				?.split(', ')
+				.concat([situation.origin ?? ''])
+				.sort()
 
-      situationById[id].origin = existingOrigins?.join(", ");
-    } else {
-      situationById[id] = situation;
-    }
-  });
+			situationById[id].origin = existingOrigins?.join(', ')
+		} else {
+			situationById[id] = situation
+		}
+	})
 
-  return Object.values(situationById);
+	return Object.values(situationById)
 }
 
 type TileSituationMap = Map<
-  string,
-  {
-    situation: TSituationFragment;
-    cancellation: boolean;
-    publicCodeSet: Set<string>;
-    transportModeSet: Set<TTransportMode>;
-  }
->;
+	string,
+	{
+		situation: TSituationFragment
+		cancellation: boolean
+		publicCodeSet: Set<string>
+		transportModeSet: Set<TTransportMode>
+	}
+>
 
 export type TileSituation = {
-  situation: TSituationFragment;
-  cancellation: boolean;
-  publicCodeList: string[];
-  transportModeList: TTransportMode[];
-};
+	situation: TSituationFragment
+	cancellation: boolean
+	publicCodeList: string[]
+	transportModeList: TTransportMode[]
+}
 
 /**
  * Aggregates and deduplicates situations from a list of departures, excluding stop place situations.
@@ -115,62 +109,53 @@ export type TileSituation = {
  * @returns An array of accumulated tile situations
  */
 export function getAccumulatedTileSituations(
-  departures?: TDepartureFragment[],
-  stopPlaceSituations?: TSituationFragment[]
+	departures?: TDepartureFragment[],
+	stopPlaceSituations?: TSituationFragment[],
 ): TileSituation[] {
-  const filteredDepartures =
-    departures &&
-    departures
-      .map((departure) => ({
-        situations: removeStopPlaceSituations(
-          departure.situations,
-          stopPlaceSituations
-        ),
-        publicCode: departure.serviceJourney.line.publicCode,
-        transportMode: departure.serviceJourney.transportMode ?? "unknown",
-        cancellation: departure.cancellation,
-      }))
-      .filter((situation) => situation.situations.length !== 0);
+	const filteredDepartures = departures
+		?.map((departure) => ({
+			situations: removeStopPlaceSituations(departure.situations, stopPlaceSituations),
+			publicCode: departure.serviceJourney.line.publicCode,
+			transportMode: departure.serviceJourney.transportMode ?? 'unknown',
+			cancellation: departure.cancellation,
+		}))
+		.filter((situation) => situation.situations.length !== 0)
 
-  if (!filteredDepartures || filteredDepartures.length === 0) return [];
+	if (!filteredDepartures || filteredDepartures.length === 0) return []
 
-  const accumulatedSituations = filteredDepartures
-    .flatMap((departure) =>
-      departure.situations.map((situation) => ({
-        id: situation.id,
-        situation: situation,
-        cancellation: departure.cancellation,
-        publicCode: departure.publicCode,
-        transportMode: departure.transportMode,
-      }))
-    )
-    .reduce((situationMap, currentSituation) => {
-      const existingSituation = situationMap.get(currentSituation.id);
-      const situationAlreadyExists = existingSituation !== undefined;
-      if (situationAlreadyExists) {
-        if (currentSituation.publicCode) {
-          existingSituation.publicCodeSet.add(currentSituation.publicCode);
-        }
-        existingSituation.transportModeSet.add(currentSituation.transportMode);
-      } else {
-        situationMap.set(currentSituation.id, {
-          situation: currentSituation.situation,
-          cancellation: currentSituation.cancellation,
-          publicCodeSet: new Set(
-            currentSituation.publicCode ? [currentSituation.publicCode] : []
-          ),
-          transportModeSet: new Set<TTransportMode>([
-            currentSituation.transportMode,
-          ]),
-        });
-      }
-      return situationMap;
-    }, new Map() as TileSituationMap);
+	const accumulatedSituations = filteredDepartures
+		.flatMap((departure) =>
+			departure.situations.map((situation) => ({
+				id: situation.id,
+				situation: situation,
+				cancellation: departure.cancellation,
+				publicCode: departure.publicCode,
+				transportMode: departure.transportMode,
+			})),
+		)
+		.reduce((situationMap, currentSituation) => {
+			const existingSituation = situationMap.get(currentSituation.id)
+			const situationAlreadyExists = existingSituation !== undefined
+			if (situationAlreadyExists) {
+				if (currentSituation.publicCode) {
+					existingSituation.publicCodeSet.add(currentSituation.publicCode)
+				}
+				existingSituation.transportModeSet.add(currentSituation.transportMode)
+			} else {
+				situationMap.set(currentSituation.id, {
+					situation: currentSituation.situation,
+					cancellation: currentSituation.cancellation,
+					publicCodeSet: new Set(currentSituation.publicCode ? [currentSituation.publicCode] : []),
+					transportModeSet: new Set<TTransportMode>([currentSituation.transportMode]),
+				})
+			}
+			return situationMap
+		}, new Map() as TileSituationMap)
 
-  return Array.from(accumulatedSituations.values()).map((entry) => ({
-    situation: entry.situation,
-    cancellation: entry.cancellation,
-    publicCodeList: Array.from(entry.publicCodeSet).sort(sortPublicCodes),
-    transportModeList: Array.from(entry.transportModeSet),
-  }));
+	return Array.from(accumulatedSituations.values()).map((entry) => ({
+		situation: entry.situation,
+		cancellation: entry.cancellation,
+		publicCodeList: Array.from(entry.publicCodeSet).sort(sortPublicCodes),
+		transportModeList: Array.from(entry.transportModeSet),
+	}))
 }

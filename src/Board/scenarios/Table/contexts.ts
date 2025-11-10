@@ -1,11 +1,9 @@
-import React from "react";
-import type { BoardTileDB } from "../../../Shared/types/db-types/boards";
-import type { TDepartureFragment } from "../../../Shared/graphql";
+import type { TDepartureFragment } from '@/Shared/graphql'
+import type { BoardTileDB } from '@/Shared/types/db-types/boards'
+import React from 'react'
 
-const DeparturesContext = React.createContext<TDepartureFragment[] | undefined>(
-  undefined
-);
+const DeparturesContext = React.createContext<TDepartureFragment[] | undefined>(undefined)
 
-const TileContext = React.createContext<BoardTileDB | undefined>(undefined);
+const TileContext = React.createContext<BoardTileDB | undefined>(undefined)
 
-export { DeparturesContext, TileContext };
+export { DeparturesContext, TileContext }

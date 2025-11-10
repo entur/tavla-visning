@@ -1,27 +1,27 @@
-import { nanoid } from "nanoid";
-import { TableCell } from "../TableCell";
-import { TableColumn } from "../TableColumn";
-import { FormattedTime } from "./components/FormattedTime";
-import { useNonNullContext } from "../../../../../Shared/hooks/useNonNullContext";
-import { DeparturesContext } from "../../contexts";
+import { nanoid } from 'nanoid'
+import { TableCell } from '../TableCell'
+import { TableColumn } from '../TableColumn'
+import { FormattedTime } from './components/FormattedTime'
+import { DeparturesContext } from '../../contexts'
+import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 
 function ArrivalTime() {
-  const departures = useNonNullContext(DeparturesContext);
+	const departures = useNonNullContext(DeparturesContext)
 
-  const time = departures.map((departure) => ({
-    expectedArrivalTime: departure.expectedArrivalTime,
-    key: nanoid(),
-  }));
+	const time = departures.map((departure) => ({
+		expectedArrivalTime: departure.expectedArrivalTime,
+		key: nanoid(),
+	}))
 
-  return (
-    <TableColumn title="Ankomst" className="text-right">
-      {time.map((t) => (
-        <TableCell key={t.key}>
-          <FormattedTime time={t.expectedArrivalTime} />
-        </TableCell>
-      ))}
-    </TableColumn>
-  );
+	return (
+		<TableColumn title="Ankomst" className="text-right">
+			{time.map((t) => (
+				<TableCell key={t.key}>
+					<FormattedTime time={t.expectedArrivalTime} />
+				</TableCell>
+			))}
+		</TableColumn>
+	)
 }
 
-export { ArrivalTime };
+export { ArrivalTime }

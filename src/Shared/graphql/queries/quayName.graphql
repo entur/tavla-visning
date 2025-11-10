@@ -1,8 +1,8 @@
 query QuayName($id: String!) {
-    quay(id: $id) {
-        name
-        description
-        publicCode
-        id
-    }
+	quay(id: $id) {
+		name
+		description
+		publicCode
+		id
+	}
 }
