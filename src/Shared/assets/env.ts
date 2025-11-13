@@ -10,3 +10,18 @@ export const COUNTY_ENDPOINT = 'https://ws.geonorge.no/kommuneinfo/v1/fylker'
 export const GEOCODER_ENDPOINT = 'https://api.entur.io/geocoder/v1'
 
 export const CLIENT_NAME = 'entur-tavla'
+
+export const BOARD_API_URL = (() => {
+	if (import.meta.env.DEV) {
+		return 'http://localhost:3000'
+	}
+
+	const env = import.meta.env.VITE_ENV || 'prd'
+
+	switch (env) {
+		case 'dev':
+			return 'https://tavla.dev.entur.no'
+		default:
+			return 'https://tavla.entur.no'
+	}
+})()
