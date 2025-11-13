@@ -10,10 +10,6 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-# Build argument for environment
-ARG VITE_ENV=prd
-ENV VITE_ENV=$VITE_ENV
-
 RUN pnpm run build
 
 EXPOSE 9000
