@@ -12,12 +12,11 @@ export const GEOCODER_ENDPOINT = 'https://api.entur.io/geocoder/v1'
 export const CLIENT_NAME = 'entur-tavla'
 
 export const BOARD_API_URL = (() => {
-	// Check if we're in development mode (pnpm run dev)
 	if (import.meta.env.DEV) {
 		return 'http://localhost:3000'
 	}
 
-	const env = import.meta.env.VITE_ENV || 'production'
+	const env = import.meta.env.VITE_ENV || 'prd'
 
 	switch (env) {
 		case 'dev':

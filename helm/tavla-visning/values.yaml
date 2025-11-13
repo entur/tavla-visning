@@ -20,7 +20,6 @@ common:
     enabled: true
     data:
       TZ: "Europe/Oslo"
-      VITE_ENV: "dev"
   secrets:
     auth-credentials:
       - MNG_AUTH0_INT_CLIENT_ID

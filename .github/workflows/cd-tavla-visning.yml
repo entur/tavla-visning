@@ -7,20 +7,29 @@ on:
       - main
 
 jobs:
-  docker-push:
-    uses: entur/gha-docker/.github/workflows/push.yml@v1.2.3
+  docker-push-dev:
+    uses: entur/gha-docker/.github/workflows/push.yml@v1.10.1
+    with:
+      environment: dev
+      context: .
+      image_name: tavla-visning
+      build_args: VITE_ENV=dev
+
+  docker-push-prd:
+    uses: entur/gha-docker/.github/workflows/push.yml@v1.10.1
     with:
       environment: prd
       context: .
       image_name: tavla-visning
+      build_args: VITE_ENV=prd
 
   helm-deploy-dev:
-    needs: [docker-push]
-    uses: entur/gha-helm/.github/workflows/deploy.yml@v1.0.4
+    needs: [docker-push-dev]
+    uses: entur/gha-helm/.github/workflows/deploy.yml@v1.2.2
     with:
       environment: dev
       chart: helm/tavla-visning
-      image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
+      image: ${{ needs.docker-push-dev.outputs.image_name }}:${{ needs.docker-push-dev.outputs.image_tag}}
 
   approval-step:
     runs-on: ubuntu-24.04
@@ -33,9 +42,9 @@ jobs:
         run: echo "Approve the deployment to prod"
 
   helm-deploy-prd:
-    needs: [docker-push, approval-step]
-    uses: entur/gha-helm/.github/workflows/deploy.yml@v1.0.4
+    needs: [docker-push-prd, approval-step]
+    uses: entur/gha-helm/.github/workflows/deploy.yml@v1.2.2
     with:
       environment: prd
       chart: helm/tavla-visning
-      image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
+      image: ${{ needs.docker-push-prd.outputs.image_name }}:${{ needs.docker-push-prd.outputs.image_tag}}

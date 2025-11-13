@@ -1,7 +1,0 @@
-common:
-  env: production
-  ingress:
-    host: tavla-visning.entur.io
-  configmap:
-    data:
-      VITE_ENV: "production"
