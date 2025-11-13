@@ -1,4 +1,0 @@
-common:
-  env: staging
-  ingress:
-    host: tavla-visning.staging.entur.no
