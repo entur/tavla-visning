@@ -1,4 +1,0 @@
-common:
-  env: dev
-  ingress:
-    host: tavla-visning.dev.entur.no
