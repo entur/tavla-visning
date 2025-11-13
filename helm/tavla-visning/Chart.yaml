@@ -4,6 +4,7 @@ description: A Helm chart for basic Entur deployments
 type: application
 version: 0.0.1
 appVersion: "0.0.1"
+icon: https://raw.githubusercontent.com/entur/design-tokens/main/logos/entur-logo.svg
 dependencies:
   - name: common
     version: 1.20.0
