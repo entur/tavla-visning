@@ -1,0 +1,7 @@
+common:
+  env: dev
+  ingress:
+    host: tavla-visning.dev.entur.io
+  configmap:
+    data:
+      VITE_ENV: "dev"

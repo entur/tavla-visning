@@ -30,16 +30,13 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 			setError(null)
 
 			try {
-				const res = await fetch(
-					`${BOARD_API_URL}/api/get-board?id=${encodeURIComponent(boardId)}`,
-					{
-						method: 'GET',
-						headers: {
-							'Content-Type': 'application/json',
-						},
-						cache: 'no-store',
+				const res = await fetch(`${BOARD_API_URL}/api/board?id=${encodeURIComponent(boardId)}`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
 					},
-				)
+					cache: 'no-store',
+				})
 
 				if (!res.ok) {
 					throw new Error(`API returned status ${res.status}`)
