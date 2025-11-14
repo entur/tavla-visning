@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react'
-import type { BoardDB } from '../types/db-types/boards'
-import { BOARD_API_URL } from '../assets/env'
+import { useState, useEffect } from "react";
+import type { BoardDB } from "../types/db-types/boards";
 
 export interface BoardApiResponse {
-	board: BoardDB
-	folderLogo?: string
-	error?: string
+  board: BoardDB;
+  folderLogo?: string;
+  error?: string;
 }
 
 interface UseGetBoardReturn {
-	board: BoardDB | null
-	loading: boolean
-	error: string | null
+  board: BoardDB | null;
+  loading: boolean;
+  error: string | null;
 }
 
 /**
@@ -20,46 +19,51 @@ interface UseGetBoardReturn {
  * @returns Object containing board data, loading state, and error state
  */
 export function useGetBoard(boardId: string): UseGetBoardReturn {
-	const [board, setBoard] = useState<BoardDB | null>(null)
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
+  const [board, setBoard] = useState<BoardDB | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-	useEffect(() => {
-		async function fetchBoard() {
-			setLoading(true)
-			setError(null)
+  useEffect(() => {
+    async function fetchBoard() {
+      setLoading(true);
+      setError(null);
 
-			try {
-				const res = await fetch(`${BOARD_API_URL}/api/board?id=${encodeURIComponent(boardId)}`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					cache: 'no-store',
-				})
+      try {
+        const res = await fetch(
+          `http://localhost:3000/api/get-board?id=${encodeURIComponent(
+            boardId
+          )}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            cache: "no-store",
+          }
+        );
 
-				if (!res.ok) {
-					throw new Error(`API returned status ${res.status}`)
-				}
+        if (!res.ok) {
+          throw new Error(`API returned status ${res.status}`);
+        }
 
-				const data: BoardApiResponse = await res.json()
+        const data: BoardApiResponse = await res.json();
 
-				if (!data.board) {
-					throw new Error('No board in response')
-				}
+        if (!data.board) {
+          throw new Error("No board in response");
+        }
 
-				setBoard(data.board)
-			} catch (err) {
-				console.error('useGetBoard: Failed to fetch board', err)
-				setError(err instanceof Error ? err.message : 'Unknown error')
-				setBoard(null)
-			} finally {
-				setLoading(false)
-			}
-		}
+        setBoard(data.board);
+      } catch (err) {
+        console.error("useGetBoard: Failed to fetch board", err);
+        setError(err instanceof Error ? err.message : "Unknown error");
+        setBoard(null);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-		fetchBoard()
-	}, [boardId])
+    fetchBoard();
+  }, [boardId]);
 
-	return { board, loading, error }
+  return { board, loading, error };
 }
