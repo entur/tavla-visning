@@ -7,7 +7,14 @@ on:
       - main
 
 jobs:
+  docker-build:
+    uses: entur/gha-docker/.github/workflows/build.yml@v1.10.1
+    with:
+      context: .
+      image_name: tavla-visning
+
   docker-push:
+    needs: [docker-build]
     uses: entur/gha-docker/.github/workflows/push.yml@v1.10.1
     with:
       context: .
