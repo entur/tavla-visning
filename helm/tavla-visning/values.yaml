@@ -1,0 +1,26 @@
+common:
+  app: tavla-visning
+  shortname: tavla-v
+  team: selvbetjent
+  env: dev
+  ingress:
+    enabled: true
+    trafficType: public
+  service:
+    internalPort: 9000
+  deployment:
+    prometheus:
+      enabled: true
+    replicas: 2
+  container:
+    image: <+artifacts.primary.image>
+    cpu: 0.3
+    memory: 512
+  configmap:
+    enabled: true
+    data:
+      TZ: "Europe/Oslo"
+  secrets:
+    auth-credentials:
+      - MNG_AUTH0_INT_CLIENT_ID
+      - MNG_AUTH0_INT_CLIENT_SECRET
