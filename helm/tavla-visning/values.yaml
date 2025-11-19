@@ -1,5 +1,5 @@
 common:
-  app: tavla-visning
+  app: tavlavis
   shortname: tavla-v
   team: selvbetjent
   env: dev
