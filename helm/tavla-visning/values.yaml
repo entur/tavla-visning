@@ -36,7 +36,3 @@ common:
     enabled: true
     data:
       TZ: "Europe/Oslo"
-  secrets:
-    auth-credentials:
-      - MNG_AUTH0_INT_CLIENT_ID
-      - MNG_AUTH0_INT_CLIENT_SECRET
