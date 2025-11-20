@@ -26,7 +26,6 @@ jobs:
     with:
       environment: dev
       chart: helm/tavla-visning
-      namespace: ent-tavlavis-dev
       image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
 
   approval-step:
@@ -45,5 +44,4 @@ jobs:
     with:
       environment: prd
       chart: helm/tavla-visning
-      namespace: ent-tavlavis-prd
       image: ${{ needs.docker-push.outputs.image_name }}:${{ needs.docker-push.outputs.image_tag}}
