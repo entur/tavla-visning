@@ -26,14 +26,13 @@
     "@entur/tokens": "^3.20.0",
     "@entur/typography": "^2.0.3",
     "@graphql-typed-document-node/core": "^3.2.0",
+    "abortcontroller-polyfill": "^1.7.8",
     "clsx": "^2.1.1",
-    "firebase": "^12.4.0",
     "lodash": "^4.17.21",
     "nanoid": "^5.1.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "swr": "^2.3.6",
-    "unimported": "^1.31.1",
     "whatwg-fetch": "^3.6.20"
   },
   "devDependencies": {
