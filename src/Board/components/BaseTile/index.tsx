@@ -10,6 +10,7 @@ import clsx from 'clsx'
 import type { ReactNode } from 'react'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 import { TileLoader } from '../TileLoader'
+import type { CustomName } from '@/Board/hooks/useTileData'
 
 interface BaseTileProps {
 	displayName?: string
@@ -28,6 +29,7 @@ interface BaseTileProps {
 	className?: string
 	customHeader?: ReactNode
 	customDeviation?: ReactNode
+	customNames?: CustomName[]
 }
 
 export const DEFAULT_COLUMNS: TileColumnDB[] = ['line', 'destination', 'time']
@@ -54,6 +56,7 @@ export function BaseTile({
 	customHeader,
 	customDeviation,
 	className,
+	customNames,
 }: BaseTileProps) {
 	if (isLoading && !hasData) {
 		return (
@@ -101,6 +104,7 @@ export function BaseTile({
 					stopPlaceSituations={situations}
 					currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
 					numberOfVisibleSituations={uniqueSituations?.length}
+					customNames={customNames}
 				/>
 			</div>
 
