@@ -10,6 +10,7 @@ import { ExpectedTime } from './components/Time/ExpectedTime'
 import { DeparturesContext } from './contexts'
 import type { TDepartureFragment, TSituationFragment } from '@/Shared/graphql'
 import type { TileColumnDB } from '@/Shared/types/db-types/boards'
+import type { CustomName } from '@/Board/hooks/useTileData'
 
 function Table({
 	departures,
@@ -17,12 +18,14 @@ function Table({
 	stopPlaceSituations,
 	currentVisibleSituationId,
 	numberOfVisibleSituations,
+	customNames,
 }: {
 	departures: TDepartureFragment[]
 	columns?: TileColumnDB[]
 	stopPlaceSituations?: TSituationFragment[]
 	currentVisibleSituationId?: string
 	numberOfVisibleSituations?: number
+	customNames?: CustomName[]
 }) {
 	if (!columns || !isArray(columns))
 		return <div className="flex shrink-0">Du har ikke lagt til noen kolonner ennå</div>
@@ -46,7 +49,7 @@ function Table({
 					{columns.includes('arrivalTime') && <ArrivalTime />}
 					{columns.includes('line') && <Line />}
 					{columns.includes('destination') && <Destination />}
-					{columns.includes('name') && <Name />}
+					{columns.includes('name') && <Name customNames={customNames} />}
 					{columns.includes('platform') && <Platform />}
 					{columns.includes('time') && <ExpectedTime />}
 				</DeparturesContext.Provider>
