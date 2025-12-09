@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "browserslist": [
-    "chrome > 47"
+    "chrome >= 38",
+    "android >= 4.4"
   ],
   "scripts": {
     "dev": "vite",
