@@ -8,7 +8,12 @@ export default defineConfig({
 		react(),
 		legacy({
 			targets: ['chrome >= 37', 'android >= 4.4'],
-			additionalLegacyPolyfills: ['regenerator-runtime/runtime', 'core-js/stable', 'whatwg-fetch'],
+			additionalLegacyPolyfills: [
+				'regenerator-runtime/runtime',
+				'core-js/stable',
+				'whatwg-fetch',
+				'abortcontroller-polyfill/dist/abortcontroller-polyfill-only',
+			],
 			renderLegacyChunks: true,
 			modernPolyfills: true,
 		}),
@@ -16,7 +21,7 @@ export default defineConfig({
 
 	build: {
 		target: 'es2015',
-		minify: 'esbuild',
+		minify: 'terser',
 	},
 	esbuild: {
 		target: 'es2015',
