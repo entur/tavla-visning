@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "browserslist": [
-    "chrome >= 38",
+    "chrome >= 37",
     "android >= 4.4"
   ],
   "scripts": {
@@ -16,7 +16,7 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{js,ts,tsx}": [
+    "./src/**/*.{js,ts,tsx}": [
       "pnpm exec biome lint --fix",
       "pnpm exec biome format --write"
     ]
@@ -31,8 +31,8 @@
     "clsx": "^2.1.1",
     "lodash": "^4.17.21",
     "nanoid": "^5.1.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "swr": "^2.3.6",
     "whatwg-fetch": "^3.6.20"
   },
@@ -40,8 +40,8 @@
     "@biomejs/biome": "2.3.3",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.6.0",
-    "@types/react": "^19.1.16",
-    "@types/react-dom": "^19.1.9",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-legacy": "^6.1.1",
     "@vitejs/plugin-react-swc": "^4.1.0",
     "autoprefixer": "^10.4.21",
@@ -52,6 +52,7 @@
     "postcss": "^8.5.6",
     "regenerator-runtime": "^0.14.1",
     "tailwindcss": "^3.4.14",
+    "terser": "^5.44.1",
     "typescript": "~5.9.3",
     "vite": "^7.1.7"
   }
