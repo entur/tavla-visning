@@ -1,4 +1,4 @@
 common:
   env: dev
   ingress:
-    host: tavla-visning.dev.entur.no
+    host: vis-tavla.dev.entur.no

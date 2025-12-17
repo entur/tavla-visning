@@ -1,4 +1,4 @@
 common:
   env: staging
   ingress:
-    host: tavla-visning.staging.entur.no
+    host: vis-tavla.staging.entur.no

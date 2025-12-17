@@ -1,4 +1,4 @@
 common:
   env: prd
   ingress:
-    host: tavla-visning.entur.no
+    host: vis-tavla.entur.no
