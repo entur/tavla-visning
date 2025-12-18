@@ -76,7 +76,7 @@ function TileSituations({
 				</div>
 				<div className="grow self-center">
 					<p
-						className={`ml-em-0.75 overflow-hidden overflow-ellipsis wrap-break-word text-em-sm/em-base font-normal ${
+						className={`ml-em-0.75 overflow-hidden overflow-ellipsis wrap-break-word text-em-lg/em-lg font-normal ${
 							cancelledDeparture ? 'text-error' : 'text-warning'
 						}`}
 					>
@@ -90,7 +90,7 @@ function TileSituations({
 					</p>
 				</div>
 				<div
-					className={`ml-8 shrink-0 justify-center self-center text-center text-em-sm/em-base font-semibold text-${textColor}`}
+					className={`ml-8 shrink-0 justify-center self-center text-center text-em-lg/em-lg font-semibold text-${textColor}`}
 				>
 					{currentSituationNumber !== undefined &&
 						numberOfSituations !== undefined &&
