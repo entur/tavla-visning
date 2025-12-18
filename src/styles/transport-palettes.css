@@ -114,9 +114,9 @@
   --air-color: #676767;
   --cableway-color: #676767;
   --funicular-color: #676767;
-  --metro-color: #676767;
+  --metro-color: #551125;
   --taxi-color: #956b77;
-  --tram-color: #676767;
+  --tram-color: #014165;
   --bus-color-transparent: rgba(1, 65, 101, 0.15);
   --coach-color-transparent: rgba(85, 130, 58, 0.15);
   --rail-color-transparent: rgba(85, 17, 37, 0.15);
@@ -124,8 +124,8 @@
   --air-color-transparent: rgba(103, 103, 103, 0.15);
   --cableway-color-transparent: rgba(103, 103, 103, 0.15);
   --funicular-color-transparent: rgba(103, 103, 103, 0.15);
-  --tram-color-transparent: rgba(103, 103, 103, 0.15);
-  --metro-color-transparent: rgba(103, 103, 103, 0.15);
+  --tram-color-transparent: rgba(1, 65, 101, 0.15);
+  --metro-color-transparent: rgba(85, 17, 37, 0.15);
   --taxi-color-transparent: rgba(149, 107, 119, 0.15);
 }
 
@@ -137,9 +137,9 @@
   --air-color: #b3bec4;
   --cableway-color: #b3bec4;
   --funicular-color: #b3bec4;
-  --metro-color: #b3bec4;
+  --metro-color: #56a0db;
   --taxi-color: #a98891;
-  --tram-color: #b3bec4;
+  --tram-color: #ce758f;
   --bus-color-transparent: rgba(96, 162, 215, 0.15);
   --coach-color-transparent: rgba(130, 184, 99, 0.15);
   --rail-color-transparent: rgba(206, 117, 143, 0.15);
@@ -147,8 +147,8 @@
   --air-color-transparent: rgba(179, 190, 196, 0.15);
   --cableway-color-transparent: rgba(179, 190, 196, 0.15);
   --funicular-color-transparent: rgba(179, 190, 196, 0.15);
-  --tram-color-transparent: rgba(179, 190, 196, 0.15);
-  --metro-color-transparent: rgba(179, 190, 196, 0.15);
+  --tram-color-transparent: rgba(96, 162, 215, 0.15);
+  --metro-color-transparent: rgba(206, 117, 143, 0.15);
   --taxi-color-transparent: rgba(169, 136, 145, 0.15);
 }
 
