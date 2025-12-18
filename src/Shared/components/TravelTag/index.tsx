@@ -50,7 +50,7 @@ function TravelTag({
 				transportSubmode={transportSubmode}
 			/>
 			<div
-				className={`flex h-full w-full flex-row items-center justify-center font-semibold ${iconPublicCodeColor}`}
+				className={`flex whitespace-nowrap h-full w-full flex-row items-center justify-center font-semibold ${iconPublicCodeColor}`}
 			>
 				{publicCode}
 			</div>
