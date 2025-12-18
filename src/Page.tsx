@@ -13,6 +13,7 @@ function BoardPage() {
 
 	const { board, loading, error } = useGetBoard(getBoardId())
 
+	const theme = board?.theme ?? 'dark'
 	const title = board?.meta?.title ? `${board.meta.title} | Entur tavla` : 'Entur Tavla'
 
 	useEffect(() => {
@@ -25,31 +26,33 @@ function BoardPage() {
 		return () => clearTimeout(refreshTimeout)
 	}, [])
 
-	if (loading || error || !board) {
-		return <BoardStatus loading={loading} error={error} board={board} />
-	}
-
 	return (
 		<div
 			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color) text-[3vmin]"
-			data-theme={board.theme}
-			data-transport-palette={board.transportPalette}
+			data-theme={theme}
+			data-transport-palette={board?.transportPalette}
 		>
 			<div>
 				<title>{title}</title>
 			</div>
 
 			<div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
-				<Header
-					theme={board.theme}
-					folderLogo={undefined}
-					hideClock={board?.hideClock}
-					hideLogo={board?.hideLogo}
-				/>
+				{loading || error || !board ? (
+					<BoardStatus loading={loading} error={error} board={board} />
+				) : (
+					<>
+						<Header
+							theme={board.theme}
+							folderLogo={undefined}
+							hideClock={board?.hideClock}
+							hideLogo={board?.hideLogo}
+						/>
 
-				<Board board={board} />
+						<Board board={board} />
 
-				<InfoMessage board={board} showEnturLogo={board?.hideLogo} />
+						<InfoMessage board={board} showEnturLogo={board?.hideLogo} />
+					</>
+				)}
 			</div>
 		</div>
 	)
