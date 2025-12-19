@@ -7,8 +7,16 @@ import { BoardStatus } from './error'
 
 function BoardPage() {
 	const getBoardId = () => {
-		const pathParts = window.location.pathname.split('/')
-		return pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2] || ''
+		const pathParts = window.location.pathname.split('/').filter(Boolean)
+
+		const boardId = pathParts[pathParts.length - 1]
+
+		if (!boardId) {
+			window.location.href = 'https://tavla.entur.no'
+			return ''
+		}
+
+		return boardId
 	}
 
 	const { board, loading, error } = useGetBoard(getBoardId())
