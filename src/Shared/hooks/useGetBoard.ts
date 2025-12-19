@@ -10,6 +10,7 @@ export interface BoardApiResponse {
 
 interface UseGetBoardReturn {
 	board: BoardDB | null
+	folderLogo?: string
 	loading: boolean
 	error: string | null
 }
@@ -21,6 +22,7 @@ interface UseGetBoardReturn {
  */
 export function useGetBoard(boardId: string): UseGetBoardReturn {
 	const [board, setBoard] = useState<BoardDB | null>(null)
+	const [folderLogo, setFolderLogo] = useState<string | undefined>(undefined)
 	const [loading, setLoading] = useState(true)
 	const [error, setError] = useState<string | null>(null)
 
@@ -49,6 +51,7 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 				}
 
 				setBoard(data.board)
+				setFolderLogo(data.folderLogo)
 			} catch (err) {
 				console.error('useGetBoard: Failed to fetch board', err)
 				setError(err instanceof Error ? err.message : 'Unknown error')
@@ -61,5 +64,5 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 		fetchBoard()
 	}, [boardId])
 
-	return { board, loading, error }
+	return { board, folderLogo, loading, error }
 }

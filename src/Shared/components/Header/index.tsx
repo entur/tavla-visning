@@ -11,8 +11,9 @@ type Props = {
 	hideLogo?: boolean
 }
 
-function Header({ hideClock = false, hideLogo = false, theme }: Props) {
+function Header({ hideClock = false, hideLogo = false, theme, folderLogo }: Props) {
 	const tavlaLogo = theme === 'light' ? TavlaLogoBlue : TavlaLogoWhite
+	const logoSrc = folderLogo || tavlaLogo
 
 	if (hideClock && hideLogo) return null
 
@@ -21,7 +22,7 @@ function Header({ hideClock = false, hideLogo = false, theme }: Props) {
 			<div className="relative h-[1.25em] w-full">
 				{!hideLogo && (
 					<img
-						src={tavlaLogo}
+						src={logoSrc}
 						alt="Logo til tavlen"
 						className="h-full w-auto object-contain object-left"
 						width="100"

@@ -11,7 +11,7 @@ function BoardPage() {
 		return pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2] || ''
 	}
 
-	const { board, loading, error } = useGetBoard(getBoardId())
+	const { board, folderLogo, loading, error } = useGetBoard(getBoardId())
 
 	const theme = board?.theme ?? 'dark'
 	const title = board?.meta?.title ? `${board.meta.title} | Entur tavla` : 'Entur Tavla'
@@ -41,12 +41,7 @@ function BoardPage() {
 					<BoardStatus loading={loading} error={error} board={board} />
 				) : (
 					<>
-						<Header
-							theme={board.theme}
-							folderLogo={undefined}
-							hideClock={board?.hideClock}
-							hideLogo={board?.hideLogo}
-						/>
+						<Header theme={board.theme} folderLogo={folderLogo} />
 
 						<Board board={board} />
 
