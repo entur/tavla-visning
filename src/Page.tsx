@@ -41,7 +41,12 @@ function BoardPage() {
 					<BoardStatus loading={loading} error={error} board={board} />
 				) : (
 					<>
-						<Header theme={board.theme} folderLogo={folderLogo} />
+						<Header
+							theme={board.theme}
+							hideLogo={board.hideLogo}
+							hideClock={board.hideClock}
+							folderLogo={folderLogo}
+						/>
 
 						<Board board={board} />
 
