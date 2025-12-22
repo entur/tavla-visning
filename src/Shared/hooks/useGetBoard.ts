@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { BoardDB } from '../types/db-types/boards'
 import { BOARD_API_URL } from '../assets/env'
-
+import { PREVIEW_BOARDS } from '../assets/preveiwBoards'
 export interface BoardApiResponse {
 	board: BoardDB
 	folderLogo?: string
@@ -55,6 +55,21 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 				setBoard(null)
 			} finally {
 				setLoading(false)
+			}
+		}
+
+		if (boardId.startsWith('preview-')) {
+			const previewBoard = PREVIEW_BOARDS.find((b) => b.id === boardId)
+			if (previewBoard) {
+				setBoard(previewBoard)
+				setLoading(false)
+				setError(null)
+				return
+			} else {
+				setError('Preview board not found')
+				setBoard(null)
+				setLoading(false)
+				return
 			}
 		}
 
