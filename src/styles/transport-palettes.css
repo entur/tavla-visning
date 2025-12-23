@@ -130,16 +130,16 @@
 }
 
 [data-theme="dark"][data-transport-palette="fram"] {
-	--bus-color: #56a0db;
+	--bus-color: #60a2d7;
 	--coach-color: #82b863;
 	--rail-color: #ce758f;
 	--water-color: #9ad9e6;
 	--air-color: #b3bec4;
 	--cableway-color: #b3bec4;
 	--funicular-color: #b3bec4;
-	--metro-color: #56a0db;
+	--metro-color: #ce758f;
 	--taxi-color: #a98891;
-	--tram-color: #ce758f;
+	--tram-color: #60a2d7;
 	--bus-color-transparent: rgba(96, 162, 215, 0.15);
 	--coach-color-transparent: rgba(130, 184, 99, 0.15);
 	--rail-color-transparent: rgba(206, 117, 143, 0.15);

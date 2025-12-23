@@ -19,7 +19,7 @@ function BoardPage() {
 		return boardId
 	}
 
-	const { board, loading, error } = useGetBoard(getBoardId())
+	const { board, folderLogo, loading, error } = useGetBoard(getBoardId())
 
 	const theme = board?.theme ?? 'dark'
 	const title = board?.meta?.title ? `${board.meta.title} | Entur tavla` : 'Entur Tavla'
@@ -51,9 +51,9 @@ function BoardPage() {
 					<>
 						<Header
 							theme={board.theme}
-							folderLogo={undefined}
-							hideClock={board?.hideClock}
-							hideLogo={board?.hideLogo}
+							hideLogo={board.hideLogo}
+							hideClock={board.hideClock}
+							folderLogo={folderLogo}
 						/>
 
 						<Board board={board} />
