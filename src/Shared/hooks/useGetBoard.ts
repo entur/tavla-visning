@@ -142,7 +142,7 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 			}
 		}
 
-		// Fetch board from API
+		// Handle regular IDs: fetching board from API
 		dispatch({ type: 'LOADING', message: 'fetch-loading' })
 
 		async function fetchBoard(): Promise<void> {
