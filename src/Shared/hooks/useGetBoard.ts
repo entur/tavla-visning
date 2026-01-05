@@ -68,6 +68,16 @@ function boardReducer(state: BoardState, action: BoardAction): BoardState {
 const TRUSTED_MESSAGE_ORIGINS = ['https://tavla.entur.no', 'https://tavla.dev.entur.no']
 const DEMO_BOARD_TIMEOUT = 5000
 
+const isTrustedOrigin = (origin: string) => {
+	if (TRUSTED_MESSAGE_ORIGINS.includes(origin)) return true
+	try {
+		const { hostname } = new URL(origin)
+		return hostname === 'localhost' || hostname === '127.0.0.1'
+	} catch {
+		return false
+	}
+}
+
 /**
  * Custom hook for fetching a board by ID
  * Supports three sources:
@@ -100,13 +110,15 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 			demoBoardReceivedRef.current = false
 			let timeoutId: ReturnType<typeof setTimeout> | undefined
 
-			const isTrustedOrigin = (origin: string): boolean => {
-				return TRUSTED_MESSAGE_ORIGINS.includes(origin) || origin.includes('localhost')
-			}
-
 			const handleMessageFromParent = (event: MessageEvent): void => {
 				if (!isTrustedOrigin(event.origin)) {
 					console.warn('useGetBoard: Ignoring message from untrusted origin:', event.origin)
+					return
+				}
+				const messageIsFromParent = event.source === window.parent
+
+				if (!messageIsFromParent) {
+					console.warn('useGetBoard: Ignoring message not from parent window')
 					return
 				}
 

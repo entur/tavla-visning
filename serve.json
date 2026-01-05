@@ -1,23 +1,19 @@
 {
-  "rewrites": [
-    {
-      "source": "**",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
-    {
-      "source": "**",
-      "headers": [
+    "rewrites": [
         {
-          "key": "X-Frame-Options",
-          "value": "SAMEORIGIN"
-        },
-        {
-          "key": "Content-Security-Policy",
-          "value": "frame-ancestors 'self' https://tavla.entur.no https://*.tavla.entur.no localhost:* http://localhost:*"
+            "source": "**",
+            "destination": "/index.html"
         }
-      ]
-    }
-  ]
+    ],
+    "headers": [
+        {
+            "source": "**",
+            "headers": [
+                {
+                    "key": "Content-Security-Policy",
+                    "value": "frame-ancestors 'self' https://tavla.entur.no https://*.tavla.entur.no localhost:* http://localhost:*"
+                }
+            ]
+        }
+    ]
 }
