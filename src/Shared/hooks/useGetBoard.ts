@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import type { BoardDB } from '../types/db-types/boards'
 import { BOARD_API_URL } from '../assets/env'
 import { PREVIEW_BOARDS } from '../assets/preveiwBoards'
+
 export interface BoardApiResponse {
 	board: BoardDB
 	folderLogo?: string
@@ -15,22 +16,148 @@ interface UseGetBoardReturn {
 	error: string | null
 }
 
+type BoardStatus = 'loading' | 'success' | 'error'
+
+interface BoardState {
+	board: BoardDB | null
+	folderLogo?: string
+	status: BoardStatus
+	error: string | null
+}
+
+type BoardAction =
+	| { type: 'SUCCESS'; board: BoardDB; folderLogo?: string }
+	| { type: 'LOADING'; message: string }
+	| { type: 'ERROR'; message: string }
+
+const initialState: BoardState = {
+	board: null,
+	folderLogo: undefined,
+	status: 'loading',
+	error: null,
+}
+
+function boardReducer(state: BoardState, action: BoardAction): BoardState {
+	switch (action.type) {
+		case 'SUCCESS':
+			return {
+				board: action.board,
+				folderLogo: action.folderLogo,
+				status: 'success',
+				error: null,
+			}
+		case 'LOADING':
+			return {
+				board: null,
+				folderLogo: undefined,
+				status: 'loading',
+				error: null,
+			}
+		case 'ERROR':
+			return {
+				board: null,
+				folderLogo: undefined,
+				status: 'error',
+				error: action.message,
+			}
+		default:
+			return state
+	}
+}
+
+const TRUSTED_MESSAGE_ORIGINS = ['https://tavla.entur.no', 'https://tavla.dev.entur.no']
+const DEMO_BOARD_TIMEOUT = 5000
+
+const isTrustedOrigin = (origin: string) => {
+	if (TRUSTED_MESSAGE_ORIGINS.includes(origin)) return true
+	try {
+		const { hostname } = new URL(origin)
+		return hostname === 'localhost' || hostname === '127.0.0.1'
+	} catch {
+		return false
+	}
+}
+
 /**
  * Custom hook for fetching a board by ID
+ * Supports three sources:
+ * - 'preview-*': Local preview boards
+ * - 'demo': Demo board from parent iframe via postMessage
+ * - Regular ID: Fetch from API
+ *
  * @param boardId - The ID of the board to fetch
  * @returns Object containing board data, loading state, and error state
  */
 export function useGetBoard(boardId: string): UseGetBoardReturn {
-	const [board, setBoard] = useState<BoardDB | null>(null)
-	const [folderLogo, setFolderLogo] = useState<string | undefined>(undefined)
-	const [loading, setLoading] = useState(true)
-	const [error, setError] = useState<string | null>(null)
+	const [boardState, dispatch] = useReducer(boardReducer, initialState)
+	const demoBoardReceivedRef = useRef(false)
 
 	useEffect(() => {
-		async function fetchBoard() {
-			setLoading(true)
-			setError(null)
+		// Handle preview boards
+		if (boardId.startsWith('preview-')) {
+			const previewBoard = PREVIEW_BOARDS.find((b) => b.id === boardId)
+			if (previewBoard) {
+				dispatch({ type: 'SUCCESS', board: previewBoard })
+			} else {
+				dispatch({ type: 'ERROR', message: 'Preview board not found' })
+			}
+			return
+		}
 
+		// Handle demo board from parent iframe via postMessage
+		if (boardId === 'demo') {
+			dispatch({ type: 'LOADING', message: 'demo-loading' })
+			demoBoardReceivedRef.current = false
+			let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+			const handleMessageFromParent = (event: MessageEvent): void => {
+				if (!isTrustedOrigin(event.origin)) {
+					console.warn('useGetBoard: Ignoring message from untrusted origin:', event.origin)
+					return
+				}
+				const messageIsFromParent = event.source === window.parent
+
+				if (!messageIsFromParent) {
+					console.warn('useGetBoard: Ignoring message not from parent window')
+					return
+				}
+
+				if (event.data?.type === 'DEMO_BOARD' && event.data?.board) {
+					demoBoardReceivedRef.current = true
+					dispatch({ type: 'SUCCESS', board: event.data.board })
+
+					if (timeoutId) {
+						clearTimeout(timeoutId)
+						timeoutId = undefined
+					}
+				}
+			}
+
+			window.addEventListener('message', handleMessageFromParent)
+
+			if (window.parent !== window) {
+				window.parent.postMessage({ type: 'READY_FOR_DEMO_BOARD' }, '*')
+
+				timeoutId = setTimeout(() => {
+					if (!demoBoardReceivedRef.current) {
+						console.warn('useGetBoard: Demo board not received from parent within timeout')
+						dispatch({ type: 'ERROR', message: 'Demo board data not received from parent window' })
+					}
+				}, DEMO_BOARD_TIMEOUT)
+			}
+
+			return () => {
+				window.removeEventListener('message', handleMessageFromParent)
+				if (timeoutId) {
+					clearTimeout(timeoutId)
+				}
+			}
+		}
+
+		// Handle regular IDs: fetching board from API
+		dispatch({ type: 'LOADING', message: 'fetch-loading' })
+
+		async function fetchBoard(): Promise<void> {
 			try {
 				const res = await fetch(`${BOARD_API_URL}/api/board?id=${encodeURIComponent(boardId)}`, {
 					method: 'GET',
@@ -50,34 +177,20 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 					throw new Error('No board in response')
 				}
 
-				setBoard(data.board)
-				setFolderLogo(data.folderLogo)
+				dispatch({ type: 'SUCCESS', board: data.board, folderLogo: data.folderLogo })
 			} catch (err) {
 				console.error('useGetBoard: Failed to fetch board', err)
-				setError(err instanceof Error ? err.message : 'Unknown error')
-				setBoard(null)
-			} finally {
-				setLoading(false)
-			}
-		}
-
-		if (boardId.startsWith('preview-')) {
-			const previewBoard = PREVIEW_BOARDS.find((b) => b.id === boardId)
-			if (previewBoard) {
-				setBoard(previewBoard)
-				setLoading(false)
-				setError(null)
-				return
-			} else {
-				setError('Preview board not found')
-				setBoard(null)
-				setLoading(false)
-				return
+				dispatch({ type: 'ERROR', message: err instanceof Error ? err.message : 'Unknown error' })
 			}
 		}
 
 		fetchBoard()
 	}, [boardId])
 
-	return { board, folderLogo, loading, error }
+	return {
+		board: boardState.board,
+		folderLogo: boardState.folderLogo,
+		loading: boardState.status === 'loading',
+		error: boardState.error,
+	}
 }
