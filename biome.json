@@ -1,7 +1,9 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.3/schema.json",
   "files": {
-    "includes": ["./src/**/*.{ts,tsx, js, jsx}"]
+    "includes": [
+      "./src/**/*.{ts,tsx, js,jsx,css}"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -18,6 +20,17 @@
     "formatter": {
       "quoteStyle": "single",
       "semicolons": "asNeeded"
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true
+    },
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "linter": {
+      "enabled": false
     }
   }
 }
