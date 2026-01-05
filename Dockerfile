@@ -14,3 +14,4 @@ RUN pnpm run build
 
 EXPOSE 9000
 
+CMD [ "serve", "-s", "dist", "-p", "9000" ]
