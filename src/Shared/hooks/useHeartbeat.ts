@@ -181,7 +181,10 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
 				screen_height: screenInfo.height,
 			}),
 		})
-	} catch {}
+		console.log('Heartbeat sent for board:', boardId, 'tab:', tabId)
+	} catch (error) {
+		console.error('Failed to send heartbeat for board:', boardId, 'tab:', tabId, error)
+	}
 }
 
 /**
@@ -190,7 +193,7 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
  *
  * @param board - The board object containing the board ID to track
  */
-export function useHeartbeat(board: BoardDB, backend_url: string) {
+export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 	const tabIdRef = useRef<string | null>(null)
 
 	useEffect(() => {
@@ -202,7 +205,10 @@ export function useHeartbeat(board: BoardDB, backend_url: string) {
 
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
-		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) return
+		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) {
+			console.log('Heartbeat skipped for board:', board?.id)
+			return
+		}
 
 		sendHeartbeat(board.id, tabIdRef.current, backend_url)
 
