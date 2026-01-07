@@ -4,7 +4,6 @@
 @import "@entur/tokens/dist/data.css";
 @import "@entur/tokens/dist/transport.css";
 @import "./transport-palettes.css";
-@import "@entur/button/dist/styles.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -200,22 +199,6 @@
 }
 
 @layer components {
-	.primaryButton {
-		background-color: var(--main-background-color);
-	}
-
-	.primaryButton:hover {
-		background-color: var(--secondary-background-color);
-	}
-
-	.secondaryButton {
-		background-color: var(--secondary-background-color);
-	}
-
-	.secondaryButton:hover {
-		background-color: var(--tertiary-background-color);
-	}
-
 	.visuallyHidden {
 		clip: rect(0 0 0 0);
 		clip-path: inset(50%);
