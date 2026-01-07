@@ -1,4 +1,4 @@
-name: cd/tavla-visning
+name: cd/tavla-visning-dev
 
 on:
   workflow_dispatch:
