@@ -46,7 +46,7 @@ function BoardPage() {
 
 			<div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
 				{loading || error || !board ? (
-					<BoardStatus loading={loading} error={error} board={board} />
+					<BoardStatus loading={loading} error={error} board={board} theme={theme} />
 				) : (
 					<>
 						<Header
