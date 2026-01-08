@@ -29,7 +29,8 @@ function BoardPage() {
 
 	const backend_url = getBackendUrl()
 
-	const updatedBoard = useRefresh(board, backend_url)
+	const refreshedBoard = useRefresh(board, backend_url) ?? board
+	const updatedBoard = refreshedBoard ?? board
 
 	useHeartbeat(board, backend_url)
 

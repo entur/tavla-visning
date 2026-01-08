@@ -197,7 +197,10 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 	const tabIdRef = useRef<string | null>(null)
 
 	useEffect(() => {
-		if (typeof window === 'undefined') return
+		if (typeof window === 'undefined') {
+			console.log('Heartbeat skipped: window is undefined')
+			return
+		}
 		if (tabIdRef.current === null) {
 			tabIdRef.current = initializeTabId()
 		}
@@ -206,7 +209,16 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
 		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) {
-			console.log('Heartbeat skipped for board:', board?.id)
+			console.log(
+				'Heartbeat skipped for board:',
+				board?.id,
+				'board',
+				board,
+				'tabId:',
+				tabIdRef.current,
+				'shouldSkipHeartbeat:',
+				shouldSkipHeartbeat(),
+			)
 			return
 		}
 

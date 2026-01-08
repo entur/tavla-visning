@@ -5,7 +5,15 @@ import type { BoardDB } from '../types/db-types/boards'
 type Message = { type: 'refresh'; payload: BoardDB } | { type: 'update' } | { type: 'timeout' }
 
 function useRefresh(initialBoard: BoardDB | null, backend_url: string) {
-	const [board, seboardDB] = useState<BoardDB | null>(initialBoard)
+	const [board, setBoard] = useState<BoardDB | null>(initialBoard)
+	console.log(
+		'useRefresh - initialBoard:',
+		initialBoard,
+		'backend_url:',
+		backend_url,
+		'board:',
+		board,
+	)
 
 	const subscribe = useCallback(async () => {
 		if (!initialBoard?.id) {
@@ -21,20 +29,24 @@ function useRefresh(initialBoard: BoardDB | null, backend_url: string) {
 			console.log('Received board update message:', message)
 			switch (message.type) {
 				case 'refresh': {
-					seboardDB(message.payload)
+					console.log('Refreshing board data')
+					setBoard(message.payload)
 					subscribe()
 					break
 				}
 				case 'update': {
+					console.log('Board update available, reloading page')
 					window.location.reload()
 					break
 				}
 				case 'timeout': {
+					console.log('Subscription timeout, re-subscribing')
 					subscribe()
 					break
 				}
 			}
 		} catch {
+			console.error('Error while subscribing for board updates')
 			delay(subscribe, 10000)
 		}
 	}, [initialBoard?.id, backend_url])
