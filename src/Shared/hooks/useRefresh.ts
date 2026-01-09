@@ -21,6 +21,7 @@ function useRefresh(initialBoard: BoardDB | null, backend_url: string) {
 		}
 		try {
 			const res = await fetch(`${backend_url}/subscribe/${initialBoard.id}`)
+			console.log('Subscribe response for board:', initialBoard.id, 'response:', res)
 			if (!res.ok) {
 				console.error('Failed to subscribe for board updates')
 				return delay(subscribe, 10000)
@@ -45,8 +46,8 @@ function useRefresh(initialBoard: BoardDB | null, backend_url: string) {
 					break
 				}
 			}
-		} catch {
-			console.error('Error while subscribing for board updates')
+		} catch (error) {
+			console.error('Error while subscribing for board updates', error)
 			delay(subscribe, 10000)
 		}
 	}, [initialBoard?.id, backend_url])
