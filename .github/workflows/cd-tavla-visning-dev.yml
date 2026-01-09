@@ -9,6 +9,8 @@ jobs:
     with:
       context: .
       image_name: tavla-visning
+      build_args: |
+        VITE_BACKEND_URL=https://tavla-api.dev.entur.no
 
   docker-push:
     needs: [docker-build]
