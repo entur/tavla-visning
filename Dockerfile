@@ -2,7 +2,7 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-RUN npm install -g pnpm serve
+RUN corepack enable && npm install -g serve
 
 COPY package.json pnpm-lock.yaml ./
 

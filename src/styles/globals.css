@@ -199,22 +199,6 @@
 }
 
 @layer components {
-	.primaryButton {
-		background-color: var(--main-background-color);
-	}
-
-	.primaryButton:hover {
-		background-color: var(--secondary-background-color);
-	}
-
-	.secondaryButton {
-		background-color: var(--secondary-background-color);
-	}
-
-	.secondaryButton:hover {
-		background-color: var(--tertiary-background-color);
-	}
-
 	.visuallyHidden {
 		clip: rect(0 0 0 0);
 		clip-path: inset(50%);
