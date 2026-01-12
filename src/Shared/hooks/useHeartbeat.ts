@@ -152,16 +152,30 @@ function initializeTabId(): string {
 }
 
 /**
- * Checks if the current pathname should be excluded from heartbeat tracking.
- * Admin pages, edit pages, and demo pages are excluded.
+ * Checks if preview-mode should skip heartbeat tracking.
  *
- * @returns true if heartbeat should be skipped for current path
+ * @returns true when URL contains isPreview=true
  */
 function shouldSkipHeartbeat(): boolean {
 	if (typeof window === 'undefined') return false
 
-	const pathname = window.location.pathname
-	return pathname.includes('/admin/') || pathname.includes('/rediger') || pathname.includes('/demo')
+	const search = window.location.search
+	if (!search) {
+		return false
+	}
+
+	try {
+		const params = new URLSearchParams(search)
+		if (params.get('isPreview') === 'true') {
+			return true
+		}
+	} catch {
+		if (search.includes('isPreview=true')) {
+			return true
+		}
+	}
+
+	return false
 }
 
 function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
