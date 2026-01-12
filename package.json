@@ -6,6 +6,7 @@
   "browserslist": [
     "chrome > 47"
   ],
+  "packageManager": "pnpm@10.27.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
@@ -54,5 +55,8 @@
     "tailwindcss": "3.4.14",
     "typescript": "5.9.3",
     "vite": "7.1.7"
+  },
+  "engines": {
+    "pnpm": ">=10.26.0"
   }
 }
