@@ -14,8 +14,6 @@ interface BoardStatusProps {
 export function BoardStatus({ loading, error, board, theme }: BoardStatusProps) {
 	const containerClass = 'flex h-screen w-full items-center flex-col justify-center text-2xl'
 
-	console.log('BoardStatus - loading:', loading, 'error:', error, 'board:', board)
-
 	if (loading) {
 		return (
 			<div className={containerClass}>

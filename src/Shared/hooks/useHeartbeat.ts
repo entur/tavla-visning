@@ -77,7 +77,6 @@ type SafeResponse = { ok: boolean; status: number; text: string }
  * @throws Will reject the promise if a network error occurs or if an exception is thrown during the request
  */
 function xhrFetch(url: string, options: FetchOptions): Promise<SafeResponse> {
-	console.log('Using xhrFetch for url:', url, 'with options:', options)
 	return new Promise((resolve, reject) => {
 		try {
 			const xhr = new XMLHttpRequest()
@@ -110,7 +109,6 @@ function xhrFetch(url: string, options: FetchOptions): Promise<SafeResponse> {
 async function safeFetch(url: string, options: FetchOptions): Promise<SafeResponse> {
 	if (typeof fetch !== 'undefined') {
 		return fetch(url, options).then(async (r) => {
-			console.log('Fetch used for url:', url, 'with options:', options, 'response:', r)
 			return {
 				ok: typeof r.ok === 'boolean' ? r.ok : r.status >= 200 && r.status < 300,
 				status: r.status,
@@ -185,14 +183,6 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
 				screen_height: screenInfo.height,
 			}),
 		})
-		console.log(
-			'Heartbeat sent for board:',
-			boardId,
-			'tab:',
-			tabId,
-			'url',
-			`${backend_url}/heartbeat`,
-		)
 	} catch (error) {
 		console.error('Failed to send heartbeat for board:', boardId, 'tab:', tabId, error)
 	}
@@ -209,7 +199,6 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 
 	useEffect(() => {
 		if (typeof window === 'undefined') {
-			console.log('Heartbeat skipped: window is undefined')
 			return
 		}
 		if (tabIdRef.current === null) {
@@ -220,16 +209,6 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
 		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) {
-			console.log(
-				'Heartbeat skipped for board:',
-				board?.id,
-				'board',
-				board,
-				'tabId:',
-				tabIdRef.current,
-				'shouldSkipHeartbeat:',
-				shouldSkipHeartbeat(),
-			)
 			return
 		}
 
