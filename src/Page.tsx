@@ -6,10 +6,7 @@ import { useGetBoard } from './Shared/hooks/useGetBoard'
 import { BoardStatus } from './error'
 import { useRefresh } from '@/Shared/hooks/useRefresh'
 import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
-
-function getBackendUrl() {
-	return import.meta.env.PROD ? 'https://tavla-api.entur.no' : 'https://tavla-api.dev.entur.no'
-}
+import { BACKEND_API_URL } from '@/Shared/assets/env'
 
 function BoardPage() {
 	const getBoardId = () => {
@@ -27,12 +24,10 @@ function BoardPage() {
 
 	const { board, folderLogo, loading, error } = useGetBoard(getBoardId())
 
-	const backend_url = getBackendUrl()
-
-	const refreshedBoard = useRefresh(board, backend_url) ?? board
+	const refreshedBoard = useRefresh(board, BACKEND_API_URL) ?? board
 	const updatedBoard = refreshedBoard ?? board
 
-	useHeartbeat(board, backend_url)
+	useHeartbeat(board, BACKEND_API_URL)
 
 	const theme = updatedBoard?.theme ?? 'dark'
 	const title = updatedBoard?.meta?.title
