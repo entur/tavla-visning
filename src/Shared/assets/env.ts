@@ -11,7 +11,7 @@ export const GEOCODER_ENDPOINT = 'https://api.entur.io/geocoder/v1'
 
 export const CLIENT_NAME = 'entur-tavla'
 
-export function getBoardApiUrl() {
+function getBoardApiUrl() {
 	if (import.meta.env.DEV) {
 		return 'http://localhost:3000'
 	}
@@ -22,7 +22,7 @@ export function getBoardApiUrl() {
 	return 'https://tavla.entur.no'
 }
 
-export function getBackendApiUrl() {
+function getBackendApiUrl() {
 	if (import.meta.env.DEV) {
 		return 'http://localhost:3001'
 	}
@@ -34,4 +34,4 @@ export function getBackendApiUrl() {
 }
 
 export const BOARD_API_URL = getBoardApiUrl()
-export const BACKEND_API_URL = getBoardApiUrl()
+export const BACKEND_API_URL = getBackendApiUrl()
