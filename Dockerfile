@@ -10,9 +10,6 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-ARG VITE_BACKEND_URL=https://tavla-api.entur.no
-ENV VITE_BACKEND_URL=${VITE_BACKEND_URL}
-
 RUN pnpm run build
 
 EXPOSE 9000
