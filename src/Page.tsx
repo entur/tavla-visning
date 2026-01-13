@@ -4,6 +4,9 @@ import { Board } from './Board/scenarios/Board'
 import { InfoMessage } from './Shared/components/InfoMessage'
 import { useGetBoard } from './Shared/hooks/useGetBoard'
 import { BoardStatus } from './error'
+import { useRefresh } from '@/Shared/hooks/useRefresh'
+import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
+import { BACKEND_API_URL } from '@/Shared/assets/env'
 
 function BoardPage() {
 	const getBoardId = () => {
@@ -21,8 +24,15 @@ function BoardPage() {
 
 	const { board, folderLogo, loading, error } = useGetBoard(getBoardId())
 
-	const theme = board?.theme ?? 'dark'
-	const title = board?.meta?.title ? `${board.meta.title} | Entur tavla` : 'Entur Tavla'
+	const refreshedBoard = useRefresh(board, BACKEND_API_URL) ?? board
+	const updatedBoard = refreshedBoard ?? board
+
+	useHeartbeat(board, BACKEND_API_URL)
+
+	const theme = updatedBoard?.theme ?? 'dark'
+	const title = updatedBoard?.meta?.title
+		? `${updatedBoard.meta.title} | Entur tavla`
+		: 'Entur Tavla'
 
 	useEffect(() => {
 		const refreshTimeout = setTimeout(
@@ -38,27 +48,27 @@ function BoardPage() {
 		<div
 			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color) text-[3vmin]"
 			data-theme={theme}
-			data-transport-palette={board?.transportPalette}
+			data-transport-palette={updatedBoard?.transportPalette}
 		>
 			<div>
 				<title>{title}</title>
 			</div>
 
 			<div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
-				{loading || error || !board ? (
-					<BoardStatus loading={loading} error={error} board={board} theme={theme} />
+				{loading || error || !updatedBoard ? (
+					<BoardStatus loading={loading} error={error} board={updatedBoard} />
 				) : (
 					<>
 						<Header
-							theme={board.theme}
-							hideLogo={board.hideLogo}
-							hideClock={board.hideClock}
+							theme={updatedBoard.theme}
+							hideLogo={updatedBoard.hideLogo}
+							hideClock={updatedBoard.hideClock}
 							folderLogo={folderLogo}
 						/>
 
-						<Board board={board} />
+						<Board board={updatedBoard} />
 
-						<InfoMessage board={board} showEnturLogo={board?.hideLogo} />
+						<InfoMessage board={updatedBoard} showEnturLogo={updatedBoard?.hideLogo} />
 					</>
 				)}
 			</div>

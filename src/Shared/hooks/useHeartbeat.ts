@@ -108,11 +108,13 @@ function xhrFetch(url: string, options: FetchOptions): Promise<SafeResponse> {
 
 async function safeFetch(url: string, options: FetchOptions): Promise<SafeResponse> {
 	if (typeof fetch !== 'undefined') {
-		return fetch(url, options).then(async (r) => ({
-			ok: typeof r.ok === 'boolean' ? r.ok : r.status >= 200 && r.status < 300,
-			status: r.status,
-			text: await r.text(),
-		}))
+		return fetch(url, options).then(async (r) => {
+			return {
+				ok: typeof r.ok === 'boolean' ? r.ok : r.status >= 200 && r.status < 300,
+				status: r.status,
+				text: await r.text(),
+			}
+		})
 	}
 
 	return xhrFetch(url, options)
@@ -150,16 +152,30 @@ function initializeTabId(): string {
 }
 
 /**
- * Checks if the current pathname should be excluded from heartbeat tracking.
- * Admin pages, edit pages, and demo pages are excluded.
+ * Checks if preview-mode should skip heartbeat tracking.
  *
- * @returns true if heartbeat should be skipped for current path
+ * @returns true when URL contains isPreview=true
  */
 function shouldSkipHeartbeat(): boolean {
 	if (typeof window === 'undefined') return false
 
-	const pathname = window.location.pathname
-	return pathname.includes('/admin/') || pathname.includes('/rediger') || pathname.includes('/demo')
+	const search = window.location.search
+	if (!search) {
+		return false
+	}
+
+	try {
+		const params = new URLSearchParams(search)
+		if (params.get('isPreview') === 'true') {
+			return true
+		}
+	} catch {
+		if (search.includes('isPreview=true')) {
+			return true
+		}
+	}
+
+	return false
 }
 
 function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
@@ -181,7 +197,9 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
 				screen_height: screenInfo.height,
 			}),
 		})
-	} catch {}
+	} catch (error) {
+		console.error('Failed to send heartbeat for board:', boardId, 'tab:', tabId, error)
+	}
 }
 
 /**
@@ -190,11 +208,13 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
  *
  * @param board - The board object containing the board ID to track
  */
-export function useHeartbeat(board: BoardDB, backend_url: string) {
+export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 	const tabIdRef = useRef<string | null>(null)
 
 	useEffect(() => {
-		if (typeof window === 'undefined') return
+		if (typeof window === 'undefined') {
+			return
+		}
 		if (tabIdRef.current === null) {
 			tabIdRef.current = initializeTabId()
 		}
@@ -202,7 +222,9 @@ export function useHeartbeat(board: BoardDB, backend_url: string) {
 
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
-		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) return
+		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) {
+			return
+		}
 
 		sendHeartbeat(board.id, tabIdRef.current, backend_url)
 

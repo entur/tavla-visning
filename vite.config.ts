@@ -24,7 +24,7 @@ export default defineConfig({
 	server: {
 		headers: {
 			'Content-Security-Policy':
-				"frame-ancestors 'self' https://tavla.entur.no https://*.tavla.entur.no http://localhost:3000/*",
+				"frame-ancestors 'self' https://tavla.entur.no https://tavla.dev.entur.no http://localhost:3000",
 		},
 	},
 	resolve: {
