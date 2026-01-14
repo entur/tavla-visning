@@ -11,7 +11,7 @@ interface BoardStatusProps {
 	theme?: string
 }
 
-export function BoardStatus({ loading, error, board, theme }: BoardStatusProps) {
+export function BoardStatus({ loading, error, board }: BoardStatusProps) {
 	const containerClass = 'flex h-screen w-full items-center flex-col justify-center text-2xl'
 
 	if (loading) {
@@ -26,9 +26,7 @@ export function BoardStatus({ loading, error, board, theme }: BoardStatusProps) 
 	if (error) {
 		return (
 			<div className="mx-auto flex h-[70vh] flex-col items-center justify-center gap-5 lg:w-1/4">
-				<Heading3 data-color-mode={theme} className="bg-transparent">
-					Ups, denne tavla finnes ikke!
-				</Heading3>
+				<Heading3 className="bg-transparent">Ups, denne tavla finnes ikke!</Heading3>
 
 				<img
 					src={BeaverIllustration}
@@ -36,7 +34,7 @@ export function BoardStatus({ loading, error, board, theme }: BoardStatusProps) 
 					alt="Illustrasjon av en forundret bever"
 				/>
 
-				<Button href="https://tavla.entur.no" variant="primary" as="a" data-color-mode={theme}>
+				<Button href="https://tavla.entur.no" variant="primary" as="a">
 					Tilbake til forsiden
 				</Button>
 			</div>

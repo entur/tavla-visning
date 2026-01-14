@@ -49,6 +49,7 @@ function BoardPage() {
 			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color) text-[3vmin]"
 			data-theme={theme}
 			data-transport-palette={updatedBoard?.transportPalette}
+			data-color-mode={theme}
 		>
 			<div>
 				<title>{title}</title>
