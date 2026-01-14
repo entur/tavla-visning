@@ -195,6 +195,7 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
 				browser: userAgent,
 				screen_width: screenInfo.width,
 				screen_height: screenInfo.height,
+				app: 'tavla-visning',
 			}),
 		})
 	} catch (error) {
