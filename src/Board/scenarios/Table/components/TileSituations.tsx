@@ -41,6 +41,17 @@ function getTransportModeAndPublicCodeText(
 	}
 }
 
+function getSituationLanguage(situation: TSituationFragment): string | null {
+	const hasNorwegianDescription = situation?.description?.some((desc) => desc.language === 'no')
+	const hasNorwegianSummary = situation?.summary?.some((sum) => sum.language === 'no')
+
+	if (!hasNorwegianDescription && !hasNorwegianSummary) {
+		return situation?.description[0]?.language ?? situation?.summary[0]?.language ?? null
+	}
+
+	return null
+}
+
 function TileSituations({
 	situation,
 	cancelledDeparture,
@@ -70,7 +81,10 @@ function TileSituations({
 
 	return (
 		situationText && (
-			<div className="ml-em-0.25 flex w-full flex-row items-center py-3">
+			<div
+				className="ml-em-0.25 flex w-full flex-row items-center py-3"
+				lang={getSituationLanguage(situation) ?? undefined}
+			>
 				<div className={`flex shrink-0 items-center justify-center text-${textColor}`}>
 					<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
 				</div>
