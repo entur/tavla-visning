@@ -1,3 +1,4 @@
+import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
 import { Table } from '@/Board/scenarios/Table'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
@@ -10,7 +11,6 @@ import clsx from 'clsx'
 import type { ReactNode } from 'react'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 import { TileLoader } from '../TileLoader'
-import type { CustomName } from '@/Board/hooks/useTileData'
 
 interface BaseTileProps {
 	displayName?: string

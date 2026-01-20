@@ -5,7 +5,9 @@ import { DeviationIcon } from './DeviationIcon'
 
 const SITUATION_SUMMARY_LENGTH_THRESHOLD = 25
 
-function getSituationText(situation: TSituationFragment) {
+function getSituationText(
+	situation: TSituationFragment,
+): { text: string; language: 'no' | 'en' } | undefined {
 	const norwegianSummary = situation?.summary.find((summary) => summary.language === 'no')?.value
 	const summary = norwegianSummary ?? situation?.summary[0]?.value
 
@@ -16,13 +18,16 @@ function getSituationText(situation: TSituationFragment) {
 	const description = norwegianDescription ?? situation?.description[0]?.value
 
 	if (description === undefined) {
-		return summary
+		return { text: summary, language: norwegianSummary ? 'no' : 'en' }
 	} else if (summary === undefined) {
-		return description
+		return { text: description, language: norwegianDescription ? 'no' : 'en' }
 	} else if (summary.length <= SITUATION_SUMMARY_LENGTH_THRESHOLD) {
-		return `${summary} - ${description}`
+		return {
+			text: `${summary} - ${description}`,
+			language: norwegianSummary ? 'no' : 'en',
+		}
 	} else {
-		return summary
+		return { text: summary, language: norwegianSummary ? 'no' : 'en' }
 	}
 }
 
@@ -70,7 +75,10 @@ function TileSituations({
 
 	return (
 		situationText && (
-			<div className="ml-em-0.25 flex w-full flex-row items-center py-3">
+			<div
+				className="ml-em-0.25 flex w-full flex-row items-center py-3"
+				lang={situationText.language}
+			>
 				<div className={`flex shrink-0 items-center justify-center text-${textColor}`}>
 					<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
 				</div>
@@ -86,7 +94,7 @@ function TileSituations({
 								<>: </>
 							</b>
 						)}
-						{situationText}
+						{situationText.text}
 					</p>
 				</div>
 				<div
