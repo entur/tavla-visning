@@ -26,7 +26,6 @@ export type TransportPalette = 'default' | 'blue-bus' | 'green-bus'
 export type BoardMetaDB = {
 	title?: string
 	created?: number
-	lastActive?: number
 	dateModified?: number
 	fontSize?: BoardFontSize
 	location?: LocationDB
