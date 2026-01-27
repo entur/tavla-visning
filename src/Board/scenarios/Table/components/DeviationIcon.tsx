@@ -23,7 +23,13 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 			>
 				<div className="flex items-center justify-center">
 					{deviationType === 'cancellation' ? (
-						<svg width={size} height={size} viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg">
+						<svg
+							width={size}
+							height={size}
+							viewBox="0 0 18 18"
+							xmlns="http://www.w3.org/2000/svg"
+							alt-text="Denne avgangen er innstilt"
+						>
 							<path
 								fillRule="evenodd"
 								clipRule="evenodd"
@@ -42,6 +48,7 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 							viewBox="0 0 18 18"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
+							alt-text="Denne avgangen har avvik"
 						>
 							<path
 								d="M18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0C13.9706 0 18 4.02944 18 9ZM1.44 9C1.44 13.1753 4.82473 16.56 9 16.56C13.1753 16.56 16.56 13.1753 16.56 9C16.56 4.82473 13.1753 1.44 9 1.44C4.82473 1.44 1.44 4.82473 1.44 9Z"
@@ -63,12 +70,18 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 	return (
 		<div className="flex items-center justify-center" style={{ width: size, height: size }}>
 			{deviationType === 'cancellation' ? (
-				<ValidationErrorFilledIcon opacity={0.5} color="var(--error-color)" size="1.17em" />
+				<ValidationErrorFilledIcon
+					opacity={0.5}
+					color="var(--error-color)"
+					size="1.17em"
+					aria-label="Denne avgangen er innstilt"
+				/>
 			) : (
 				<ValidationExclamationCircleFilledIcon
 					opacity={0.5}
 					color="var(--warning-color)"
 					size="1.17em"
+					aria-label="Denne avgangen har avvik"
 				/>
 			)}
 		</div>
