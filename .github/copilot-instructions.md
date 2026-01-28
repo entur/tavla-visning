@@ -6,7 +6,7 @@ Tavla Visning is a **real-time public transport display system** for showing dep
 ## Architecture & Data Flow
 
 ### Three-Tier Data Architecture
-1. **Backend Database** (localhost:3000 in dev) → Fetches `BoardDB` configuration via `/api/boards/[id]`
+1. **Backend Database** (localhost:3000 in dev) → Fetches `BoardDB` configuration via `/api/board?id=`
 2. **Entur GraphQL APIs** → Live transit data from multiple endpoints (journey-planner, mobility, vehicles)
 3. **React Display Layer** → Renders tiles with auto-refresh and postMessage communication for iframes
 
