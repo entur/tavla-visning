@@ -154,7 +154,7 @@ import type { TDepartureFragment } from '@/Shared/graphql'
 
 ### Departure Data Transformations
 - Filter departures in hooks, not components
-- Use `isValid()` checks from [src/Shared/utils/typeguards.ts](src/Shared/utils/typeguards.ts)
+- Use `isNotNullOrUndefined()` / `fieldsNotNull()` checks from [src/Shared/utils/typeguards.ts](src/Shared/utils/typeguards.ts)
 - Apply `offset` (time offset in minutes) via `useQuery` options for future departures
 
 ### Situation Handling
