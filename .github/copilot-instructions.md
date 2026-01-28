@@ -31,7 +31,7 @@ Always use these imports - never relative paths for cross-module imports:
 ## Code Style (Biome)
 - **Single quotes**, semicolons only when needed (`semicolons: "asNeeded"`)
 - **Line width: 100 characters**
-- **Tab width: 2 spaces**
+- **Indent width: 2 spaces (2-space indentation)**
 - Run `pnpm format` before committing (enforced via husky + lint-staged)
 - Biome handles both linting and formatting - no ESLint or Prettier
 
