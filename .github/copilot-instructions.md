@@ -135,7 +135,7 @@ Navigate to `localhost:5173/[boardId]` where `boardId` is a UUID from your local
 ## Build Configuration
 
 ### Legacy Browser Support
-Uses `@vitejs/plugin-legacy` to target **Chrome 49+** (for older display hardware):
+Uses `@vitejs/plugin-legacy` to support older Chrome-based display hardware (see `vite.config.ts` for exact targets):
 - **ES2015 output** with polyfills
 - **Regenerator runtime** for async/await
 - **Core-js** and **whatwg-fetch** polyfills loaded in [src/main.tsx](src/main.tsx)
