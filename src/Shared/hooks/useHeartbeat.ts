@@ -162,6 +162,22 @@ function shouldSkipHeartbeat(boardId: string): boolean {
 		return true
 	}
 
+	const search = window.location.search
+	if (!search) {
+		return false
+	}
+
+	try {
+		const params = new URLSearchParams(search)
+		if (params.get('isPreview') === 'true') {
+			return true
+		}
+	} catch {
+		if (search.includes('isPreview=true')) {
+			return true
+		}
+	}
+
 	return false
 }
 
