@@ -78,6 +78,9 @@ const isTrustedOrigin = (origin: string) => {
 	}
 }
 
+export const isDemoBoardId = (boardId: string): boolean => boardId === 'demo'
+export const isPreviewBoardId = (boardId: string): boolean => boardId.startsWith('preview-')
+
 /**
  * Custom hook for fetching a board by ID
  * Supports three sources:
@@ -94,7 +97,7 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 
 	useEffect(() => {
 		// Handle preview boards
-		if (boardId.startsWith('preview-')) {
+		if (isPreviewBoardId(boardId)) {
 			const previewBoard = PREVIEW_BOARDS.find((b) => b.id === boardId)
 			if (previewBoard) {
 				dispatch({ type: 'SUCCESS', board: previewBoard })
@@ -105,7 +108,7 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 		}
 
 		// Handle demo board from parent iframe via postMessage
-		if (boardId === 'demo') {
+		if (isDemoBoardId(boardId)) {
 			dispatch({ type: 'LOADING', message: 'demo-loading' })
 			demoBoardReceivedRef.current = false
 			let timeoutId: ReturnType<typeof setTimeout> | undefined
