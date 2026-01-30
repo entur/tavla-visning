@@ -2,6 +2,7 @@
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
 import type { BoardDB } from '../types/db-types/boards'
+import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
 
 const HEARTBEAT_INTERVAL_MS = 60000 // 1 minute - how often to send heartbeat
 
@@ -152,12 +153,14 @@ function initializeTabId(): string {
 }
 
 /**
- * Checks if preview-mode should skip heartbeat tracking.
- *
- * @returns true when URL contains isPreview=true
+ * Determines whether heartbeat functionality should be skipped for a given board.
+ * @param boardId - The unique identifier of the board to check.
+ * @returns `true` if the board is a demo or preview board; otherwise `false`.
  */
-function shouldSkipHeartbeat(): boolean {
-	if (typeof window === 'undefined') return false
+function shouldSkipHeartbeat(boardId: string): boolean {
+	if (isDemoBoardId(boardId) || isPreviewBoardId(boardId)) {
+		return true
+	}
 
 	const search = window.location.search
 	if (!search) {
@@ -223,7 +226,7 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
-		if (!board || !board.id || shouldSkipHeartbeat() || !tabIdRef.current) {
+		if (!board || !board.id || shouldSkipHeartbeat(board.id) || !tabIdRef.current) {
 			return
 		}
 
