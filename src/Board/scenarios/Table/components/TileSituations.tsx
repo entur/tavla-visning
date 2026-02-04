@@ -76,6 +76,10 @@ function TileSituations({
 			<div
 				className="ml-em-0.25 flex w-full flex-row items-center py-6"
 				lang={situationText.language}
+				style={{
+					position: 'relative',
+					zIndex: 10,
+				}}
 			>
 				<div
 					className={`flex shrink-0 items-center justify-center ${cancelledDeparture ? 'text-error' : 'text-warning'}`}
