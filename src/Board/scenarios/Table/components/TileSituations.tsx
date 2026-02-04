@@ -84,7 +84,7 @@ function TileSituations({
 				</div>
 				<div className="grow self-center">
 					<p
-						className={`ml-em-0.75 overflow-hidden overflow-ellipsis break-words text-em-lg/em-lg font-normal ${
+						className={`ml-em-0.75 overflow-hidden text-ellipsis break-words text-em-lg/em-lg font-normal ${
 							cancelledDeparture ? 'text-error' : 'text-warning'
 						}`}
 					>
