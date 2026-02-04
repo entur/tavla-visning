@@ -71,20 +71,20 @@ function TileSituations({
 		publicCodeList,
 	)
 
-	const textColor = cancelledDeparture ? 'error' : 'warning'
-
 	return (
 		situationText && (
 			<div
 				className="ml-em-0.25 flex w-full flex-row items-center py-3"
 				lang={situationText.language}
 			>
-				<div className={`flex shrink-0 items-center justify-center text-${textColor}`}>
+				<div
+					className={`flex shrink-0 items-center justify-center ${cancelledDeparture ? 'text-error' : 'text-warning'}`}
+				>
 					<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
 				</div>
 				<div className="grow self-center">
 					<p
-						className={`ml-em-0.75 overflow-hidden overflow-ellipsis wrap-break-word text-em-lg/em-lg font-normal ${
+						className={`ml-em-0.75 overflow-hidden overflow-ellipsis break-words text-em-lg/em-lg font-normal ${
 							cancelledDeparture ? 'text-error' : 'text-warning'
 						}`}
 					>
@@ -98,7 +98,7 @@ function TileSituations({
 					</p>
 				</div>
 				<div
-					className={`ml-8 shrink-0 justify-center self-center text-center text-em-lg/em-lg font-semibold text-${textColor}`}
+					className={`ml-8 shrink-0 justify-center self-center text-center text-em-lg/em-lg font-semibold ${cancelledDeparture ? 'text-error' : 'text-warning'}`}
 				>
 					{currentSituationNumber !== undefined &&
 						numberOfSituations !== undefined &&
