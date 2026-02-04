@@ -74,7 +74,7 @@ function TileSituations({
 	return (
 		situationText && (
 			<div
-				className="ml-em-0.25 flex w-full flex-row items-center py-3"
+				className="ml-em-0.25 flex w-full flex-row items-center py-3 h-60"
 				lang={situationText.language}
 			>
 				<div
