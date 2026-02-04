@@ -13,7 +13,8 @@
     "lint": "pnpm exec biome lint ./src",
     "format": "pnpm exec biome format --write ./src",
     "preview": "vite preview",
-    "prepare": "husky"
+    "prepare": "husky",
+    "codegen": "graphql-codegen --config codegen.ts"
   },
   "lint-staged": {
     "*.{js,ts,tsx,css}": [
@@ -27,9 +28,14 @@
     "@entur/loader": "0.5.35",
     "@entur/tokens": "3.20.0",
     "@entur/typography": "2.0.3",
+    "@graphql-codegen/import-types-preset": "3.0.1",
+    "@graphql-codegen/typed-document-node": "^6.1.5",
+    "@graphql-codegen/typescript": "5.0.7",
+    "@graphql-codegen/typescript-operations": "^5.0.7",
     "@graphql-typed-document-node/core": "3.2.0",
     "abortcontroller-polyfill": "1.7.8",
     "clsx": "2.1.1",
+    "graphql": "16.12.0",
     "lodash": "4.17.21",
     "nanoid": "5.1.6",
     "react": "19.1.1",
@@ -39,6 +45,9 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.3",
+    "@graphql-codegen/cli": "6.1.1",
+    "@graphql-codegen/client-preset": "5.2.2",
+    "@graphql-codegen/introspection": "5.0.0",
     "@types/lodash": "4.17.20",
     "@types/node": "24.6.0",
     "@types/react": "19.1.16",
