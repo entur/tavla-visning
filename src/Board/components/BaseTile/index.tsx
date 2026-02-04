@@ -91,7 +91,10 @@ export function BaseTile({
 	}
 
 	return (
-		<Tile className={clsx('flex flex-col', className)}>
+		<Tile
+			className={clsx('flex flex-col', className)}
+			style={{ height: '100%', maxHeight: '100%' }}
+		>
 			<div className="grow overflow-hidden">
 				{customHeader ??
 					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
@@ -109,14 +112,16 @@ export function BaseTile({
 			</div>
 
 			{uniqueSituations && uniqueSituations.length > 0 && (
-				<TileSituations
-					situation={uniqueSituations[currentSituationIndex]?.situation}
-					currentSituationNumber={currentSituationIndex}
-					numberOfSituations={uniqueSituations.length}
-					cancelledDeparture={uniqueSituations[currentSituationIndex]?.cancellation ?? false}
-					transportModeList={uniqueSituations[currentSituationIndex]?.transportModeList}
-					publicCodeList={uniqueSituations[currentSituationIndex]?.publicCodeList}
-				/>
+				<div className="shrink-0">
+					<TileSituations
+						situation={uniqueSituations[currentSituationIndex]?.situation}
+						currentSituationNumber={currentSituationIndex}
+						numberOfSituations={uniqueSituations.length}
+						cancelledDeparture={uniqueSituations[currentSituationIndex]?.cancellation ?? false}
+						transportModeList={uniqueSituations[currentSituationIndex]?.transportModeList}
+						publicCodeList={uniqueSituations[currentSituationIndex]?.publicCodeList}
+					/>
+				</div>
 			)}
 		</Tile>
 	)
