@@ -92,7 +92,7 @@ export function BaseTile({
 
 	return (
 		<Tile className={clsx('flex flex-col relative', className)}>
-			<div className="grow overflow-hidden">
+			<div className="grow overflow-hidden" style={{ minHeight: 0 }}>
 				{customHeader ??
 					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
 
