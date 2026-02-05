@@ -1,13 +1,18 @@
-import type React from 'react'
 import clsx from 'clsx'
+import type React from 'react'
 
 function Tile({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
 		<div
 			className={clsx(
-				'h-full w-full overflow-hidden rounded-lg bg-secondary px-[1em] pt-[0.25em]  text-primary',
+				'h-full w-full min-h-0 rounded-lg bg-secondary px-[1em] pt-[0.25em]  text-primary',
 				className,
 			)}
+			style={{
+				overflow: 'hidden',
+				maxHeight: '100%',
+				contain: 'layout paint',
+			}}
 			{...rest}
 		>
 			{children}
