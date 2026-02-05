@@ -36,7 +36,6 @@
       "@utils/*": ["./src/Shared/utils/*"],
       "@types/*": ["./src/Shared/types/*"],
       "@styles/*": ["./src/styles/*"],
-      "@graphql/*": ["./src/Shared/graphql/*"],
       "@assets/*": ["./src/Shared/assets/*"]
     }
   },
