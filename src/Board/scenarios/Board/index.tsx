@@ -60,17 +60,16 @@ function Board({ board }: { board: BoardDB }) {
 						className={getRowSpanClass(index)}
 						style={{ minHeight: 0, height: '100%' }}
 					>
-						<BoardTile tileSpec={tile} />
+						<BoardTile tileSpec={tile} className="min-h-0" />
 					</div>
 				)
 			})}
 			{combinedTiles.map((combinedTile) => (
-				<div
+				<CombinedTile
+					combinedTile={combinedTile}
 					key={combinedTile.map((tile) => tile.uuid).join('-')}
-					style={{ minHeight: 0, height: '100%' }}
-				>
-					<CombinedTile combinedTile={combinedTile} />
-				</div>
+					className="min-h-0"
+				/>
 			))}
 		</div>
 	)
