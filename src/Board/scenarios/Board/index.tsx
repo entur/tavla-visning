@@ -1,11 +1,11 @@
 import type React from 'react'
 
+import type { BoardDB, BoardTileDB } from '@/Shared/types/db-types/boards'
 import { Tile } from '@components/Tile'
-import type { BoardTileDB, BoardDB } from '@/Shared/types/db-types/boards'
 import { CombinedTile } from '../CombinedTile'
 import { QuayTile } from '../QuayTile'
 import { StopPlaceTile } from '../StopPlaceTile'
-import { getFontScale, defaultFontSize } from './utils'
+import { defaultFontSize, getFontScale } from './utils'
 function BoardTile({ tileSpec, className }: { tileSpec: BoardTileDB; className?: string }) {
 	switch (tileSpec.type) {
 		case 'stop_place':
@@ -54,13 +54,23 @@ function Board({ board }: { board: BoardDB }) {
 			className={gridClassName}
 		>
 			{separateTiles.map((tile, index) => {
-				return <BoardTile key={tile.uuid} tileSpec={tile} className={getRowSpanClass(index)} />
+				return (
+					<div
+						key={tile.uuid}
+						className={getRowSpanClass(index)}
+						style={{ minHeight: 0, height: '100%' }}
+					>
+						<BoardTile tileSpec={tile} />
+					</div>
+				)
 			})}
 			{combinedTiles.map((combinedTile) => (
-				<CombinedTile
+				<div
 					key={combinedTile.map((tile) => tile.uuid).join('-')}
-					combinedTile={combinedTile}
-				/>
+					style={{ minHeight: 0, height: '100%' }}
+				>
+					<CombinedTile combinedTile={combinedTile} />
+				</div>
 			))}
 		</div>
 	)
