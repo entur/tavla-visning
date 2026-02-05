@@ -1,6 +1,0 @@
-query StopPlaceName($id: String!) {
-	stopPlace(id: $id) {
-		name
-		id
-	}
-}

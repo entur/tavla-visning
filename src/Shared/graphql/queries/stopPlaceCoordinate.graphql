@@ -1,7 +1,0 @@
-query stopPlaceCoordinates($id: String!) {
-	stopPlace(id: $id) {
-		id
-		longitude
-		latitude
-	}
-}

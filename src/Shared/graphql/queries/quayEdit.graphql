@@ -1,5 +1,0 @@
-query quayEdit($placeId: String!) {
-	quay(id: $placeId) {
-		...lines
-	}
-}

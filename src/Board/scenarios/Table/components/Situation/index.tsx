@@ -1,10 +1,10 @@
-import type { TSituationFragment } from '@/Shared/graphql'
+import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
 import { PageNavigationIcon } from '@entur/icons'
 
 function TitleSituation({
 	situation,
 }: {
-	situation: TSituationFragment | undefined
+	situation: TSituationWithOrigin | undefined
 	origin?: string
 }) {
 	const situationText =

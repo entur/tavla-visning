@@ -1,4 +1,4 @@
-import type { TSituationFragment } from '@/Shared/graphql'
+import type { TSituationFragment } from '@/graphql'
 import { TitleSituation } from '../Situation'
 import { useCycler } from '../../useCycler'
 

@@ -8,7 +8,7 @@ import { AimedTime } from './components/Time/AimedTime'
 import { ArrivalTime } from './components/Time/ArrivalTime'
 import { ExpectedTime } from './components/Time/ExpectedTime'
 import { DeparturesContext } from './contexts'
-import type { TDepartureFragment, TSituationFragment } from '@/Shared/graphql'
+import type { TDepartureFragment, TSituationFragment } from '@/graphql'
 import type { TileColumnDB } from '@/Shared/types/db-types/boards'
 import type { CustomName } from '@/Board/hooks/useTileData'
 

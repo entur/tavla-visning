@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/a11y/noSvgWithoutTitle: <coming later> */
-import type { TTransportMode, TTransportSubmode } from '@/Shared/types/graphql-schema'
+import type { TTransportMode, TTransportSubmode } from '@/types/graphql-schema'
 import type { SVGProps } from 'react'
 
 function TransportIcon({

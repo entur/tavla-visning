@@ -1,7 +1,0 @@
-query quayCoordinates($id: String!) {
-	quay(id: $id) {
-		id
-		longitude
-		latitude
-	}
-}

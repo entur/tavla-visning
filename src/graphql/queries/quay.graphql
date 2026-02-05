@@ -22,5 +22,10 @@ query getQuay(
 		situations {
 			...situation
 		}
+		stopPlace {
+      		situations {
+        	...situation
+      		}
+    	}
 	}
 }

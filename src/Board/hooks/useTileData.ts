@@ -3,7 +3,7 @@ import {
 	StopPlaceQuery,
 	type TDepartureFragment,
 	type TSituationFragment,
-} from '@/Shared/graphql'
+} from '@/graphql'
 import {
 	combineSituations,
 	getAccumulatedTileSituations,
@@ -14,6 +14,7 @@ import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useCycler } from '../scenarios/Table/useCycler'
 
 export type TDepartureWithTileUuid = TDepartureFragment & { tileUuid?: string }
+export type TSituationWithOrigin = TSituationFragment & { origin?: string }
 
 export type CustomName = {
 	uuid: string
@@ -50,7 +51,7 @@ export function useQuayTileData({
 	)
 
 	const combinedStopPlaceQuaySituations: TSituationFragment[] = combineSituations([
-		...(data?.quay?.stopPlace.situations ?? []),
+		...(data?.quay?.stopPlace?.situations ?? []),
 		...(data?.quay?.situations ?? []),
 	])
 
@@ -171,7 +172,7 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 	})
 
 	// Combine situations with origin information
-	const situations: TSituationFragment[] = [
+	const situations: TSituationWithOrigin[] = [
 		...(stopPlaceData?.flatMap((data) => {
 			const origin = data?.stopPlace?.name ?? ''
 			const situations = data?.stopPlace?.situations ?? []
@@ -190,7 +191,7 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 		}) ?? []),
 	]
 
-	const combinedSituations: TSituationFragment[] = combineSituations(situations)
+	const combinedSituations: TSituationWithOrigin[] = combineSituations(situations)
 
 	const uniqueSituations = getAccumulatedTileSituations(sortedEstimatedCalls, combinedSituations)
 

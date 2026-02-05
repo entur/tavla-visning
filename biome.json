@@ -3,7 +3,8 @@
   "files": {
     "includes": [
       "./src/**/*.{ts,tsx,js,jsx,css}",
-      "./*.{ts,tsx,js,jsx,css}"
+      "./*.{ts,tsx,js,jsx,css}",
+      "!src/graphql/index.ts"
     ]
   },
   "formatter": {

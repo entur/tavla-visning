@@ -1,4 +1,4 @@
-import type { TDepartureFragment } from '@/Shared/graphql'
+import type { TDepartureFragment } from '@/graphql'
 import type { BoardTileDB } from '@/Shared/types/db-types/boards'
 import React from 'react'
 

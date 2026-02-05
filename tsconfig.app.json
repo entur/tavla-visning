@@ -40,5 +40,5 @@
       "@assets/*": ["./src/Shared/assets/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "graphql", "src/types"]
 }

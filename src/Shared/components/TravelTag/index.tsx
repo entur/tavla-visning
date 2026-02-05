@@ -1,4 +1,4 @@
-import type { TTransportMode, TTransportSubmode } from '@/Shared/types/graphql-schema'
+import type { TTransportMode, TTransportSubmode } from '@/types/graphql-schema'
 import { TransportIcon } from '../TransportIcon'
 import { isOnlyWhiteSpace } from '@/utils/transportMode'
 
