@@ -29,6 +29,7 @@ function Board({ board }: { board: BoardDB }) {
 	const fontScaleClass = getFontScale(board.meta?.fontSize || defaultFontSize(board))
 	const colsStyle = {
 		'--cols': String(totalTiles),
+		gridTemplateRows: 'repeat(auto-fit, minmax(0, 1fr))',
 	} as React.CSSProperties
 
 	const baseGridClass = 'grid h-full gap-2.5 overflow-hidden'
