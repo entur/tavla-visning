@@ -91,10 +91,7 @@ export function BaseTile({
 	}
 
 	return (
-		<Tile
-			className={clsx('flex flex-col', className)}
-			style={{ height: '100%', maxHeight: '100%' }}
-		>
+		<Tile className={clsx('flex flex-col', className)}>
 			<div className="grow overflow-hidden">
 				{customHeader ??
 					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
