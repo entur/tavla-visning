@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import type { TEndpointNames } from '../assets/env'
-import type { TypedDocumentString } from '../graphql'
-import { fetcher } from '../graphql/utils'
+import type { TypedDocumentString } from '@/graphql'
+import { fetcher } from '@/graphql/utils'
 
 export type TUseQueryOptions = {
 	poll: boolean

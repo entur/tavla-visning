@@ -1,4 +1,4 @@
-import type { TTransportMode } from '../Shared/types/graphql-schema'
+import type { TTransportMode } from '../types/graphql-schema'
 import { SmallTravelTag } from '../Shared/components/TravelTag'
 import { HomeIcon, MapPinIcon } from '@entur/icons'
 import { uniq } from 'lodash'

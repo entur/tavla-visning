@@ -1,4 +1,4 @@
-import type { TSituationFragment } from '@/Shared/graphql'
+import type { TSituationFragment } from '@/graphql'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import { removeStopPlaceSituations } from '../../Board/utils'
 import { DeparturesContext } from '../contexts'

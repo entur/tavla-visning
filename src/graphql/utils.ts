@@ -1,5 +1,5 @@
-import { CLIENT_NAME, GRAPHQL_ENDPOINTS, type TEndpointNames } from '../assets/env'
-import { addMinutesToDate, formatDateToISO } from '../utils/time'
+import { type TEndpointNames, GRAPHQL_ENDPOINTS, CLIENT_NAME } from '@/Shared/assets/env'
+import { formatDateToISO, addMinutesToDate } from '@/Shared/utils/time'
 import type { TypedDocumentString } from './index'
 
 async function fetchWithTimeout(

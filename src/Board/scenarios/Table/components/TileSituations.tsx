@@ -1,5 +1,5 @@
-import type { TSituationFragment } from '@/Shared/graphql'
-import type { TTransportMode } from '@/Shared/types/graphql-schema'
+import type { TSituationFragment } from '@/graphql'
+import type { TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
 import { DeviationIcon } from './DeviationIcon'
 

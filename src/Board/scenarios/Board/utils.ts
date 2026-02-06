@@ -1,6 +1,7 @@
-import type { TSituationFragment, TDepartureFragment } from '@/Shared/graphql'
+import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
+import type { TSituationFragment, TDepartureFragment } from '@/graphql'
 import type { BoardDB, BoardFontSize } from '@/Shared/types/db-types/boards'
-import type { TTransportMode } from '@/Shared/types/graphql-schema'
+import type { TTransportMode } from '@/types/graphql-schema'
 import { sortPublicCodes } from '@/utils/transportMode'
 
 export function getFontScale(fontSize: BoardFontSize | undefined) {
@@ -60,8 +61,8 @@ export function removeStopPlaceSituations(
  * @param situations - An array of `TSituationFragment` objects to be combined.
  * @returns An array of combined `TSituationFragment` objects with unique `id`s.
  */
-export function combineSituations(situations: TSituationFragment[]) {
-	const situationById: { [id: string]: TSituationFragment } = {}
+export function combineSituations(situations: TSituationWithOrigin[]) {
+	const situationById: { [id: string]: TSituationWithOrigin } = {}
 
 	situations.forEach((situation) => {
 		const id = situation.id
@@ -83,7 +84,7 @@ export function combineSituations(situations: TSituationFragment[]) {
 type TileSituationMap = Map<
 	string,
 	{
-		situation: TSituationFragment
+		situation: TSituationWithOrigin
 		cancellation: boolean
 		publicCodeSet: Set<string>
 		transportModeSet: Set<TTransportMode>
@@ -91,7 +92,7 @@ type TileSituationMap = Map<
 >
 
 export type TileSituation = {
-	situation: TSituationFragment
+	situation: TSituationWithOrigin
 	cancellation: boolean
 	publicCodeList: string[]
 	transportModeList: TTransportMode[]
