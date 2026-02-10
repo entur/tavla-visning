@@ -1,8 +1,8 @@
+import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import { nanoid } from 'nanoid'
 import { DeparturesContext } from '../contexts'
 import { TableCell } from './TableCell'
 import { TableColumn } from './TableColumn'
-import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 
 function Platform() {
 	const departures = useNonNullContext(DeparturesContext)

@@ -1,5 +1,5 @@
-import type { TDepartureFragment } from '@/graphql'
 import type { BoardTileDB } from '@/Shared/types/db-types/boards'
+import type { TDepartureFragment } from '@/types/graphql-schema'
 import React from 'react'
 
 const DeparturesContext = React.createContext<TDepartureFragment[] | undefined>(undefined)

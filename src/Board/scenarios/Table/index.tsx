@@ -1,3 +1,6 @@
+import type { CustomName } from '@/Board/hooks/useTileData'
+import type { TileColumnDB } from '@/Shared/types/db-types/boards'
+import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { Paragraph } from '@entur/typography'
 import { isArray } from 'lodash'
 import { Destination, Name } from './components/Destination'
@@ -8,9 +11,6 @@ import { AimedTime } from './components/Time/AimedTime'
 import { ArrivalTime } from './components/Time/ArrivalTime'
 import { ExpectedTime } from './components/Time/ExpectedTime'
 import { DeparturesContext } from './contexts'
-import type { TDepartureFragment, TSituationFragment } from '@/graphql'
-import type { TileColumnDB } from '@/Shared/types/db-types/boards'
-import type { CustomName } from '@/Board/hooks/useTileData'
 
 function Table({
 	departures,
