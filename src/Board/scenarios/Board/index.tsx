@@ -1,24 +1,24 @@
-import type React from 'react'
-
-import { Tile } from '@components/Tile'
+import { Tile, type TileVariants } from '@components/Tile'
 import type { BoardTileDB, BoardDB } from '@/Shared/types/db-types/boards'
 import { CombinedTile } from '../CombinedTile'
 import { QuayTile } from '../QuayTile'
 import { StopPlaceTile } from '../StopPlaceTile'
 import { getFontScale, defaultFontSize } from './utils'
-function BoardTile({ tileSpec, className }: { tileSpec: BoardTileDB; className?: string }) {
+import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
+
+function BoardTile({ tileSpec, size }: { tileSpec: BoardTileDB; size?: TileVariants['size'] }) {
 	switch (tileSpec.type) {
 		case 'stop_place':
-			return <StopPlaceTile {...tileSpec} className={className} />
+			return <StopPlaceTile {...tileSpec} size={size} />
 		case 'quay':
-			return <QuayTile {...tileSpec} className={className} />
+			return <QuayTile {...tileSpec} size={size} />
 	}
 }
 
 function Board({ board }: { board: BoardDB }) {
 	if (!board.tiles || !board.tiles.length)
 		return (
-			<Tile className="flex h-full items-center justify-center">
+			<Tile state="no_data">
 				<p>Du har ikke lagt til noen stoppesteder ennå.</p>
 			</Tile>
 		)
@@ -27,42 +27,32 @@ function Board({ board }: { board: BoardDB }) {
 	const separateTiles = getSeparateTiles(board)
 	const totalTiles = separateTiles.length + combinedTiles.length
 	const fontScaleClass = getFontScale(board.meta?.fontSize || defaultFontSize(board))
-	const colsStyle = {
-		'--cols': String(totalTiles),
-	} as React.CSSProperties
 
-	const baseGridClass = 'grid h-full gap-2.5 overflow-hidden'
-	const fallbackFlexClass = 'supports-[not(display:grid)]:flex supports-[not(display:grid)]:*:m-2.5'
-	const responsiveGridClass =
-		'max-sm:overflow-y-scroll xs:grid-cols-1 md:grid-cols-[repeat(auto-fit,_minmax(33%,_1fr))]'
-	const largeScreenGridClass = '3xl:[grid-template-columns:repeat(var(--cols),minmax(0,1fr))]'
-
-	const gridClassName = `${baseGridClass} ${fallbackFlexClass} ${responsiveGridClass} ${largeScreenGridClass} ${fontScaleClass}`
-
-	const hasOddTileCount = totalTiles % 2 === 1
-
-	const getRowSpanClass = (tileIndex: number) => {
-		if (!hasOddTileCount || tileIndex !== 0) return undefined
-		return 'sm:max-3xl:row-span-2'
+	const getTileSize = (tileIndex: number) => {
+		if (totalTiles % 2 === 1 && tileIndex === 0) {
+			return 'tall'
+		}
+		return 'normal'
 	}
 
 	return (
-		<div
+		<TileGrid
+			tileCount={totalTiles}
+			fontScale={fontScaleClass}
 			data-transport-palette={board.transportPalette}
 			data-theme={board.theme}
-			style={colsStyle}
-			className={gridClassName}
 		>
 			{separateTiles.map((tile, index) => {
-				return <BoardTile key={tile.uuid} tileSpec={tile} className={getRowSpanClass(index)} />
+				return <BoardTile key={tile.uuid} tileSpec={tile} size={getTileSize(index)} />
 			})}
-			{combinedTiles.map((combinedTile) => (
+			{combinedTiles.map((combinedTile, index) => (
 				<CombinedTile
 					key={combinedTile.map((tile) => tile.uuid).join('-')}
 					combinedTile={combinedTile}
+					size={getTileSize(separateTiles.length - 1 + index)}
 				/>
 			))}
-		</div>
+		</TileGrid>
 	)
 }
 

@@ -6,8 +6,7 @@ import { TileSituations } from '@/Board/scenarios/Table/components/TileSituation
 import type { TDepartureFragment, TSituationFragment } from '@/graphql'
 import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
-import { Tile } from '@src/Shared/components/Tile'
-import clsx from 'clsx'
+import { Tile, type TileVariants } from '@src/Shared/components/Tile'
 import type { ReactNode } from 'react'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 import { TileLoader } from '../TileLoader'
@@ -26,10 +25,11 @@ interface BaseTileProps {
 	columns: TileColumnDB[]
 	walkingDistance?: BoardWalkingDistanceDB
 
-	className?: string
 	customHeader?: ReactNode
 	customDeviation?: ReactNode
 	customNames?: CustomName[]
+
+	size?: TileVariants['size']
 }
 
 export const DEFAULT_COLUMNS: TileColumnDB[] = ['line', 'destination', 'time']
@@ -55,12 +55,12 @@ export function BaseTile({
 	walkingDistance,
 	customHeader,
 	customDeviation,
-	className,
 	customNames,
+	size,
 }: BaseTileProps) {
 	if (isLoading && !hasData) {
 		return (
-			<Tile className={className}>
+			<Tile state="loading" size={size}>
 				<TileLoader />
 			</Tile>
 		)
@@ -68,7 +68,7 @@ export function BaseTile({
 
 	if (error || !hasData) {
 		return (
-			<Tile className={className}>
+			<Tile state="error" size={size}>
 				<DataFetchingFailed timeout={error?.message === FetchErrorTypes.TIMEOUT} />
 			</Tile>
 		)
@@ -76,7 +76,7 @@ export function BaseTile({
 
 	if (!estimatedCalls || estimatedCalls.length === 0) {
 		return (
-			<Tile className={clsx('flex flex-col', className)}>
+			<Tile state="empty" size={size}>
 				<div className="grow overflow-hidden">
 					{customHeader ??
 						(displayName && (
@@ -91,7 +91,7 @@ export function BaseTile({
 	}
 
 	return (
-		<Tile className={clsx('flex flex-col', className)}>
+		<Tile state="data" size={size}>
 			<div className="grow overflow-hidden">
 				{customHeader ??
 					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
