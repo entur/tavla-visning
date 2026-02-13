@@ -1,5 +1,5 @@
-import type { TSituationFragment } from '@/graphql'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
+import type { TSituationFragment } from '@/types/graphql-schema'
 import { removeStopPlaceSituations } from '../../Board/utils'
 import { DeparturesContext } from '../contexts'
 import { DeviationIcon } from './DeviationIcon'

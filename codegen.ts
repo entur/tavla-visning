@@ -29,29 +29,14 @@ const config: CodegenConfig = {
 	},
 	generates: {
 		'src/types/graphql-schema.ts': {
-			plugins: [
-				'typescript',
-				{
-					add: {
-						content: '// @ts-nocheck',
-					},
-				},
-			],
+			plugins: ['typescript', 'typescript-operations'],
 		},
 		'src/graphql/index.ts': {
 			preset: 'import-types',
 			presetConfig: {
 				typesPath: 'src/types/graphql-schema',
 			},
-			plugins: [
-				'typescript-operations',
-				'typed-document-node',
-				{
-					add: {
-						content: '// @ts-nocheck',
-					},
-				},
-			],
+			plugins: ['typed-document-node'],
 			config: { withHooks: true },
 		},
 	},

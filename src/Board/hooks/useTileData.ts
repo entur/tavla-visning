@@ -1,16 +1,12 @@
-import {
-	GetQuayQuery,
-	StopPlaceQuery,
-	type TDepartureFragment,
-	type TSituationFragment,
-} from '@/graphql'
+import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
+import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
+import type { BoardTileDB, QuayTileDB, StopPlaceTileDB } from '@/Shared/types/db-types/boards'
+import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import {
 	combineSituations,
 	getAccumulatedTileSituations,
 	type TileSituation,
 } from '../scenarios/Board/utils'
-import type { BoardTileDB, QuayTileDB, StopPlaceTileDB } from '@/Shared/types/db-types/boards'
-import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useCycler } from '../scenarios/Table/useCycler'
 
 export type TDepartureWithTileUuid = TDepartureFragment & { tileUuid?: string }

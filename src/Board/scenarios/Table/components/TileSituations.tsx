@@ -1,6 +1,5 @@
 import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
-import type { TSituationFragment } from '@/graphql'
-import type { TTransportMode } from '@/types/graphql-schema'
+import type { TSituationFragment, TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
 
 const SITUATION_SUMMARY_LENGTH_THRESHOLD = 25

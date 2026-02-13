@@ -1,4 +1,3 @@
-// @ts-nocheck
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -2160,4 +2159,234 @@ export type TQuayAtDistanceEdge = {
 	cursor: Scalars['String']['output']
 	/** The item at the end of the edge */
 	node: Maybe<TQuayAtDistance>
+}
+
+export type TDepartureFragment = {
+	__typename?: 'EstimatedCall'
+	aimedDepartureTime: DateTime
+	expectedDepartureTime: DateTime
+	expectedArrivalTime: DateTime
+	cancellation: boolean
+	realtime: boolean
+	quay: { __typename?: 'Quay'; publicCode: string | null; name: string }
+	destinationDisplay: {
+		__typename?: 'DestinationDisplay'
+		frontText: string | null
+		via: Array<string | null> | null
+	} | null
+	serviceJourney: {
+		__typename?: 'ServiceJourney'
+		id: string
+		transportMode: TTransportMode | null
+		transportSubmode: TTransportSubmode | null
+		line: {
+			__typename?: 'Line'
+			id: string
+			publicCode: string | null
+			presentation: {
+				__typename?: 'Presentation'
+				textColour: string | null
+				colour: string | null
+			} | null
+		}
+	}
+	situations: Array<{
+		__typename?: 'PtSituationElement'
+		id: string
+		description: Array<{
+			__typename?: 'MultilingualString'
+			value: string
+			language: string | null
+		}>
+		summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+	}>
+}
+
+export type TLinesFragment = {
+	__typename?: 'Quay'
+	lines: Array<{
+		__typename?: 'Line'
+		id: string
+		publicCode: string | null
+		name: string | null
+		transportMode: TTransportMode | null
+	}>
+}
+
+export type TSituationFragment = {
+	__typename?: 'PtSituationElement'
+	id: string
+	description: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+	summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+}
+
+export type TGetQuayQueryVariables = Exact<{
+	quayId: Scalars['String']['input']
+	whitelistedTransportModes?: InputMaybe<
+		Array<InputMaybe<TTransportMode>> | InputMaybe<TTransportMode>
+	>
+	whitelistedLines?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>
+	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
+	startTime?: InputMaybe<Scalars['DateTime']['input']>
+}>
+
+export type TGetQuayQuery = {
+	__typename?: 'QueryType'
+	quay: {
+		__typename?: 'Quay'
+		name: string
+		description: string | null
+		publicCode: string | null
+		estimatedCalls: Array<{
+			__typename?: 'EstimatedCall'
+			aimedDepartureTime: DateTime
+			expectedDepartureTime: DateTime
+			expectedArrivalTime: DateTime
+			cancellation: boolean
+			realtime: boolean
+			quay: { __typename?: 'Quay'; publicCode: string | null; name: string }
+			destinationDisplay: {
+				__typename?: 'DestinationDisplay'
+				frontText: string | null
+				via: Array<string | null> | null
+			} | null
+			serviceJourney: {
+				__typename?: 'ServiceJourney'
+				id: string
+				transportMode: TTransportMode | null
+				transportSubmode: TTransportSubmode | null
+				line: {
+					__typename?: 'Line'
+					id: string
+					publicCode: string | null
+					presentation: {
+						__typename?: 'Presentation'
+						textColour: string | null
+						colour: string | null
+					} | null
+				}
+			}
+			situations: Array<{
+				__typename?: 'PtSituationElement'
+				id: string
+				description: Array<{
+					__typename?: 'MultilingualString'
+					value: string
+					language: string | null
+				}>
+				summary: Array<{
+					__typename?: 'MultilingualString'
+					value: string
+					language: string | null
+				}>
+			}>
+		}>
+		situations: Array<{
+			__typename?: 'PtSituationElement'
+			id: string
+			description: Array<{
+				__typename?: 'MultilingualString'
+				value: string
+				language: string | null
+			}>
+			summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+		}>
+		stopPlace: {
+			__typename?: 'StopPlace'
+			situations: Array<{
+				__typename?: 'PtSituationElement'
+				id: string
+				description: Array<{
+					__typename?: 'MultilingualString'
+					value: string
+					language: string | null
+				}>
+				summary: Array<{
+					__typename?: 'MultilingualString'
+					value: string
+					language: string | null
+				}>
+			}>
+		} | null
+		lines: Array<{
+			__typename?: 'Line'
+			id: string
+			publicCode: string | null
+			name: string | null
+			transportMode: TTransportMode | null
+		}>
+	} | null
+}
+
+export type TStopPlaceQueryVariables = Exact<{
+	stopPlaceId: Scalars['String']['input']
+	whitelistedTransportModes?: InputMaybe<
+		Array<InputMaybe<TTransportMode>> | InputMaybe<TTransportMode>
+	>
+	whitelistedLines?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>
+	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
+	startTime?: InputMaybe<Scalars['DateTime']['input']>
+}>
+
+export type TStopPlaceQuery = {
+	__typename?: 'QueryType'
+	stopPlace: {
+		__typename?: 'StopPlace'
+		name: string
+		transportMode: Array<TTransportMode | null> | null
+		estimatedCalls: Array<{
+			__typename?: 'EstimatedCall'
+			aimedDepartureTime: DateTime
+			expectedDepartureTime: DateTime
+			expectedArrivalTime: DateTime
+			cancellation: boolean
+			realtime: boolean
+			quay: { __typename?: 'Quay'; publicCode: string | null; name: string }
+			destinationDisplay: {
+				__typename?: 'DestinationDisplay'
+				frontText: string | null
+				via: Array<string | null> | null
+			} | null
+			serviceJourney: {
+				__typename?: 'ServiceJourney'
+				id: string
+				transportMode: TTransportMode | null
+				transportSubmode: TTransportSubmode | null
+				line: {
+					__typename?: 'Line'
+					id: string
+					publicCode: string | null
+					presentation: {
+						__typename?: 'Presentation'
+						textColour: string | null
+						colour: string | null
+					} | null
+				}
+			}
+			situations: Array<{
+				__typename?: 'PtSituationElement'
+				id: string
+				description: Array<{
+					__typename?: 'MultilingualString'
+					value: string
+					language: string | null
+				}>
+				summary: Array<{
+					__typename?: 'MultilingualString'
+					value: string
+					language: string | null
+				}>
+			}>
+		}>
+		situations: Array<{
+			__typename?: 'PtSituationElement'
+			id: string
+			description: Array<{
+				__typename?: 'MultilingualString'
+				value: string
+				language: string | null
+			}>
+			summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+		}>
+	} | null
 }
