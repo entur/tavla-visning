@@ -1,6 +1,6 @@
-import type { TSituationFragment } from '@/graphql'
-import { TitleSituation } from '../Situation'
+import type { TSituationFragment } from '@/types/graphql-schema'
 import { useCycler } from '../../useCycler'
+import { TitleSituation } from '../Situation'
 
 const timerInMilliseconds = 10000
 
