@@ -7,11 +7,10 @@ import { TileSituations } from '@/Board/scenarios/Table/components/TileSituation
 import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
-import { Tile } from '@src/Shared/components/Tile'
-import clsx from 'clsx'
+import { Tile, type TileVariants } from '@src/Shared/components/Tile'
 import type { ReactNode } from 'react'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
-import { TileLoader } from '../TileLoader'
+import { Loader } from '@entur/loader'
 
 interface BaseTileProps {
 	displayName?: string
@@ -27,10 +26,11 @@ interface BaseTileProps {
 	columns: TileColumnDB[]
 	walkingDistance?: BoardWalkingDistanceDB
 
-	className?: string
 	customHeader?: ReactNode
 	customDeviation?: ReactNode
 	customNames?: CustomName[]
+
+	size?: TileVariants['size']
 }
 
 export const DEFAULT_COLUMNS: TileColumnDB[] = ['line', 'destination', 'time']
@@ -56,20 +56,20 @@ export function BaseTile({
 	walkingDistance,
 	customHeader,
 	customDeviation,
-	className,
 	customNames,
+	size,
 }: BaseTileProps) {
 	if (isLoading && !hasData) {
 		return (
-			<Tile className={className}>
-				<TileLoader />
+			<Tile state="loading" size={size}>
+				<Loader>Henter avganger..</Loader>
 			</Tile>
 		)
 	}
 
 	if (error || !hasData) {
 		return (
-			<Tile className={className}>
+			<Tile state="error" size={size}>
 				<DataFetchingFailed timeout={error?.message === FetchErrorTypes.TIMEOUT} />
 			</Tile>
 		)
@@ -77,7 +77,7 @@ export function BaseTile({
 
 	if (!estimatedCalls || estimatedCalls.length === 0) {
 		return (
-			<Tile className={clsx('flex flex-col', className)}>
+			<Tile state="empty" size={size}>
 				<div className="grow overflow-hidden">
 					{customHeader ??
 						(displayName && (
@@ -92,8 +92,8 @@ export function BaseTile({
 	}
 
 	return (
-		<Tile className={clsx('flex flex-col', className)}>
-			<div className="grow overflow-hidden">
+		<Tile state="data" size={size}>
+			<div className="overflow-hidden">
 				{customHeader ??
 					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
 

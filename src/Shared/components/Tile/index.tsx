@@ -1,18 +1,16 @@
 import type React from 'react'
-import clsx from 'clsx'
+import { tileStyles } from './tileStyles'
+import type { VariantProps } from 'class-variance-authority'
 
-function Tile({ className, children, ...rest }: React.HTMLAttributes<HTMLDivElement>) {
+export type TileVariants = VariantProps<typeof tileStyles>
+
+type TileProps = React.HTMLAttributes<HTMLDivElement> & TileVariants
+
+function Tile({ state, size, children, ...rest }: TileProps) {
 	return (
-		<div
-			className={clsx(
-				'h-full w-full overflow-hidden rounded-lg bg-secondary px-[1em] pt-[0.25em]  text-primary',
-				className,
-			)}
-			{...rest}
-		>
+		<div className={tileStyles({ state, size })} {...rest}>
 			{children}
 		</div>
 	)
 }
-
 export { Tile }
