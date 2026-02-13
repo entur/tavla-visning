@@ -11,7 +11,7 @@ export function TileGrid({ children, tileCount, fontScale }: Props) {
 		'--cols': String(tileCount),
 	} as React.CSSProperties
 
-	const baseGridClass = 'grid gap-2.5 overflow-hidden'
+	const baseGridClass = 'grid gap-2.5 overflow-hidden h-full'
 
 	const fallbackFlexClass =
 		'supports-[not(display:grid)]:flex supports-[not(display:grid)]:*:m-2.5 supports-[not(display:grid)]:flex-grow'

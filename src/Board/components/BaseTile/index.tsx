@@ -9,7 +9,7 @@ import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
 import { Tile, type TileVariants } from '@src/Shared/components/Tile'
 import type { ReactNode } from 'react'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
-import { TileLoader } from '../TileLoader'
+import { Loader } from '@entur/loader'
 
 interface BaseTileProps {
 	displayName?: string
@@ -61,7 +61,7 @@ export function BaseTile({
 	if (isLoading && !hasData) {
 		return (
 			<Tile state="loading" size={size}>
-				<TileLoader />
+				<Loader>Henter avganger..</Loader>
 			</Tile>
 		)
 	}
@@ -92,7 +92,7 @@ export function BaseTile({
 
 	return (
 		<Tile state="data" size={size}>
-			<div className="grow overflow-hidden">
+			<div className="overflow-hidden">
 				{customHeader ??
 					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
 

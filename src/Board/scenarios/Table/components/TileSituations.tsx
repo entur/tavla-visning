@@ -1,7 +1,7 @@
+import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import type { TSituationFragment } from '@/graphql'
 import type { TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
-import { DeviationIcon } from './DeviationIcon'
 
 const SITUATION_SUMMARY_LENGTH_THRESHOLD = 25
 
@@ -70,46 +70,42 @@ function TileSituations({
 		transportModeList,
 		publicCodeList,
 	)
-
 	const textColor = cancelledDeparture ? 'error' : 'warning'
 
+	if (!situationText) {
+		return null
+	}
+
 	return (
-		situationText && (
-			<div
-				className="ml-em-0.25 flex w-full flex-row items-center py-3"
-				lang={situationText.language}
-			>
-				<div className={`flex shrink-0 items-center justify-center text-${textColor}`}>
-					<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
-				</div>
-				<div className="grow self-center">
-					<p
-						className={`ml-em-0.75 overflow-hidden overflow-ellipsis wrap-break-word text-em-lg/em-lg font-normal ${
+		<div className={'text-em-lg/em-lg whitespace-normal'} lang={situationText.language}>
+			<div className="table w-full mt-em-0.5">
+				<div className="table-row">
+					<div className="table-cell align-top pr-2 w-em-2">
+						<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
+					</div>
+
+					<div
+						className={`table-cell align-top whitespace-normal break-words font-normal ${
 							cancelledDeparture ? 'text-error' : 'text-warning'
 						}`}
 					>
-						{transportModeWithPublicCode && (
-							<b>
-								{transportModeWithPublicCode}
-								<>: </>
-							</b>
-						)}
+						{transportModeWithPublicCode && <b>{transportModeWithPublicCode}: </b>}
 						{situationText.text}
-					</p>
+					</div>
 				</div>
-				<div
-					className={`ml-8 shrink-0 justify-center self-center text-center text-em-lg/em-lg font-semibold text-${textColor}`}
-				>
-					{currentSituationNumber !== undefined &&
-						numberOfSituations !== undefined &&
-						numberOfSituations > 1 && (
+			</div>
+			<span className="inline-block w-full mt-em-0.25 mb-em-0.5 ">
+				<div className="flex flex-row w-full items-center justify-end">
+					<span className={`whitespace-nowrap text-${textColor} font-semibold`}>
+						{currentSituationNumber !== undefined && numberOfSituations !== undefined && (
 							<>
 								{currentSituationNumber + 1} / {numberOfSituations}
 							</>
 						)}
+					</span>
 				</div>
-			</div>
-		)
+			</span>
+		</div>
 	)
 }
 

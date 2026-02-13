@@ -5,7 +5,7 @@ export const tileStyles = cva(
 	{
 		variants: {
 			state: {
-				loading: '',
+				loading: 'flex items-center justify-center',
 				error: '',
 				empty: 'flex flex-col',
 				data: 'flex flex-col',
