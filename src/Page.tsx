@@ -69,7 +69,10 @@ function BoardPage() {
 
 						<Board board={updatedBoard} />
 
-						<InfoMessage board={updatedBoard} showEnturLogo={updatedBoard?.hideLogo} />
+						<InfoMessage
+							board={updatedBoard}
+							showEnturLogo={updatedBoard?.hideLogo || !!folderLogo}
+						/>
 					</>
 				)}
 			</div>

@@ -3,7 +3,7 @@ import type { BoardDB, BoardTheme } from '@/Shared/types/db-types/boards'
 import EnturLogoBlue from '../../assets/logos/Tavla-blue.svg'
 import EnturLogoWhite from '../../assets/logos/Tavla-white.svg'
 
-function InfoMessage({ board, showEnturLogo }: { board: BoardDB; showEnturLogo?: boolean }) {
+function InfoMessage({ board, showEnturLogo }: { board: BoardDB; showEnturLogo: boolean }) {
 	if (!showEnturLogo && !board.footer?.footer) return null
 
 	const EnturLogo = getLogo(board?.theme ?? 'dark')
