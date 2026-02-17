@@ -1,4 +1,4 @@
-import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
+import { GetQuayQuery, GetQuaysQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import type { BoardTileDB, QuayTileDB, StopPlaceTileDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
@@ -71,6 +71,50 @@ export function useQuayTileData({
 		isLoading,
 		error,
 		hasData: !!data?.quay,
+	}
+}
+
+export function useQuaysTileData({
+	quays,
+	whitelistedLines,
+	whitelistedTransportModes,
+	offset,
+	displayName,
+	name,
+}: BoardTileDB): BaseTileData {
+	const { data, isLoading, error } = useQuery(
+		GetQuaysQuery,
+		{
+			quayIds: quays?.map((q) => q.id),
+			whitelistedLines,
+			whitelistedTransportModes,
+		},
+		{ poll: true, offset: offset ?? 0 },
+	)
+
+	const quaySituations = data?.quays?.flatMap((quay) => {
+		const stopPlaceSituations = quay?.stopPlace?.situations ?? []
+		const quaySituations = quay?.situations ?? []
+		return [...stopPlaceSituations, ...quaySituations]
+	})
+
+	const departures =
+		data?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? []
+
+	const uniqueSituations = getAccumulatedTileSituations(departures, quaySituations)
+
+	const currentSituationIndex = useCycler(quaySituations ?? [], 10000)
+
+	return {
+		displayName: displayName ?? name,
+		estimatedCalls:
+			data?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? [],
+		situations: quaySituations ?? [],
+		uniqueSituations: uniqueSituations,
+		currentSituationIndex,
+		isLoading,
+		error,
+		hasData: !!data?.quays,
 	}
 }
 
