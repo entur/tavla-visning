@@ -5,12 +5,8 @@ import { QuayTile } from '../QuayTile'
 import { StopPlaceTile } from '../StopPlaceTile'
 import { getFontScale, defaultFontSize } from './utils'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
-import { QuaysTile } from '@/Board/scenarios/QuaysTile'
 
 function BoardTile({ tileSpec, size }: { tileSpec: BoardTileDB; size?: TileVariants['size'] }) {
-	if (tileSpec?.quays && tileSpec?.quays.length > 0) {
-		return <QuaysTile {...tileSpec} size={size} />
-	}
 	switch (tileSpec.type) {
 		case 'stop_place':
 			return <StopPlaceTile {...tileSpec} size={size} />
