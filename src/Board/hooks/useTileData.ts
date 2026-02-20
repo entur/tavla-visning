@@ -290,7 +290,7 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 		currentSituationIndex,
 		isLoading: quayLoading || stopPlaceLoading || quaysLoading,
 		error: quayError || stopPlaceError || quaysError,
-		hasData: !!(quayData?.length || stopPlaceData?.length),
+		hasData: !!(quayData?.length || stopPlaceData?.length || quaysData?.length),
 		customNames,
 	}
 }
