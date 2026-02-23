@@ -39,8 +39,15 @@ export type LocationDB = {
 	coordinate?: Coordinate
 }
 
+export type QuayDB = {
+	id: string
+	whitelistedLines: string[]
+}
+
 export type BaseTileDB = {
 	placeId: string
+	stopPlaceId?: string
+	quays?: QuayDB[]
 	name: string
 	uuid: string
 	whitelistedLines?: string[]
