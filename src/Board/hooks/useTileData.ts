@@ -103,8 +103,13 @@ export function useQuaysTileData({
 		return [...stopPlaceSituations, ...quaySituations]
 	})
 
-	const departures =
+	const departures = (
 		data?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? []
+	).sort((a, b) => {
+		const timeA = new Date(a.expectedDepartureTime).getTime()
+		const timeB = new Date(b.expectedDepartureTime).getTime()
+		return timeA - timeB
+	})
 
 	const uniqueSituations = getAccumulatedTileSituations(departures, quaySituations)
 
@@ -112,8 +117,7 @@ export function useQuaysTileData({
 
 	return {
 		displayName: displayName ?? name,
-		estimatedCalls:
-			data?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? [],
+		estimatedCalls: departures,
 		situations: quaySituations ?? [],
 		uniqueSituations: uniqueSituations,
 		currentSituationIndex,
