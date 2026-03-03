@@ -1,7 +1,6 @@
 import { Tile, type TileVariants } from '@components/Tile'
 import type { BoardTileDB, BoardDB } from '@/Shared/types/db-types/boards'
 import { CombinedTile } from '../CombinedTile'
-import { QuayTile } from '../QuayTile'
 import { StopPlaceTile } from '../StopPlaceTile'
 import { getFontScale, defaultFontSize } from './utils'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
@@ -11,12 +10,7 @@ function BoardTile({ tileSpec, size }: { tileSpec: BoardTileDB; size?: TileVaria
 	if (tileSpec?.quays && tileSpec?.quays.length > 0) {
 		return <QuaysTile {...tileSpec} size={size} />
 	}
-	switch (tileSpec.type) {
-		case 'stop_place':
-			return <StopPlaceTile {...tileSpec} size={size} />
-		case 'quay':
-			return <QuayTile {...tileSpec} size={size} />
-	}
+	return <StopPlaceTile {...tileSpec} size={size} />
 }
 
 function Board({ board }: { board: BoardDB }) {

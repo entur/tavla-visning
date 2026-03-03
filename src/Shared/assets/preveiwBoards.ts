@@ -95,7 +95,7 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 			{
 				columns: ['line', 'destination', 'time'],
 				placeId: 'NSR:Quay:1209',
-				type: 'quay',
+				type: 'stop_place',
 				uuid: 'NAcHs8-mfXJhiL6mKEHPj',
 				name: 'Alta lufthavn Terminal, Alta',
 			},
