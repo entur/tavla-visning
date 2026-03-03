@@ -87,11 +87,22 @@ export function useQuaysTileData({
 	displayName,
 	name,
 }: BoardTileDB): BaseTileData {
+	const hasEmptyWhitelist = quays?.some(
+		(q) => !q.whitelistedLines || q.whitelistedLines.length === 0,
+	)
+	const hasQuays = quays && quays.length > 0
+
+	const updatedWhitelistedLines = hasQuays
+		? hasEmptyWhitelist
+			? []
+			: [...new Set(quays.flatMap((q) => q.whitelistedLines ?? []))]
+		: whitelistedLines
+
 	const { data, isLoading, error } = useQuery(
 		GetQuaysQuery,
 		{
 			quayIds: quays?.map((q) => q.id),
-			whitelistedLines,
+			whitelistedLines: updatedWhitelistedLines,
 			whitelistedTransportModes,
 		},
 		{ poll: true, offset: offset ?? 0 },
