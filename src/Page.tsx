@@ -46,7 +46,7 @@ function BoardPage() {
 
 	return (
 		<div
-			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color) text-[3vmin]"
+			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color)"
 			data-theme={theme}
 			data-transport-palette={updatedBoard?.transportPalette}
 			data-color-mode={theme}

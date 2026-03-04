@@ -22,16 +22,14 @@ function Line() {
 		<TableColumn title="Linje">
 			{lines.map((line) => (
 				<TableCell key={line.key}>
-					<div className="flex w-full items-center justify-start gap-2 pr-2">
-						<TravelTag
-							transportMode={line.transportMode}
-							transportSubmode={line.transportSubmode}
-							publicCode={
-								line.transportMode === 'air' ? (getAirPublicCode(line.id) ?? '') : line.publicCode
-							}
-							cancelled={line.cancelled}
-						/>
-					</div>
+					<TravelTag
+						transportMode={line.transportMode}
+						transportSubmode={line.transportSubmode}
+						publicCode={
+							line.transportMode === 'air' ? (getAirPublicCode(line.id) ?? '') : line.publicCode
+						}
+						cancelled={line.cancelled}
+					/>
 				</TableCell>
 			))}
 		</TableColumn>

@@ -19,7 +19,7 @@ function Header({ hideClock = false, hideLogo = false, theme, folderLogo }: Prop
 
 	return (
 		<div className="mb-em-0.25 flex flex-row items-center justify-between gap-em-3">
-			<div className="relative h-[1.25em] w-full">
+			<div className="relative sm:h-[1.25em] w-full h-[1em]">
 				{!hideLogo && (
 					<img
 						src={logoSrc}
