@@ -7,6 +7,7 @@ export type TUseQueryOptions = {
 	poll: boolean
 	endpoint: TEndpointNames
 	offset?: number
+	enabled?: boolean
 }
 
 export function useQuery<Data, Variables>(
@@ -17,11 +18,14 @@ export function useQuery<Data, Variables>(
 	const mergedOptions: TUseQueryOptions = {
 		poll: false,
 		endpoint: 'journey-planner',
+		enabled: true,
 		...options,
 	}
 
+	const shouldFetch = mergedOptions.enabled !== false
+
 	const { data, error, isLoading } = useSWR<Data>(
-		[query, variables, mergedOptions.endpoint, mergedOptions.offset ?? 0],
+		shouldFetch ? [query, variables, mergedOptions.endpoint, mergedOptions.offset ?? 0] : null,
 		fetcher,
 		{
 			revalidateOnFocus: true,

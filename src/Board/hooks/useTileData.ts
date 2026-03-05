@@ -80,6 +80,7 @@ export function useQuayTileData({
 }
 
 export function useQuaysTileData({
+	stopPlaceId,
 	quays,
 	whitelistedLines,
 	whitelistedTransportModes,
@@ -87,43 +88,90 @@ export function useQuaysTileData({
 	displayName,
 	name,
 }: BoardTileDB): BaseTileData {
-	const { data, isLoading, error } = useQuery(
-		GetQuaysQuery,
+	const hasSelectedQuays = !!quays && quays.length > 0
+	const mergedQuayLines = hasSelectedQuays
+		? [...new Set(quays.flatMap((q) => q.whitelistedLines ?? []))]
+		: undefined
+
+	// When quays is empty (all quays selected), use StopPlace query with stopPlaceId
+	const {
+		data: stopPlaceData,
+		isLoading: stopPlaceLoading,
+		error: stopPlaceError,
+	} = useQuery(
+		StopPlaceQuery,
 		{
-			quayIds: quays?.map((q) => q.id),
-			whitelistedLines,
+			stopPlaceId: stopPlaceId ?? '',
 			whitelistedTransportModes,
+			whitelistedLines,
 		},
-		{ poll: true, offset: offset ?? 0 },
+		{ poll: true, offset: offset ?? 0, enabled: !hasSelectedQuays },
 	)
 
-	const quaySituations = data?.quays?.flatMap((quay) => {
-		const stopPlaceSituations = quay?.stopPlace?.situations ?? []
-		const quaySituations = quay?.situations ?? []
-		return [...stopPlaceSituations, ...quaySituations]
+	// When specific quays are selected, use GetQuays query with per-quay whitelisted lines
+	const {
+		data: quaysData,
+		isLoading: quaysLoading,
+		error: quaysError,
+	} = useQuery(
+		GetQuaysQuery,
+		{
+			quayIds: hasSelectedQuays ? quays.map((q) => q.id) : [],
+			whitelistedLines: mergedQuayLines?.length ? mergedQuayLines : undefined,
+			whitelistedTransportModes,
+		},
+		{ poll: true, offset: offset ?? 0, enabled: hasSelectedQuays },
+	)
+
+	// Derive StopPlace-based data (all quays selected)
+	const stopPlaceSituations = getAccumulatedTileSituations(
+		stopPlaceData?.stopPlace?.estimatedCalls,
+		stopPlaceData?.stopPlace?.situations,
+	)
+
+	// Derive GetQuays-based data (specific quays selected)
+	const quaySituations = quaysData?.quays?.flatMap((quay) => {
+		const spSituations = quay?.stopPlace?.situations ?? []
+		const qSituations = quay?.situations ?? []
+		return [...spSituations, ...qSituations]
 	})
 
 	const departures = (
-		data?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? []
+		quaysData?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? []
 	).sort((a, b) => {
 		const timeA = new Date(a.expectedDepartureTime).getTime()
 		const timeB = new Date(b.expectedDepartureTime).getTime()
 		return timeA - timeB
 	})
 
-	const uniqueSituations = getAccumulatedTileSituations(departures, quaySituations)
+	const quaysUniqueSituations = getAccumulatedTileSituations(departures, quaySituations)
 
-	const currentSituationIndex = useCycler(quaySituations ?? [], 10000)
+	// Pick the active data based on whether specific quays are selected
+	const activeSituations = hasSelectedQuays ? quaySituations : stopPlaceData?.stopPlace?.situations
+	const currentSituationIndex = useCycler(activeSituations ?? [], 10000)
+
+	if (!hasSelectedQuays) {
+		return {
+			displayName: displayName ?? name ?? stopPlaceData?.stopPlace?.name ?? '',
+			estimatedCalls: stopPlaceData?.stopPlace?.estimatedCalls ?? [],
+			situations: stopPlaceData?.stopPlace?.situations ?? [],
+			uniqueSituations: stopPlaceSituations ?? [],
+			currentSituationIndex,
+			isLoading: stopPlaceLoading,
+			error: stopPlaceError,
+			hasData: !!stopPlaceData?.stopPlace,
+		}
+	}
 
 	return {
 		displayName: displayName ?? name,
 		estimatedCalls: departures,
 		situations: quaySituations ?? [],
-		uniqueSituations: uniqueSituations,
+		uniqueSituations: quaysUniqueSituations,
 		currentSituationIndex,
-		isLoading,
-		error,
-		hasData: !!data?.quays,
+		isLoading: quaysLoading,
+		error: quaysError,
+		hasData: !!quaysData?.quays,
 	}
 }
 
@@ -163,23 +211,50 @@ export function useStopPlaceTileData({
 	}
 }
 
-const isTileWithQuays = (tile: BoardTileDB): tile is BoardTileDB & { quays: QuayDB[] } =>
+const hasStopPlaceId = (tile: BoardTileDB): tile is BoardTileDB & { stopPlaceId: string } =>
+	!!tile.stopPlaceId
+
+const tileHasSelectedQuays = (tile: BoardTileDB): tile is BoardTileDB & { quays: QuayDB[] } =>
 	!!tile.quays && tile.quays.length > 0
 
 export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
-	const quaysQueries = combinedTile.filter(isTileWithQuays).map((tile) => ({
-		query: GetQuaysQuery,
-		variables: {
-			quayIds: tile.quays?.map((q) => q.id) ?? [],
-			whitelistedLines: tile.whitelistedLines,
-			whitelistedTransportModes: tile.whitelistedTransportModes,
-		},
-		options: { poll: true, offset: tile.offset },
-	}))
+	// Tiles with stopPlaceId and selected quays: use GetQuays with per-quay lines
+	const quaysQueries = combinedTile
+		.filter(hasStopPlaceId)
+		.filter(tileHasSelectedQuays)
+		.map((tile) => {
+			const mergedQuayLines = [
+				...new Set(tile.quays?.flatMap((q) => q.whitelistedLines ?? []) ?? []),
+			]
+			return {
+				query: GetQuaysQuery,
+				variables: {
+					quayIds: tile.quays?.map((q) => q.id) ?? [],
+					whitelistedLines: mergedQuayLines.length > 0 ? mergedQuayLines : undefined,
+					whitelistedTransportModes: tile.whitelistedTransportModes,
+				},
+				options: { poll: true, offset: tile.offset },
+			}
+		})
 
+	// Tiles with stopPlaceId but no selected quays (all quays): use StopPlace query
+	const stopPlaceFromQuaysTileQueries = combinedTile
+		.filter(hasStopPlaceId)
+		.filter((tile) => !tileHasSelectedQuays(tile))
+		.map((tile) => ({
+			query: StopPlaceQuery,
+			variables: {
+				stopPlaceId: tile.stopPlaceId,
+				whitelistedTransportModes: tile.whitelistedTransportModes,
+				whitelistedLines: tile.whitelistedLines,
+			},
+			options: { offset: tile.offset, poll: true },
+		}))
+
+	// Legacy tiles without stopPlaceId
 	const quayQueries = combinedTile
+		.filter((tile) => !hasStopPlaceId(tile))
 		.filter(({ type }) => type === 'quay')
-		.filter((tile) => !isTileWithQuays(tile))
 		.map((tile) => ({
 			query: GetQuayQuery,
 			variables: {
@@ -191,8 +266,8 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 		}))
 
 	const stopPlaceQueries = combinedTile
+		.filter((tile) => !hasStopPlaceId(tile))
 		.filter(({ type }) => type === 'stop_place')
-		.filter((tile) => !isTileWithQuays(tile))
 		.map((tile) => ({
 			query: StopPlaceQuery,
 			variables: {
@@ -211,26 +286,41 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 		isLoading: stopPlaceLoading,
 	} = useQueries(stopPlaceQueries)
 
+	const {
+		data: stopPlaceFromQuaysTileData,
+		error: stopPlaceFromQuaysTileError,
+		isLoading: stopPlaceFromQuaysTileLoading,
+	} = useQueries(stopPlaceFromQuaysTileQueries)
+
 	const { data: quaysData, error: quaysError, isLoading: quaysLoading } = useQueries(quaysQueries)
 
 	// Combine all estimated calls and sort them
 	const estimatedCalls = [
 		...(stopPlaceData?.flatMap((data, index) => {
-			const tile = combinedTile.filter((t) => t.type === 'stop_place')[index]
+			const tile = combinedTile.filter((t) => !hasStopPlaceId(t) && t.type === 'stop_place')[index]
+			return (data.stopPlace?.estimatedCalls ?? []).map((call) => ({
+				...call,
+				tileUuid: tile?.uuid,
+			}))
+		}) ?? []),
+		...(stopPlaceFromQuaysTileData?.flatMap((data, index) => {
+			const tile = combinedTile.filter(hasStopPlaceId).filter((t) => !tileHasSelectedQuays(t))[
+				index
+			]
 			return (data.stopPlace?.estimatedCalls ?? []).map((call) => ({
 				...call,
 				tileUuid: tile?.uuid,
 			}))
 		}) ?? []),
 		...(quayData?.flatMap((data, index) => {
-			const tile = combinedTile.filter((t) => t.type === 'quay')[index]
+			const tile = combinedTile.filter((t) => !hasStopPlaceId(t) && t.type === 'quay')[index]
 			return (data.quay?.estimatedCalls ?? []).map((call) => ({
 				...call,
 				tileUuid: tile?.uuid,
 			}))
 		}) ?? []),
 		...(quaysData?.flatMap((data, index) => {
-			const tile = combinedTile.filter(isTileWithQuays)[index]
+			const tile = combinedTile.filter(hasStopPlaceId).filter(tileHasSelectedQuays)[index]
 			return data?.quays?.flatMap((quay) =>
 				(quay?.estimatedCalls ?? []).map((call) => ({
 					...call,
@@ -249,6 +339,14 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 	// Combine situations with origin information
 	const situations: TSituationWithOrigin[] = [
 		...(stopPlaceData?.flatMap((data) => {
+			const origin = data?.stopPlace?.name ?? ''
+			const situations = data?.stopPlace?.situations ?? []
+			return situations.map((situation) => ({
+				origin,
+				...situation,
+			}))
+		}) ?? []),
+		...(stopPlaceFromQuaysTileData?.flatMap((data) => {
 			const origin = data?.stopPlace?.name ?? ''
 			const situations = data?.stopPlace?.situations ?? []
 			return situations.map((situation) => ({
@@ -292,9 +390,14 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 		situations: combinedSituations,
 		uniqueSituations: uniqueSituations ?? [],
 		currentSituationIndex,
-		isLoading: quayLoading || stopPlaceLoading || quaysLoading,
-		error: quayError || stopPlaceError || quaysError,
-		hasData: !!(quayData?.length || stopPlaceData?.length || quaysData?.length),
+		isLoading: quayLoading || stopPlaceLoading || stopPlaceFromQuaysTileLoading || quaysLoading,
+		error: quayError || stopPlaceError || stopPlaceFromQuaysTileError || quaysError,
+		hasData: !!(
+			quayData?.length ||
+			stopPlaceData?.length ||
+			stopPlaceFromQuaysTileData?.length ||
+			quaysData?.length
+		),
 		customNames,
 	}
 }

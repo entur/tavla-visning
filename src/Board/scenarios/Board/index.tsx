@@ -8,7 +8,7 @@ import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
 import { QuaysTile } from '@/Board/scenarios/QuaysTile'
 
 function BoardTile({ tileSpec, size }: { tileSpec: BoardTileDB; size?: TileVariants['size'] }) {
-	if (tileSpec?.quays && tileSpec?.quays.length > 0) {
+	if (tileSpec?.stopPlaceId) {
 		return <QuaysTile {...tileSpec} size={size} />
 	}
 	switch (tileSpec.type) {
