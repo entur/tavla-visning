@@ -82,6 +82,7 @@ export function useQuayTileData({
 export function useQuaysTileData({
 	stopPlaceId,
 	quays,
+	whitelistedLines,
 	whitelistedTransportModes,
 	offset,
 	displayName,
@@ -102,7 +103,7 @@ export function useQuaysTileData({
 		{
 			stopPlaceId: stopPlaceId ?? '',
 			whitelistedTransportModes,
-			whitelistedLines: undefined,
+			whitelistedLines,
 		},
 		{ poll: true, offset: offset ?? 0, enabled: !hasSelectedQuays },
 	)
