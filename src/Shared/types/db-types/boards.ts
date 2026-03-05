@@ -45,8 +45,9 @@ export type QuayDB = {
 }
 
 export type BaseTileDB = {
-	placeId: string
-	stopPlaceId?: string
+	stopPlaceId: string
+	type?: string
+	placeId?: string
 	quays?: QuayDB[]
 	name: string
 	uuid: string
@@ -69,15 +70,7 @@ export const TileColumns = {
 } as const
 
 export type TileColumnDB = keyof typeof TileColumns
-
-export type QuayTileDB = {
-	type: 'quay'
-} & BaseTileDB
-export type StopPlaceTileDB = {
-	type: 'stop_place'
-} & BaseTileDB
-
-export type BoardTileDB = StopPlaceTileDB | QuayTileDB
+export type BoardTileDB = BaseTileDB
 
 export type BoardWalkingDistanceDB = {
 	distance?: number
