@@ -21,7 +21,7 @@ function Clock() {
 		return () => clearInterval(intervalId)
 	}, [])
 
-	return <span className="text-[1.5625em] text-primary">{currentTime}</span>
+	return <span className="text-[1em] sm:text-[1.5em] text-primary">{currentTime}</span>
 }
 
 export { Clock }
