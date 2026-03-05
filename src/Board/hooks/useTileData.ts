@@ -246,7 +246,7 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 			variables: {
 				stopPlaceId: tile.stopPlaceId,
 				whitelistedTransportModes: tile.whitelistedTransportModes,
-				whitelistedLines: undefined,
+				whitelistedLines: tile.whitelistedLines,
 			},
 			options: { offset: tile.offset, poll: true },
 		}))
