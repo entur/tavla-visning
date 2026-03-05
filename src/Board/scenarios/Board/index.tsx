@@ -1,11 +1,11 @@
 import { Tile, type TileVariants } from '@components/Tile'
-import type { BoardTileDB, BoardDB } from '@/Shared/types/db-types/boards'
+import type { TileDB, BoardDB } from '@/Shared/types/db-types/boards'
 import { CombinedTile } from '../CombinedTile'
 import { getFontScale, defaultFontSize } from './utils'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
 import { QuaysTile } from '@/Board/scenarios/QuaysTile'
 
-function BoardTile({ tileSpec, size }: { tileSpec: BoardTileDB; size?: TileVariants['size'] }) {
+function BoardTile({ tileSpec, size }: { tileSpec: TileDB; size?: TileVariants['size'] }) {
 	return <QuaysTile {...tileSpec} size={size} />
 }
 

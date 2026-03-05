@@ -1,6 +1,6 @@
 import { GetQuaysQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
-import type { BoardTileDB, QuayDB } from '@/Shared/types/db-types/boards'
+import type { TileDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import {
 	combineSituations,
@@ -37,7 +37,7 @@ export function useQuaysTileData({
 	offset,
 	displayName,
 	name,
-}: BoardTileDB): BaseTileData {
+}: TileDB): BaseTileData {
 	const hasSelectedQuays = !!quays && quays.length > 0
 	const mergedQuayLines = hasSelectedQuays
 		? [...new Set(quays.flatMap((q) => q.whitelistedLines ?? []))]
@@ -131,7 +131,7 @@ export function useStopPlaceTileData({
 	whitelistedTransportModes,
 	offset,
 	displayName,
-}: BoardTileDB): BaseTileData {
+}: TileDB): BaseTileData {
 	const { data, isLoading, error } = useQuery(
 		StopPlaceQuery,
 		{
@@ -161,35 +161,25 @@ export function useStopPlaceTileData({
 	}
 }
 
-const hasStopPlaceId = (tile: BoardTileDB): tile is BoardTileDB & { stopPlaceId: string } =>
-	!!tile.stopPlaceId
+const tileHasSelectedQuays = (tile: TileDB): boolean => tile.quays.length > 0
 
-const tileHasSelectedQuays = (tile: BoardTileDB): tile is BoardTileDB & { quays: QuayDB[] } =>
-	!!tile.quays && tile.quays.length > 0
+export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
+	// Tiles with selected quays: use GetQuays with per-quay lines
+	const quaysQueries = combinedTile.filter(tileHasSelectedQuays).map((tile) => {
+		const mergedQuayLines = [...new Set(tile.quays?.flatMap((q) => q.whitelistedLines ?? []) ?? [])]
+		return {
+			query: GetQuaysQuery,
+			variables: {
+				quayIds: tile.quays?.map((q) => q.id) ?? [],
+				whitelistedLines: mergedQuayLines.length > 0 ? mergedQuayLines : undefined,
+				whitelistedTransportModes: tile.whitelistedTransportModes,
+			},
+			options: { poll: true, offset: tile.offset },
+		}
+	})
 
-export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
-	// Tiles with stopPlaceId and selected quays: use GetQuays with per-quay lines
-	const quaysQueries = combinedTile
-		.filter(hasStopPlaceId)
-		.filter(tileHasSelectedQuays)
-		.map((tile) => {
-			const mergedQuayLines = [
-				...new Set(tile.quays?.flatMap((q) => q.whitelistedLines ?? []) ?? []),
-			]
-			return {
-				query: GetQuaysQuery,
-				variables: {
-					quayIds: tile.quays?.map((q) => q.id) ?? [],
-					whitelistedLines: mergedQuayLines.length > 0 ? mergedQuayLines : undefined,
-					whitelistedTransportModes: tile.whitelistedTransportModes,
-				},
-				options: { poll: true, offset: tile.offset },
-			}
-		})
-
-	// Tiles with stopPlaceId but no selected quays (all quays): use StopPlace query
+	// Tiles without selected quays (all quays): use StopPlace query
 	const stopPlaceFromQuaysTileQueries = combinedTile
-		.filter(hasStopPlaceId)
 		.filter((tile) => !tileHasSelectedQuays(tile))
 		.map((tile) => ({
 			query: StopPlaceQuery,
@@ -212,16 +202,14 @@ export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
 	// Combine all estimated calls and sort them
 	const estimatedCalls = [
 		...(stopPlaceFromQuaysTileData?.flatMap((data, index) => {
-			const tile = combinedTile.filter(hasStopPlaceId).filter((t) => !tileHasSelectedQuays(t))[
-				index
-			]
+			const tile = combinedTile.filter((t) => !tileHasSelectedQuays(t))[index]
 			return (data.stopPlace?.estimatedCalls ?? []).map((call) => ({
 				...call,
 				tileUuid: tile?.uuid,
 			}))
 		}) ?? []),
 		...(quaysData?.flatMap((data, index) => {
-			const tile = combinedTile.filter(hasStopPlaceId).filter(tileHasSelectedQuays)[index]
+			const tile = combinedTile.filter(tileHasSelectedQuays)[index]
 			return data?.quays?.flatMap((quay) =>
 				(quay?.estimatedCalls ?? []).map((call) => ({
 					...call,

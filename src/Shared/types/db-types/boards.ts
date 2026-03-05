@@ -3,7 +3,7 @@ import type { TTransportMode } from '../../../types/graphql-schema'
 export type BoardDB = {
 	id?: BoardId
 	meta: BoardMetaDB
-	tiles: BoardTileDB[]
+	tiles: TileDB[]
 	combinedTiles?: CombinedTilesDB[]
 	theme?: BoardTheme
 	footer?: BoardFooter
@@ -44,14 +44,18 @@ export type QuayDB = {
 	whitelistedLines: string[]
 }
 
-export type BaseTileDB = {
+export type TileDB = {
 	stopPlaceId: string
-	type?: string
-	placeId?: string
-	quays?: QuayDB[]
+	quays: QuayDB[]
 	name: string
 	uuid: string
+
+	//TODO: Old architecture - remove once completely migrated
+	type?: string
+	placeId?: string
 	whitelistedLines?: string[]
+	// -----
+
 	whitelistedTransportModes?: TTransportMode[]
 	walkingDistance?: BoardWalkingDistanceDB
 	offset?: number
@@ -70,7 +74,6 @@ export const TileColumns = {
 } as const
 
 export type TileColumnDB = keyof typeof TileColumns
-export type BoardTileDB = BaseTileDB
 
 export type BoardWalkingDistanceDB = {
 	distance?: number
