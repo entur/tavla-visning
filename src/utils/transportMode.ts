@@ -1,7 +1,5 @@
-import type { TTransportMode } from '../types/graphql-schema'
-import { SmallTravelTag } from '../Shared/components/TravelTag'
 import { HomeIcon, MapPinIcon } from '@entur/icons'
-import { uniq } from 'lodash'
+import type { TTransportMode } from '../types/graphql-schema'
 
 export type TLineFragment = {
 	__typename?: 'Line'
@@ -126,26 +124,6 @@ export function getVenueIcon(category: TCategory) {
 		default:
 			return MapPinIcon
 	}
-}
-
-const travelTags = (category: TCategory[]) => {
-	const transportModes = uniq(category.map((mode) => categoryToTransportmode(mode)))
-
-	return transportModes.map((tm, index) => {
-		// unique key for each travel tag
-		const UniqueSmallTravelTag = () =>
-			SmallTravelTag({
-				transportMode: tm,
-			})
-		UniqueSmallTravelTag.displayName = `TravelTag-${tm}-${index}`
-		return UniqueSmallTravelTag
-	})
-}
-
-export function getIcons(layer?: string, category?: TCategory[]) {
-	if (!layer || !category) return
-	if (layer !== 'venue') return uniq(uniq(category).map((mode) => getVenueIcon(mode)))
-	return travelTags(category)
 }
 
 export function isEmptyOrSpaces(str?: string) {

@@ -1,6 +1,7 @@
 import type { TTransportMode, TTransportSubmode } from '@/types/graphql-schema'
 import { TransportIcon } from '../TransportIcon'
-import { isOnlyWhiteSpace } from '@/utils/transportMode'
+
+type ColorMode = TTransportMode | 'regional-bus'
 
 const transportModeNames: Record<TTransportMode, string> = {
 	air: 'Fly',
@@ -22,11 +23,13 @@ const transportModeNames: Record<TTransportMode, string> = {
 function getColorMode(
 	transportMode: TTransportMode,
 	transportSubmode?: TTransportSubmode,
-): TTransportMode {
+): ColorMode {
 	if (transportSubmode?.startsWith('airport')) {
 		return 'air'
 	} else if (transportSubmode === 'railReplacementBus') {
 		return 'rail'
+	} else if (transportSubmode === 'regionalBus') {
+		return 'regional-bus'
 	}
 	return transportMode
 }
@@ -70,40 +73,4 @@ function TravelTag({
 	)
 }
 
-function SmallTravelTag({
-	transportMode,
-	publicCode,
-	icons = true,
-}: {
-	transportMode?: TTransportMode | null
-	publicCode?: string | null
-	icons?: boolean
-}) {
-	if (!transportMode) return null
-	return (
-		<div
-			role="img"
-			aria-label={`${transportModeNames[transportMode]} - linje ${publicCode}`}
-			className={`flex h-5 items-center justify-between rounded-sm p-1 font-bold text-background bg-${
-				transportMode ?? 'unknown'
-			} mx-[2px]`}
-			key={`${transportMode}${publicCode}`}
-		>
-			{icons && (
-				<TransportIcon
-					className={`h-6 fill-background ${
-						publicCode && !isOnlyWhiteSpace(publicCode)
-							? 'w-6 max-sm:hidden sm:block lg:hidden xl:block'
-							: 'block w-4'
-					}`}
-					transportMode={transportMode}
-				/>
-			)}
-			{publicCode && !isOnlyWhiteSpace(publicCode) && (
-				<div className="align-center flex w-full justify-center text-[0.65rem]">{publicCode}</div>
-			)}
-		</div>
-	)
-}
-
-export { SmallTravelTag, TravelTag }
+export { TravelTag }

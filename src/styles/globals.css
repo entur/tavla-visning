@@ -13,6 +13,7 @@
 		/*RGBA-farger for transparent, fordi gamle skjermer ikke støtter transparent HEX */
 		--rgba-air-color-transparent: rgba(126, 6, 100, 0.15);
 		--rgba-bus-color-transparent: rgba(197, 4, 78, 0.15);
+		--rgba-regional-bus-color-transparent: rgba(197, 4, 78, 0.15);
 		--rgba-coach-color-transparent: rgba(56, 99, 0, 0.15);
 		--rgba-cableway-color-transparent: rgba(120, 70, 154, 0.15);
 		--rgba-funicular-color-transparent: rgba(120, 70, 154, 0.15);
@@ -59,6 +60,7 @@
 		--coach-color: var(--temp-coach-color-dark);
 		--air-color: var(--dark-plane);
 		--bus-color: var(--dark-bus);
+		--regional-bus-color: var(--bus-color);
 		--cableway-color: var(--dark-cableway);
 		--funicular-color: var(--dark-funicular);
 		--metro-color: var(--dark-metro);
@@ -71,6 +73,7 @@
 
 		--air-color-transparent: var(--rgba-air-color-transparent-dark);
 		--bus-color-transparent: var(--rgba-bus-color-transparent-dark);
+		--regional-bus-color-transparent: var(--bus-color-transparent);
 		--coach-color-transparent: var(--rgba-coach-color-transparent-dark);
 		--cableway-color-transparent: var(--rgba-cableway-color-transparent-dark);
 		--funicular-color-transparent: var(--rgba-funicular-color-transparent-dark);
@@ -120,6 +123,7 @@
 		--coach-color: var(--temp-coach-color-standard);
 		--air-color: var(--standard-plane);
 		--bus-color: var(--standard-bus);
+		--regional-bus-color: var(--bus-color);
 		--cableway-color: var(--standard-cableway);
 		--funicular-color: var(--standard-funicular);
 		--metro-color: var(--standard-metro);
@@ -132,6 +136,7 @@
 
 		--air-color-transparent: var(--rgba-air-color-transparent);
 		--bus-color-transparent: var(--rgba-bus-color-transparent);
+		--regional-bus-color-transparent: var(--bus-color-transparent);
 		--coach-color-transparent: var(--rgba-coach-color-transparent);
 		--cableway-color-transparent: var(--rgba-cableway-color-transparent);
 		--funicular-color-transparent: var(--rgba-funicular-color-transparent);
