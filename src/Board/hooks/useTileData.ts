@@ -218,7 +218,6 @@ const tileHasSelectedQuays = (tile: BoardTileDB): tile is BoardTileDB & { quays:
 	!!tile.quays && tile.quays.length > 0
 
 export function useCombinedTileData(combinedTile: BoardTileDB[]): BaseTileData {
-	console.log('useCombinedTileData called with tiles:', combinedTile)
 	// Tiles with stopPlaceId and selected quays: use GetQuays with per-quay lines
 	const quaysQueries = combinedTile
 		.filter(hasStopPlaceId)
