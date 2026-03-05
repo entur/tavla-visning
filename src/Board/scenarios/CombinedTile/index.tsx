@@ -1,11 +1,11 @@
 import { BaseTile, DEFAULT_COMBINED_COLUMNS } from '@/Board/components/BaseTile'
 import { useCombinedTileData } from '@/Board/hooks/useTileData'
-import type { BoardTileDB } from '@/Shared/types/db-types/boards'
+import type { TileDB } from '@/Shared/types/db-types/boards'
 import { CombinedTileDeviation } from '../Table/components/StopPlaceDeviation'
 import type { TileVariants } from '@/Shared/components/Tile'
 
 type Props = {
-	combinedTile: BoardTileDB[]
+	combinedTile: TileDB[]
 	size?: TileVariants['size']
 }
 

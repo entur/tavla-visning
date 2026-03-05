@@ -1,10 +1,10 @@
 // TODO: remove 15. december when new lines are active
 // Remember to do a migration script in Firestore beforehand
 
-import type { BoardDB, BoardTileDB } from '@/Shared/types/db-types/boards'
+import type { BoardDB, TileDB } from '@/Shared/types/db-types/boards'
 
 export function makeBoardCompatible(board: BoardDB): BoardDB {
-	const updatedTiles: BoardTileDB[] = board.tiles.map(({ whitelistedLines, ...tile }) => ({
+	const updatedTiles: TileDB[] = board.tiles.map(({ whitelistedLines, ...tile }) => ({
 		...tile,
 		...(whitelistedLines && {
 			whitelistedLines: whitelistedLines.flatMap(oldLineIdsToNew),
