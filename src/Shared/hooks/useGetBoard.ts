@@ -1,7 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 import type { BoardDB } from '../types/db-types/boards'
 import { BOARD_API_URL } from '../assets/env'
-import { PREVIEW_BOARDS } from '../assets/preveiwBoards'
+import { PREVIEW_BOARDS } from '../assets/previewBoards'
 
 export interface BoardApiResponse {
 	board: BoardDB
