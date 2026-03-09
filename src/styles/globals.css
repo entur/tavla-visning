@@ -250,7 +250,7 @@
 		min-height: 100vh;
 		box-sizing: inherit;
 		font-size: 3vmin; /* fallback for old browsers without max-support*/
-		font-size: max(3vmin, 9px);
+		font-size: max(3vmin, 20px);
 		background-color: var(--main-background-color);
 	}
 
