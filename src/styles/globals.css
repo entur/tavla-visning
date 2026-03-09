@@ -249,7 +249,7 @@
 		height: 100%;
 		min-height: 100vh;
 		box-sizing: inherit;
-		font-size: max(3vmin, 1.2em);
+		font-size: 1.2em;
 		background-color: var(--main-background-color);
 	}
 
