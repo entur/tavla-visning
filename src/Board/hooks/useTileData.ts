@@ -17,7 +17,7 @@ export type CustomName = {
 	customName: string
 }
 
-interface BaseTileData {
+interface TileData {
 	displayName?: string
 	estimatedCalls: TDepartureFragment[]
 	situations: TSituationFragment[]
@@ -30,35 +30,15 @@ interface BaseTileData {
 }
 
 export function useQuaysTileData({
-	stopPlaceId,
 	quays,
-	whitelistedLines,
 	whitelistedTransportModes,
 	offset,
 	displayName,
 	name,
-}: TileDB): BaseTileData {
+}: TileDB): TileData {
 	const hasSelectedQuays = !!quays && quays.length > 0
-	const mergedQuayLines = hasSelectedQuays
-		? [...new Set(quays.flatMap((q) => q.whitelistedLines ?? []))]
-		: undefined
+	const quaysWhitelistedLines = [...new Set(quays.flatMap((q) => q.whitelistedLines))]
 
-	// When quays is empty (all quays selected), use StopPlace query with stopPlaceId
-	const {
-		data: stopPlaceData,
-		isLoading: stopPlaceLoading,
-		error: stopPlaceError,
-	} = useQuery(
-		StopPlaceQuery,
-		{
-			stopPlaceId: stopPlaceId,
-			whitelistedTransportModes,
-			whitelistedLines,
-		},
-		{ poll: true, offset: offset ?? 0, enabled: !hasSelectedQuays },
-	)
-
-	// When specific quays are selected, use GetQuays query with per-quay whitelisted lines
 	const {
 		data: quaysData,
 		isLoading: quaysLoading,
@@ -67,20 +47,12 @@ export function useQuaysTileData({
 		GetQuaysQuery,
 		{
 			quayIds: hasSelectedQuays ? quays.map((q) => q.id) : [],
-			whitelistedLines: mergedQuayLines?.length ? mergedQuayLines : undefined,
-			whitelistedTransportModes,
+			whitelistedLines: quaysWhitelistedLines,
+			whitelistedTransportModes, // --- Support for old boards with whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
 		},
-		{ poll: true, offset: offset ?? 0, enabled: hasSelectedQuays },
+		{ poll: true, offset: offset ?? 0 },
 	)
-
-	// Derive StopPlace-based data (all quays selected)
-	const stopPlaceSituations = getAccumulatedTileSituations(
-		stopPlaceData?.stopPlace?.estimatedCalls,
-		stopPlaceData?.stopPlace?.situations,
-	)
-
-	// Derive GetQuays-based data (specific quays selected)
-	const quaySituations = quaysData?.quays?.flatMap((quay) => {
+	const quaysSituations = quaysData?.quays?.flatMap((quay) => {
 		const spSituations = quay?.stopPlace?.situations ?? []
 		const qSituations = quay?.situations ?? []
 		return [...spSituations, ...qSituations]
@@ -89,36 +61,19 @@ export function useQuaysTileData({
 	const departures = (
 		quaysData?.quays?.flatMap((quay) => quay?.estimatedCalls).filter(isNotNullOrUndefined) ?? []
 	).sort((a, b) => {
-		const timeA = new Date(a.expectedDepartureTime).getTime()
-		const timeB = new Date(b.expectedDepartureTime).getTime()
-		return timeA - timeB
+		return new Date(a.expectedDepartureTime).getTime() - new Date(b.expectedDepartureTime).getTime()
 	})
 
-	const quaysUniqueSituations = getAccumulatedTileSituations(departures, quaySituations)
+	const accumulatedQuaysSituations = getAccumulatedTileSituations(departures, quaysSituations)
 
-	// Pick the active data based on whether specific quays are selected
-	const activeSituations = hasSelectedQuays ? quaySituations : stopPlaceData?.stopPlace?.situations
-	const currentSituationIndex = useCycler(activeSituations ?? [], 10000)
-
-	if (!hasSelectedQuays) {
-		return {
-			displayName: displayName ?? name ?? stopPlaceData?.stopPlace?.name ?? '',
-			estimatedCalls: stopPlaceData?.stopPlace?.estimatedCalls ?? [],
-			situations: stopPlaceData?.stopPlace?.situations ?? [],
-			uniqueSituations: stopPlaceSituations ?? [],
-			currentSituationIndex,
-			isLoading: stopPlaceLoading,
-			error: stopPlaceError,
-			hasData: !!stopPlaceData?.stopPlace,
-		}
-	}
+	const quaysSituationIndex = useCycler(accumulatedQuaysSituations ?? [], 10000)
 
 	return {
 		displayName: displayName ?? name,
 		estimatedCalls: departures,
-		situations: quaySituations ?? [],
-		uniqueSituations: quaysUniqueSituations,
-		currentSituationIndex,
+		situations: quaysSituations ?? [],
+		uniqueSituations: accumulatedQuaysSituations,
+		currentSituationIndex: quaysSituationIndex,
 		isLoading: quaysLoading,
 		error: quaysError,
 		hasData: !!quaysData?.quays,
@@ -131,40 +86,44 @@ export function useStopPlaceTileData({
 	whitelistedTransportModes,
 	offset,
 	displayName,
-}: TileDB): BaseTileData {
-	const { data, isLoading, error } = useQuery(
+	name,
+}: TileDB): TileData {
+	const {
+		data: stopPlaceData,
+		isLoading: stopPlaceLoading,
+		error: stopPlaceError,
+	} = useQuery(
 		StopPlaceQuery,
 		{
 			stopPlaceId: stopPlaceId,
-			whitelistedTransportModes,
-			whitelistedLines,
+			whitelistedTransportModes, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
+			whitelistedLines, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
 		},
 		{ poll: true, offset: offset ?? 0 },
 	)
 
-	const uniqueSituations = getAccumulatedTileSituations(
-		data?.stopPlace?.estimatedCalls,
-		data?.stopPlace?.situations,
+	const stopPlaceSituations = getAccumulatedTileSituations(
+		stopPlaceData?.stopPlace?.estimatedCalls,
+		stopPlaceData?.stopPlace?.situations,
 	)
 
-	const currentSituationIndex = useCycler(uniqueSituations ?? [], 10000)
+	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
 
 	return {
-		displayName: displayName ?? data?.stopPlace?.name ?? '',
-		estimatedCalls: data?.stopPlace?.estimatedCalls ?? [],
-		situations: data?.stopPlace?.situations ?? [],
-		uniqueSituations: uniqueSituations ?? [],
+		displayName: displayName ?? name,
+		estimatedCalls: stopPlaceData?.stopPlace?.estimatedCalls ?? [],
+		situations: stopPlaceData?.stopPlace?.situations ?? [],
+		uniqueSituations: stopPlaceSituations ?? [],
 		currentSituationIndex,
-		isLoading,
-		error,
-		hasData: !!data?.stopPlace,
+		isLoading: stopPlaceLoading,
+		error: stopPlaceError,
+		hasData: !!stopPlaceData?.stopPlace,
 	}
 }
 
-const tileHasSelectedQuays = (tile: TileDB): boolean => tile.quays.length > 0
+export function useCombinedTileData(combinedTile: TileDB[]): TileData {
+	const tileHasSelectedQuays = (tile: TileDB): boolean => tile.quays.length > 0
 
-export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
-	// Tiles with selected quays: use GetQuays with per-quay lines
 	const quaysQueries = combinedTile.filter(tileHasSelectedQuays).map((tile) => {
 		const mergedQuayLines = [...new Set(tile.quays?.flatMap((q) => q.whitelistedLines ?? []) ?? [])]
 		return {
@@ -178,8 +137,7 @@ export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
 		}
 	})
 
-	// Tiles without selected quays (all quays): use StopPlace query
-	const stopPlaceFromQuaysTileQueries = combinedTile
+	const stopPlaceQueries = combinedTile
 		.filter((tile) => !tileHasSelectedQuays(tile))
 		.map((tile) => ({
 			query: StopPlaceQuery,
@@ -192,16 +150,15 @@ export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
 		}))
 
 	const {
-		data: stopPlaceFromQuaysTileData,
-		error: stopPlaceFromQuaysTileError,
-		isLoading: stopPlaceFromQuaysTileLoading,
-	} = useQueries(stopPlaceFromQuaysTileQueries)
+		data: stopPlaceData,
+		error: stopPlaceError,
+		isLoading: stopPlaceLoading,
+	} = useQueries(stopPlaceQueries)
 
 	const { data: quaysData, error: quaysError, isLoading: quaysLoading } = useQueries(quaysQueries)
 
-	// Combine all estimated calls and sort them
 	const estimatedCalls = [
-		...(stopPlaceFromQuaysTileData?.flatMap((data, index) => {
+		...(stopPlaceData?.flatMap((data, index) => {
 			const tile = combinedTile.filter((t) => !tileHasSelectedQuays(t))[index]
 			return (data.stopPlace?.estimatedCalls ?? []).map((call) => ({
 				...call,
@@ -219,15 +176,12 @@ export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
 		}) ?? []),
 	]
 
-	const sortedEstimatedCalls = estimatedCalls.sort((a, b) => {
-		const timeA = new Date(a.expectedDepartureTime).getTime()
-		const timeB = new Date(b.expectedDepartureTime).getTime()
-		return (Number.isNaN(timeA) ? Infinity : timeA) - (Number.isNaN(timeB) ? Infinity : timeB)
+	const departures = (estimatedCalls.filter(isNotNullOrUndefined) ?? []).sort((a, b) => {
+		return new Date(a.expectedDepartureTime).getTime() - new Date(b.expectedDepartureTime).getTime()
 	})
 
-	// Combine situations with origin information
 	const situations: TSituationWithOrigin[] = [
-		...(stopPlaceFromQuaysTileData?.flatMap((data) => {
+		...(stopPlaceData?.flatMap((data) => {
 			const origin = data?.stopPlace?.name ?? ''
 			const situations = data?.stopPlace?.situations ?? []
 			return situations.map((situation) => ({
@@ -247,10 +201,8 @@ export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
 		) ?? []),
 	]
 
-	const combinedSituations: TSituationWithOrigin[] = combineSituations(situations)
-
-	const uniqueSituations = getAccumulatedTileSituations(sortedEstimatedCalls, combinedSituations)
-
+	const combinedSituations = combineSituations(situations)
+	const uniqueSituations = getAccumulatedTileSituations(departures, combinedSituations)
 	const currentSituationIndex = useCycler(uniqueSituations ?? [], 10000)
 
 	const customNames: CustomName[] = combinedTile
@@ -259,16 +211,17 @@ export function useCombinedTileData(combinedTile: TileDB[]): BaseTileData {
 
 	return {
 		displayName: undefined,
-		estimatedCalls: sortedEstimatedCalls,
+		estimatedCalls: departures,
 		situations: combinedSituations,
 		uniqueSituations: uniqueSituations ?? [],
 		currentSituationIndex,
-		isLoading: stopPlaceFromQuaysTileLoading || quaysLoading,
-		error: stopPlaceFromQuaysTileError || quaysError,
-		hasData: !!(stopPlaceFromQuaysTileData?.length || quaysData?.length),
+		isLoading: stopPlaceLoading || quaysLoading,
+		error: stopPlaceError || quaysError,
+		hasData: !!(stopPlaceData?.length || quaysData?.length),
 		customNames,
 	}
 }
+
 function isNotNullOrUndefined<T>(value: T | null | undefined): value is T {
 	return value !== null && value !== undefined
 }

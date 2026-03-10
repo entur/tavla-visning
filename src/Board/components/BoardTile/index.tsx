@@ -43,7 +43,7 @@ export const DEFAULT_COMBINED_COLUMNS: TileColumnDB[] = [
 	'time',
 ]
 
-export function BaseTile({
+export function BoardTile({
 	displayName,
 	estimatedCalls,
 	situations,
