@@ -77,9 +77,9 @@ function TileSituations({
 
 	return (
 		<div className={'text-em-lg/em-lg whitespace-normal'} lang={situationText.language}>
-			<div className="table w-full mt-em-0.5">
+			<div className="table w-full mt-em-0.5 ml-em-0.25">
 				<div className="table-row">
-					<div className="table-cell align-top pr-2 w-em-2">
+					<div className="table-cell align-top w-em-2">
 						<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
 					</div>
 
@@ -93,7 +93,7 @@ function TileSituations({
 					</div>
 				</div>
 			</div>
-			<span className="inline-block w-full mt-em-0.25 mb-em-0.5 ">
+			<span className="inline-block w-full mt-em-0.25 mb-em-0.5">
 				<div className="flex flex-row w-full items-center justify-end">
 					<span className={`whitespace-nowrap text-${textColor} font-semibold`}>
 						{currentSituationNumber !== undefined && numberOfSituations !== undefined && (

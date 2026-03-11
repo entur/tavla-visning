@@ -11,7 +11,7 @@ export function getFontScale(fontSize: BoardFontSize | undefined) {
 		case 'medium':
 			return 'text-em-base'
 		case 'large':
-			return 'text-em-xl'
+			return 'text-em-lg sm:text-em-xl'
 		default:
 			return 'text-em-base'
 	}
