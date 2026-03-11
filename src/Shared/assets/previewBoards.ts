@@ -9,9 +9,9 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 		tiles: [
 			{
 				columns: ['line', 'destination', 'time', 'platform'],
-				placeId: 'NSR:StopPlace:58856',
+				quays: [],
+				stopPlaceId: 'NSR:StopPlace:58856',
 				name: 'Lysaker stasjon, Bærum',
-				type: 'stop_place',
 				uuid: 'WPLoeygP7d173RifiQDvd',
 				walkingDistance: {
 					distance: 694,
@@ -70,9 +70,9 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 		tiles: [
 			{
 				columns: ['line', 'destination', 'time'],
-				placeId: 'NSR:StopPlace:58374',
-				name: 'Horten ferjekai"',
-				type: 'stop_place',
+				stopPlaceId: 'NSR:StopPlace:58374',
+				name: 'Horten ferjekai',
+				quays: [],
 				uuid: 'lqfe6yE6hStaM8yWbfmb2',
 			},
 		],
@@ -87,15 +87,15 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 		tiles: [
 			{
 				columns: ['line', 'destination', 'time'],
-				placeId: 'NSR:StopPlace:56826',
+				stopPlaceId: 'NSR:StopPlace:56826',
 				name: 'Alta sentrum, Alta',
-				type: 'stop_place',
+				quays: [],
 				uuid: '6hojyqhlUQXu53IZ5Jzyr',
 			},
 			{
 				columns: ['line', 'destination', 'time'],
-				placeId: 'NSR:Quay:1209',
-				type: 'quay',
+				stopPlaceId: 'NSR:StopPlace:755',
+				quays: [],
 				uuid: 'NAcHs8-mfXJhiL6mKEHPj',
 				name: 'Alta lufthavn Terminal, Alta',
 			},

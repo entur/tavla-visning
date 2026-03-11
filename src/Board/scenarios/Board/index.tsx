@@ -1,23 +1,9 @@
-import { Tile, type TileVariants } from '@components/Tile'
-import type { BoardTileDB, BoardDB } from '@/Shared/types/db-types/boards'
-import { CombinedTile } from '../CombinedTile'
-import { QuayTile } from '../QuayTile'
-import { StopPlaceTile } from '../StopPlaceTile'
-import { getFontScale, defaultFontSize } from './utils'
+import { Tile } from '@components/Tile'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
-import { QuaysTile } from '@/Board/scenarios/QuaysTile'
-
-function BoardTile({ tileSpec, size }: { tileSpec: BoardTileDB; size?: TileVariants['size'] }) {
-	if (tileSpec?.stopPlaceId) {
-		return <QuaysTile {...tileSpec} size={size} />
-	}
-	switch (tileSpec.type) {
-		case 'stop_place':
-			return <StopPlaceTile {...tileSpec} size={size} />
-		case 'quay':
-			return <QuayTile {...tileSpec} size={size} />
-	}
-}
+import { SingleTile } from '@board/scenarios/SingleTile'
+import type { BoardDB } from '@/Shared/types/db-types/boards'
+import { CombinedTile } from '../CombinedTile'
+import { defaultFontSize, getFontScale } from './utils'
 
 function Board({ board }: { board: BoardDB }) {
 	if (!board.tiles || !board.tiles.length)
@@ -47,7 +33,7 @@ function Board({ board }: { board: BoardDB }) {
 			data-theme={board.theme}
 		>
 			{separateTiles.map((tile, index) => {
-				return <BoardTile key={tile.uuid} tileSpec={tile} size={getTileSize(index)} />
+				return <SingleTile key={tile.uuid} {...tile} size={getTileSize(index)} />
 			})}
 			{combinedTiles.map((combinedTile, index) => (
 				<CombinedTile

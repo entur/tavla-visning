@@ -171,7 +171,7 @@ fragment situation on PtSituationElement {
   }
 }`) as unknown as TypedDocumentString<Types.TGetQuayQuery, Types.TGetQuayQueryVariables>
 export const GetQuaysQuery = new TypedDocumentString(`
-    query getQuays($quayIds: [String!], $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
+    query getQuays($quayIds: [String!], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
   quays(ids: $quayIds) {
     name
     description
@@ -179,7 +179,6 @@ export const GetQuaysQuery = new TypedDocumentString(`
     ...lines
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
-      whiteListedModes: $whitelistedTransportModes
       whiteListed: {lines: $whitelistedLines}
       includeCancelledTrips: true
       startTime: $startTime
@@ -246,14 +245,14 @@ fragment situation on PtSituationElement {
     language
   }
 }`) as unknown as TypedDocumentString<Types.TGetQuaysQuery, Types.TGetQuaysQueryVariables>
+
 export const StopPlaceQuery = new TypedDocumentString(`
-    query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
+    query StopPlace($stopPlaceId: String!, $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
   stopPlace(id: $stopPlaceId) {
     name
     transportMode
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
-      whiteListedModes: $whitelistedTransportModes
       whiteListed: {lines: $whitelistedLines}
       includeCancelledTrips: true
       startTime: $startTime
