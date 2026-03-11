@@ -29,13 +29,7 @@ interface TileData {
 	customNames?: CustomName[]
 }
 
-export function useQuaysTileData({
-	quays,
-	whitelistedTransportModes,
-	offset,
-	displayName,
-	name,
-}: TileDB): TileData {
+export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): TileData {
 	const hasSelectedQuays = !!quays && quays.length > 0
 	const quaysWhitelistedLines = [...new Set(quays.flatMap((q) => q.whitelistedLines))]
 
@@ -48,10 +42,10 @@ export function useQuaysTileData({
 		{
 			quayIds: hasSelectedQuays ? quays.map((q) => q.id) : [],
 			whitelistedLines: quaysWhitelistedLines,
-			whitelistedTransportModes, // --- Support for old boards with whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
 		},
 		{ poll: true, offset: offset ?? 0 },
 	)
+
 	const quaysSituations = quaysData?.quays?.flatMap((quay) => {
 		const spSituations = quay?.stopPlace?.situations ?? []
 		const qSituations = quay?.situations ?? []
@@ -83,7 +77,6 @@ export function useQuaysTileData({
 export function useStopPlaceTileData({
 	stopPlaceId,
 	whitelistedLines,
-	whitelistedTransportModes,
 	offset,
 	displayName,
 	name,
@@ -96,7 +89,6 @@ export function useStopPlaceTileData({
 		StopPlaceQuery,
 		{
 			stopPlaceId: stopPlaceId,
-			whitelistedTransportModes, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
 			whitelistedLines, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
 		},
 		{ poll: true, offset: offset ?? 0 },
