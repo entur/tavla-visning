@@ -22,6 +22,11 @@
       "pnpm exec biome format --write ./src"
     ]
   },
+  "pnpm": {
+    "overrides": {
+      "immutable": "3.8.3"
+    }
+  },
   "dependencies": {
     "@entur/button": "3.4.1",
     "@entur/icons": "8.2.0",
