@@ -57,7 +57,7 @@ function TravelTag({
 		<div
 			role="img"
 			aria-label={`${transportModeNames[transportMode]} - linje ${publicCode}`}
-			className={`flex h-full w-full items-center justify-between rounded-sm pl-2 ${travelTagBackround}`}
+			className={`flex items-center justify-between rounded-sm pl-em-0.5 ${travelTagBackround}`}
 		>
 			<TransportIcon
 				className={`h-em-2 w-em-2 ${iconPublicCodeColor}`}
@@ -65,7 +65,7 @@ function TravelTag({
 				transportSubmode={transportSubmode}
 			/>
 			<div
-				className={`flex whitespace-nowrap h-full w-full flex-row items-center justify-center font-semibold ${iconPublicCodeColor}`}
+				className={`flex whitespace-nowrap h-full w-full flex-row items-center justify-center font-semibold ${iconPublicCodeColor} leading-em-base`}
 			>
 				{publicCode}
 			</div>
