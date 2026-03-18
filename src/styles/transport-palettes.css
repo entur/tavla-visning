@@ -71,7 +71,7 @@
 /* ATB palette */
 [data-theme="light"][data-transport-palette="atb"] {
 	--bus-color: #608000;
-	--regional-bus-color: #608000;
+	--regional-bus-color: #008099;
 	--coach-color: #008099;
 	--rail-color: #943894;
 	--water-color: #00404d;
@@ -83,7 +83,7 @@
 	--tram-color: #608000;
 
 	--bus-color-transparent: rgba(96, 128, 0, 0.15);
-	--regional-bus-color-transparent: rgba(96, 128, 0, 0.15);
+	--regional-bus-color-transport: rgba(0, 128, 153, 0.15);
 	--coach-color-transparent: rgba(0, 128, 153, 0.15);
 	--rail-color-transparent: rgba(148, 56, 148, 0.15);
 	--water-color-transparent: rgba(0, 64, 77, 0.15);
@@ -97,7 +97,7 @@
 
 [data-transport-palette="atb"] {
 	--bus-color: #a9d22d;
-	--regional-bus-color: #a9d22d;
+	--regional-bus-color: #0095b2;
 	--coach-color: #0095b2;
 	--rail-color: #cd98cd;
 	--water-color: #99d9e5;
@@ -109,7 +109,7 @@
 	--tram-color: #a9d22d;
 
 	--bus-color-transparent: rgba(169, 210, 45, 0.15);
-	--regional-bus-color-transparent: rgba(169, 210, 45, 0.15);
+	--regional-bus-color-transport: rgba(0, 149, 178, 0.15);
 	--coach-color-transparent: rgba(0, 149, 178, 0.15);
 	--rail-color-transparent: rgba(205, 152, 205, 0.15);
 	--water-color-transparent: rgba(153, 217, 229, 0.15);
