@@ -13,13 +13,11 @@ function Board({ board }: { board: BoardDB }) {
 			</Tile>
 		)
 
-	const combinedTiles = getCombinedTiles(board)
-	const separateTiles = getSeparateTiles(board)
-	const totalTiles = separateTiles.length + combinedTiles.length
+	const tiles = board.tiles
 	const fontScaleClass = getFontScale(board.meta?.fontSize || defaultFontSize(board))
 
 	const getTileSize = (tileIndex: number) => {
-		if (totalTiles % 2 === 1 && tileIndex === 0) {
+		if (tiles.length % 2 === 1 && tileIndex === 0) {
 			return 'tall'
 		}
 		return 'normal'
@@ -27,33 +25,24 @@ function Board({ board }: { board: BoardDB }) {
 
 	return (
 		<TileGrid
-			tileCount={totalTiles}
+			tileCount={tiles.length}
 			fontScale={fontScaleClass}
 			data-transport-palette={board.transportPalette}
 			data-theme={board.theme}
 		>
-			{separateTiles.map((tile, index) => {
-				return <SingleTile key={tile.uuid} {...tile} size={getTileSize(index)} />
-			})}
-			{combinedTiles.map((combinedTile, index) => (
+			{board.isCombinedTiles ? (
 				<CombinedTile
-					key={combinedTile.map((tile) => tile.uuid).join('-')}
-					combinedTile={combinedTile}
-					size={getTileSize(separateTiles.length - 1 + index)}
+					key={tiles.map((tile) => tile.uuid).join('-')}
+					combinedTile={tiles}
+					size={getTileSize(tiles.length)}
 				/>
-			))}
+			) : (
+				tiles.map((tile, index) => {
+					return <SingleTile key={tile.uuid} {...tile} size={getTileSize(index)} />
+				})
+			)}
 		</TileGrid>
 	)
 }
 
 export { Board }
-
-function getCombinedTiles(board: BoardDB) {
-	const combinedTileIds = board.combinedTiles?.map((c) => c.ids) ?? []
-	return combinedTileIds?.map((ids) => board.tiles.filter((t) => ids.includes(t.uuid))) || []
-}
-
-function getSeparateTiles(board: BoardDB) {
-	const combinedTileIds = board.combinedTiles?.map((c) => c.ids) ?? []
-	return board.tiles.filter((t) => !combinedTileIds?.flat().includes(t.uuid))
-}
