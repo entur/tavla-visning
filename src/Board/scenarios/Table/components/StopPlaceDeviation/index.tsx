@@ -10,7 +10,7 @@ function StopPlaceQuayDeviation({ situations }: { situations?: TSituationFragmen
 
 	if (!situations || numberOfSituations === 0) return null
 	return (
-		<div className="mt-[-1em] min-h-[1.5em]">
+		<div className="mt-[-.5em] min-h-[1.5em]">
 			{situations && numberOfSituations > 0 && (
 				<TitleSituation situation={situations[index % numberOfSituations]} />
 			)}
