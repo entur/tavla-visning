@@ -25,7 +25,7 @@ function Board({ board }: { board: BoardDB }) {
 
 	return (
 		<TileGrid
-			tileCount={tiles.length}
+			tileCount={board.isCombinedTiles ? 1 : tiles.length}
 			fontScale={fontScaleClass}
 			data-transport-palette={board.transportPalette}
 			data-theme={board.theme}
@@ -34,7 +34,7 @@ function Board({ board }: { board: BoardDB }) {
 				<CombinedTile
 					key={tiles.map((tile) => tile.uuid).join('-')}
 					combinedTile={tiles}
-					size={getTileSize(tiles.length)}
+					size="tall"
 				/>
 			) : (
 				tiles.map((tile, index) => {
