@@ -23,9 +23,6 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
-    
-    /* Path mapping */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@src/*": ["./src/*"],
@@ -36,7 +33,8 @@
       "@utils/*": ["./src/Shared/utils/*"],
       "@types/*": ["./src/Shared/types/*"],
       "@styles/*": ["./src/styles/*"],
-      "@assets/*": ["./src/Shared/assets/*"]
+      "@assets/*": ["./src/Shared/assets/*"],
+      "*": ["./*"]
     }
   },
   "include": ["src", "graphql", "src/types"]
