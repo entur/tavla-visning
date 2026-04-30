@@ -28,16 +28,9 @@ export type BoardMetaDB = {
 	created?: number
 	dateModified?: number
 	fontSize?: BoardFontSize
-	location?: LocationDB
 }
 
 export type BoardFontSize = 'small' | 'medium' | 'large'
-
-export type Coordinate = { lat: number; lng: number }
-export type LocationDB = {
-	name?: string
-	coordinate?: Coordinate
-}
 
 export type QuayDB = {
 	id: string
