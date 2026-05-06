@@ -9,6 +9,7 @@ query getQuay(
 		name
 		description
 		publicCode
+		wheelchairAccessible
 		...lines
 		estimatedCalls(
 			numberOfDepartures: $numberOfDepartures

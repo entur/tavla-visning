@@ -2237,6 +2237,7 @@ export type TGetQuayQuery = {
 		name: string
 		description: string | null
 		publicCode: string | null
+		wheelchairAccessible: TWheelchairBoarding | null
 		estimatedCalls: Array<{
 			__typename?: 'EstimatedCall'
 			aimedDepartureTime: DateTime
@@ -2335,6 +2336,7 @@ export type TGetQuaysQuery = {
 		name: string
 		description: string | null
 		publicCode: string | null
+		wheelchairAccessible: TWheelchairBoarding | null
 		estimatedCalls: Array<{
 			__typename?: 'EstimatedCall'
 			aimedDepartureTime: DateTime

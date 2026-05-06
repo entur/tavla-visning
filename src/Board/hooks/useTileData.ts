@@ -1,7 +1,13 @@
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
+import { useStopPlaceInfo } from '@/Shared/hooks/useStopPlaceInfo'
 import type { TileDB } from '@/Shared/types/db-types/boards'
-import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
+import type { TNsrStopPlace } from '@/Shared/types/nsr-types'
+import type {
+	TDepartureFragment,
+	TSituationFragment,
+	TWheelchairBoarding,
+} from '@/types/graphql-schema'
 import {
 	combineSituations,
 	getAccumulatedTileSituations,
@@ -27,9 +33,17 @@ interface TileData {
 	error?: Error
 	hasData: boolean
 	customNames?: CustomName[]
+	stopPlaceInfo?: TNsrStopPlace | null
+	wheelchairAccessible?: TWheelchairBoarding | null
 }
 
-export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): TileData {
+export function useQuaysTileData({
+	stopPlaceId,
+	quays,
+	offset,
+	displayName,
+	name,
+}: TileDB): TileData {
 	const hasSelectedQuays = !!quays && quays.length > 0
 
 	const quayQueries = hasSelectedQuays
@@ -66,6 +80,16 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 
 	const quaysSituationIndex = useCycler(accumulatedQuaysSituations ?? [], 10000)
 
+	const { stopPlaceInfo } = useStopPlaceInfo(stopPlaceId)
+
+	const wheelchairAccessible: TWheelchairBoarding | null = quayResults.some(
+		(q) => q.wheelchairAccessible === 'possible',
+	)
+		? 'possible'
+		: quayResults.some((q) => q.wheelchairAccessible === 'notPossible')
+			? 'notPossible'
+			: null
+
 	return {
 		displayName: displayName ?? name,
 		estimatedCalls: departures,
@@ -75,6 +99,8 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 		isLoading: quaysLoading,
 		error: quaysError,
 		hasData: quayResults.length > 0,
+		stopPlaceInfo,
+		wheelchairAccessible,
 	}
 }
 
@@ -105,6 +131,8 @@ export function useStopPlaceTileData({
 
 	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
 
+	const { stopPlaceInfo } = useStopPlaceInfo(stopPlaceId)
+
 	return {
 		displayName: displayName ?? name,
 		estimatedCalls: stopPlaceData?.stopPlace?.estimatedCalls ?? [],
@@ -114,6 +142,7 @@ export function useStopPlaceTileData({
 		isLoading: stopPlaceLoading,
 		error: stopPlaceError,
 		hasData: !!stopPlaceData?.stopPlace,
+		stopPlaceInfo,
 	}
 }
 

@@ -5,7 +5,12 @@ import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopP
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
 
 import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
-import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
+import type { TNsrStopPlace } from '@/Shared/types/nsr-types'
+import type {
+	TDepartureFragment,
+	TSituationFragment,
+	TWheelchairBoarding,
+} from '@/types/graphql-schema'
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
 import { Tile, type TileVariants } from '@src/Shared/components/Tile'
 import type { ReactNode } from 'react'
@@ -31,6 +36,9 @@ interface BaseTileProps {
 	customNames?: CustomName[]
 
 	size?: TileVariants['size']
+
+	stopPlaceInfo?: TNsrStopPlace | null
+	wheelchairAccessible?: TWheelchairBoarding | null
 }
 
 export const DEFAULT_COLUMNS: TileColumnDB[] = ['line', 'destination', 'time']
@@ -58,6 +66,8 @@ export function BoardTile({
 	customDeviation,
 	customNames,
 	size,
+	stopPlaceInfo,
+	wheelchairAccessible,
 }: BaseTileProps) {
 	if (isLoading && !hasData) {
 		return (
@@ -81,7 +91,12 @@ export function BoardTile({
 				<div className="grow overflow-hidden">
 					{customHeader ??
 						(displayName && (
-							<TableHeader heading={displayName} walkingDistance={walkingDistance} />
+							<TableHeader
+								heading={displayName}
+								walkingDistance={walkingDistance}
+								stopPlaceInfo={stopPlaceInfo}
+								wheelchairAccessible={wheelchairAccessible}
+							/>
 						))}
 				</div>
 				<div className="flex h-full w-full items-center justify-center text-center text-tertiary">
@@ -95,7 +110,14 @@ export function BoardTile({
 		<Tile state="data" size={size}>
 			<div className="overflow-hidden">
 				{customHeader ??
-					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
+					(displayName && (
+						<TableHeader
+							heading={displayName}
+							walkingDistance={walkingDistance}
+							stopPlaceInfo={stopPlaceInfo}
+							wheelchairAccessible={wheelchairAccessible}
+						/>
+					))}
 
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 

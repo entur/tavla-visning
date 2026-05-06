@@ -8,6 +8,7 @@ export const GRAPHQL_ENDPOINTS: Record<TEndpointNames, string> = {
 
 export const COUNTY_ENDPOINT = 'https://ws.geonorge.no/kommuneinfo/v1/fylker'
 export const GEOCODER_ENDPOINT = 'https://api.entur.io/geocoder/v1'
+export const NSR_STOP_PLACES_ENDPOINT = 'https://api.entur.io/stop-places/v1/graphql'
 
 export const CLIENT_NAME = 'entur-tavla'
 
