@@ -95,6 +95,7 @@ def main() -> int:
     message = client.chat.completions.create(
         model="gpt-4o",
         max_tokens=4096,
+        temperature=0, 
         messages=[{"role": "user", "content": build_prompt(context)}],
     )
 
