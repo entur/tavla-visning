@@ -70,7 +70,7 @@ const { data, isLoading } = useQuery(
 )
 ```
 
-Fragments in `src/Shared/graphql/fragments/`, queries in `src/Shared/graphql/queries/`. After editing `.graphql` files, run `pnpm codegen`.
+Fragments in `src/Shared/graphql/fragments/`, queries in `src/Shared/graphql/queries/`. After editing `.graphql` files, run `pnpm codegen` and update `docs/EXPLORER_LINKS.md` with new Explorer links.
 
 ### Service Alert (Situation) Handling
 
