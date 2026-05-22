@@ -70,7 +70,7 @@ const { data, isLoading } = useQuery(
 )
 ```
 
-Fragments in `src/Shared/graphql/fragments/`, queries in `src/Shared/graphql/queries/`. After editing `.graphql` files, run `pnpm codegen`.
+Fragments in `src/Shared/graphql/fragments/`, queries in `src/Shared/graphql/queries/`. After editing `.graphql` files, run `pnpm codegen` and update `docs/EXPLORER_LINKS.md` with new Explorer link by re-running the same Python script logic used to create it: merge each query with its fragments recursively, URL-encode as `query`+`operationName`+`variables` parameters, and write the updated file.
 
 ### Service Alert (Situation) Handling
 
