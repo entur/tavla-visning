@@ -2,3 +2,6 @@ common:
   env: prd
   ingress:
     host: vis-tavla.entur.no
+  configmap:
+    data:
+      GOOGLE_PROJECT_ID: ent-tavlavis-prd

@@ -2,3 +2,6 @@ common:
   env: dev
   ingress:
     host: vis-tavla.dev.entur.no
+  configmap:
+    data:
+      GOOGLE_PROJECT_ID: ent-tavlavis-dev

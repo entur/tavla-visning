@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import type { TileDB } from '@/Shared/types/db-types/boards'
@@ -66,6 +67,16 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 
 	const quaysSituationIndex = useCycler(accumulatedQuaysSituations ?? [], 10000)
 
+	useEffect(() => {
+		if (quaysError) {
+			// biome-ignore lint/suspicious/noConsole: intentional error logging forwarded to GCP via container stdout
+			console.error('[useTileData] Quay fetch failed', {
+				quayIds: quays?.map((q) => q.id),
+				error: quaysError.message,
+			})
+		}
+	}, [quaysError, quays])
+
 	return {
 		displayName: displayName ?? name,
 		estimatedCalls: departures,
@@ -104,6 +115,16 @@ export function useStopPlaceTileData({
 	)
 
 	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
+
+	useEffect(() => {
+		if (stopPlaceError) {
+			// biome-ignore lint/suspicious/noConsole: intentional error logging forwarded to GCP via container stdout
+			console.error('[useTileData] Stop place fetch failed', {
+				stopPlaceId,
+				error: stopPlaceError.message,
+			})
+		}
+	}, [stopPlaceError, stopPlaceId])
 
 	return {
 		displayName: displayName ?? name,
