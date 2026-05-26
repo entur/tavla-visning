@@ -67,7 +67,7 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 	const quaysSituationIndex = useCycler(accumulatedQuaysSituations ?? [], 10000)
 
 	return {
-		displayName: displayName ?? name,
+		displayName: (displayName ?? name) || quayResults[0]?.name,
 		estimatedCalls: departures,
 		situations: quaysSituations ?? [],
 		uniqueSituations: accumulatedQuaysSituations,
@@ -106,7 +106,7 @@ export function useStopPlaceTileData({
 	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
 
 	return {
-		displayName: displayName ?? name,
+		displayName: (displayName ?? name) || stopPlaceData?.stopPlace?.name,
 		estimatedCalls: stopPlaceData?.stopPlace?.estimatedCalls ?? [],
 		situations: stopPlaceData?.stopPlace?.situations ?? [],
 		uniqueSituations: stopPlaceSituations ?? [],
