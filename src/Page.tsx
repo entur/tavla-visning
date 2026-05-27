@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Header } from './Shared/components/Header'
 import { Board } from './Board/scenarios/Board'
 import { InfoMessage } from './Shared/components/InfoMessage'
@@ -6,6 +5,7 @@ import { useGetBoard } from './Shared/hooks/useGetBoard'
 import { BoardStatus } from './error'
 import { useRefresh } from '@/Shared/hooks/useRefresh'
 import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
+import { useReloadDaily } from '@/Shared/hooks/useReloadDaily'
 import { BACKEND_API_URL } from '@/Shared/assets/env'
 
 function BoardPage() {
@@ -28,21 +28,12 @@ function BoardPage() {
 	const updatedBoard = refreshedBoard ?? board
 
 	useHeartbeat(board, BACKEND_API_URL)
+	useReloadDaily()
 
 	const theme = updatedBoard?.theme ?? 'dark'
 	const title = updatedBoard?.meta?.title
 		? `${updatedBoard.meta.title} | Entur tavla`
 		: 'Entur Tavla'
-
-	useEffect(() => {
-		const refreshTimeout = setTimeout(
-			() => {
-				window.location.reload()
-			},
-			24 * 60 * 60 * 1000,
-		)
-		return () => clearTimeout(refreshTimeout)
-	}, [])
 
 	return (
 		<div
