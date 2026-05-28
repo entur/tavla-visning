@@ -8,6 +8,7 @@ import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
 import { useReloadDaily } from '@/Shared/hooks/useReloadDaily'
 import { PageWrapper } from '@components/PageWrapper.tsx'
 import { BACKEND_API_URL } from '@/Shared/assets/env'
+import { ErrorBoundary } from '@board/components/ErrorBoundary'
 
 function BoardPage() {
 	const getBoardId = () => {
@@ -41,21 +42,23 @@ function BoardPage() {
 			{loading || error || !updatedBoard ? (
 				<BoardStatus loading={loading} error={error} board={updatedBoard} />
 			) : (
-				<>
-					<Header
-						theme={updatedBoard.theme}
-						hideLogo={updatedBoard.hideLogo}
-						hideClock={updatedBoard.hideClock}
-						folderLogo={folderLogo}
-					/>
+				<ErrorBoundary boardId={updatedBoard.id}>
+					<>
+						<Header
+							theme={updatedBoard.theme}
+							hideLogo={updatedBoard.hideLogo}
+							hideClock={updatedBoard.hideClock}
+							folderLogo={folderLogo}
+						/>
 
-					<Board board={updatedBoard} />
+						<Board board={updatedBoard} />
 
-					<InfoMessage
-						board={updatedBoard}
-						showEnturLogo={updatedBoard?.hideLogo || !!folderLogo}
-					/>
-				</>
+						<InfoMessage
+							board={updatedBoard}
+							showEnturLogo={updatedBoard?.hideLogo || !!folderLogo}
+						/>
+					</>
+				</ErrorBoundary>
 			)}
 		</PageWrapper>
 	)

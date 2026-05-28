@@ -35,3 +35,6 @@ function getBackendApiUrl() {
 
 export const BOARD_API_URL = getBoardApiUrl()
 export const BACKEND_API_URL = getBackendApiUrl()
+export const ERROR_REPORT_URL = BOARD_API_URL.includes('localhost')
+	? ''
+	: BOARD_API_URL + '/api/report-error'
