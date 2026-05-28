@@ -1,4 +1,5 @@
 import { useReloadDaily } from '@hooks/useReloadDaily'
+import { PageWrapper } from '@components/PageWrapper.tsx'
 import { Header } from './Shared/components/Header'
 import { Board } from './Board/scenarios/Board'
 import { InfoMessage } from './Shared/components/InfoMessage'
@@ -36,21 +37,11 @@ function StopPage() {
 	const board = buildSyntheticBoard(nsr)
 
 	return (
-		<div
-			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color)"
-			data-theme="dark"
-			data-color-mode="dark"
-		>
-			<div>
-				<title>Entur Tavla</title>
-			</div>
-
-			<div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
-				<Header theme="dark" />
-				<Board board={board} />
-				<InfoMessage board={board} showEnturLogo={true} />
-			</div>
-		</div>
+		<PageWrapper>
+			<Header theme="dark" />
+			<Board board={board} />
+			<InfoMessage board={board} showEnturLogo={true} />
+		</PageWrapper>
 	)
 }
 
