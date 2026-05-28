@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { Header } from './Shared/components/Header'
 import { Board } from './Board/scenarios/Board'
 import { InfoMessage } from './Shared/components/InfoMessage'
@@ -6,6 +5,8 @@ import { useGetBoard } from './Shared/hooks/useGetBoard'
 import { BoardStatus } from './error'
 import { useRefresh } from '@/Shared/hooks/useRefresh'
 import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
+import { useReloadDaily } from '@/Shared/hooks/useReloadDaily'
+import { PageWrapper } from '@components/PageWrapper.tsx'
 import { BACKEND_API_URL } from '@/Shared/assets/env'
 
 function BoardPage() {
@@ -28,55 +29,35 @@ function BoardPage() {
 	const updatedBoard = refreshedBoard ?? board
 
 	useHeartbeat(board, BACKEND_API_URL)
+	useReloadDaily()
 
 	const theme = updatedBoard?.theme ?? 'dark'
 	const title = updatedBoard?.meta?.title
 		? `${updatedBoard.meta.title} | Entur tavla`
 		: 'Entur Tavla'
 
-	useEffect(() => {
-		const refreshTimeout = setTimeout(
-			() => {
-				window.location.reload()
-			},
-			24 * 60 * 60 * 1000,
-		)
-		return () => clearTimeout(refreshTimeout)
-	}, [])
-
 	return (
-		<div
-			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color)"
-			data-theme={theme}
-			data-transport-palette={updatedBoard?.transportPalette}
-			data-color-mode={theme}
-		>
-			<div>
-				<title>{title}</title>
-			</div>
+		<PageWrapper theme={theme} transportPalette={updatedBoard?.transportPalette} title={title}>
+			{loading || error || !updatedBoard ? (
+				<BoardStatus loading={loading} error={error} board={updatedBoard} />
+			) : (
+				<>
+					<Header
+						theme={updatedBoard.theme}
+						hideLogo={updatedBoard.hideLogo}
+						hideClock={updatedBoard.hideClock}
+						folderLogo={folderLogo}
+					/>
 
-			<div className="flex flex-col bg-background h-screen w-full overflow-hidden p-3.5">
-				{loading || error || !updatedBoard ? (
-					<BoardStatus loading={loading} error={error} board={updatedBoard} />
-				) : (
-					<>
-						<Header
-							theme={updatedBoard.theme}
-							hideLogo={updatedBoard.hideLogo}
-							hideClock={updatedBoard.hideClock}
-							folderLogo={folderLogo}
-						/>
+					<Board board={updatedBoard} />
 
-						<Board board={updatedBoard} />
-
-						<InfoMessage
-							board={updatedBoard}
-							showEnturLogo={updatedBoard?.hideLogo || !!folderLogo}
-						/>
-					</>
-				)}
-			</div>
-		</div>
+					<InfoMessage
+						board={updatedBoard}
+						showEnturLogo={updatedBoard?.hideLogo || !!folderLogo}
+					/>
+				</>
+			)}
+		</PageWrapper>
 	)
 }
 

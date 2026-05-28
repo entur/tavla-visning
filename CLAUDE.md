@@ -96,7 +96,7 @@ Always use aliases for cross-module imports — never relative paths:
 - Biome for lint + format (no ESLint, no Prettier)
 - Single quotes, semicolons only when needed, 2-space indent, 100-char line width
 - `import type` for type-only imports
-- React components: PascalCase directories with `index.tsx` (e.g., `Header/index.tsx`)
+- React components: PascalCase directories with `PageWrapper.tsx` (e.g., `Header/PageWrapper.tsx`)
 - Hooks: camelCase with `use` prefix
 
 ## Styling
@@ -109,7 +109,7 @@ Always use aliases for cross-module imports — never relative paths:
 ## Key Files
 
 - [`src/Page.tsx`](src/Page.tsx) — entry component, routing, theme application, 24h reload
-- [`src/Board/scenarios/Board/index.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
+- [`src/Board/scenarios/Board/PageWrapper.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
 - [`src/Board/hooks/useTileData.ts`](src/Board/hooks/useTileData.ts) — all tile data fetching logic
 - [`src/Shared/hooks/useGetBoard.ts`](src/Shared/hooks/useGetBoard.ts) — board config with postMessage support
 - [`src/Shared/hooks/useQuery.ts`](src/Shared/hooks/useQuery.ts) — SWR wrapper for GraphQL
