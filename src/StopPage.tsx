@@ -25,6 +25,7 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 			}
 
 	return {
+		id: nsr,
 		meta: {},
 		tiles: [tile],
 	}
