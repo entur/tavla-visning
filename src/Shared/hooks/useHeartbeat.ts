@@ -1,7 +1,8 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <Need backwards compatibility> */
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
-import type { BoardDB } from '../types/db-types/boards'
+import type { BoardDB, BoardType } from '../types/db-types/boards'
+export type { BoardType }
 import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
 
 const HEARTBEAT_INTERVAL_MS = 60000 // 1 minute - how often to send heartbeat
@@ -181,7 +182,7 @@ function shouldSkipHeartbeat(boardId: string): boolean {
 	return false
 }
 
-function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
+function sendHeartbeat(boardId: string, tabId: string, backend_url: string, boardType: BoardType) {
 	try {
 		const screenInfo = {
 			width: (window && window.screen && window.screen.width) || 0,
@@ -199,6 +200,7 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
 				screen_width: screenInfo.width,
 				screen_height: screenInfo.height,
 				app: 'tavla-visning',
+				board_type: boardType,
 			}),
 		})
 	} catch (error) {
@@ -211,8 +213,10 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
  * Automatically handles tab ID generation, excludes admin/edit pages, and manages cleanup.
  *
  * @param board - The board object containing the board ID to track
+ * @param backend_url
+ * @param boardType
  */
-export function useHeartbeat(board: BoardDB | null, backend_url: string) {
+export function useHeartbeat(board: BoardDB | null, backend_url: string, boardType: BoardType) {
 	const tabIdRef = useRef<string | null>(null)
 
 	useEffect(() => {
@@ -230,16 +234,16 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 			return
 		}
 
-		sendHeartbeat(board.id, tabIdRef.current, backend_url)
+		sendHeartbeat(board.id, tabIdRef.current, backend_url, boardType)
 
 		// Set up interval for subsequent heartbeats
 		const intervalId = setInterval(() => {
 			if (!board || !board.id || !tabIdRef.current) return
-			sendHeartbeat(board.id, tabIdRef.current, backend_url)
+			sendHeartbeat(board.id, tabIdRef.current, backend_url, boardType)
 		}, HEARTBEAT_INTERVAL_MS)
 
 		return () => {
 			clearInterval(intervalId)
 		}
-	}, [board, backend_url])
+	}, [board, backend_url, boardType])
 }
