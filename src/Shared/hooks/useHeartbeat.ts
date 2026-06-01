@@ -1,8 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <Need backwards compatibility> */
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
-import type { BoardDB, BoardType } from '../types/db-types/boards'
-export type { BoardType }
+import type { BoardDB } from '../types/db-types/boards'
 import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
 
 const HEARTBEAT_INTERVAL_MS = 60000 // 1 minute - how often to send heartbeat
