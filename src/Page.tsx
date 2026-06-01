@@ -28,7 +28,7 @@ function BoardPage() {
 	const refreshedBoard = useRefresh(board, BACKEND_API_URL) ?? board
 	const updatedBoard = refreshedBoard ?? board
 
-	useHeartbeat(board, BACKEND_API_URL, 'departure')
+	useHeartbeat(board, BACKEND_API_URL)
 	useReloadDaily()
 
 	const theme = updatedBoard?.theme ?? 'dark'

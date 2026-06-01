@@ -38,7 +38,7 @@ function StopPage() {
 	useReloadDaily()
 
 	const board = buildSyntheticBoard(nsr)
-	useHeartbeat(board, BACKEND_API_URL, 'directLink')
+	useHeartbeat(board, BACKEND_API_URL, true)
 
 	return (
 		<PageWrapper>
