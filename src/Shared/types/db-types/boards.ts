@@ -64,6 +64,7 @@ export const TileColumns = {
 	name: 'Stoppested',
 	platform: 'Plattform',
 	time: 'Forventet',
+	fromStopPlace: 'Fra',
 } as const
 
 export type TileColumnDB = keyof typeof TileColumns

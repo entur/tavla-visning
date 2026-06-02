@@ -4,6 +4,7 @@ import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-sch
 import { Paragraph } from '@entur/typography'
 import { isArray } from 'lodash'
 import { Destination, Name } from './components/Destination'
+import { FromStopPlace } from './components/FromStopPlace'
 import { Deviation } from './components/Deviation'
 import { Line } from './components/Line'
 import { Platform } from './components/Platform'
@@ -52,6 +53,7 @@ function Table({
 					{columns.includes('name') && <Name customNames={customNames} />}
 					{columns.includes('platform') && <Platform />}
 					{columns.includes('time') && <ExpectedTime />}
+					{columns.includes('fromStopPlace') && <FromStopPlace />}
 				</DeparturesContext.Provider>
 			</div>
 		</div>
