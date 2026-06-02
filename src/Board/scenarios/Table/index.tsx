@@ -50,10 +50,10 @@ function Table({
 					{columns.includes('arrivalTime') && <ArrivalTime />}
 					{columns.includes('line') && <Line />}
 					{columns.includes('destination') && <Destination />}
+					{columns.includes('fromStopPlace') && <FromStopPlace />}
 					{columns.includes('name') && <Name customNames={customNames} />}
 					{columns.includes('platform') && <Platform />}
 					{columns.includes('time') && <ExpectedTime />}
-					{columns.includes('fromStopPlace') && <FromStopPlace />}
 				</DeparturesContext.Provider>
 			</div>
 		</div>
