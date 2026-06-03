@@ -1,9 +1,11 @@
 import { useReloadDaily } from '@hooks/useReloadDaily'
+import { useHeartbeat } from '@hooks/useHeartbeat'
 import { PageWrapper } from '@components/PageWrapper.tsx'
 import { Header } from './Shared/components/Header'
 import { Board } from './Board/scenarios/Board'
 import { InfoMessage } from './Shared/components/InfoMessage'
 import type { BoardDB, TileDB } from './Shared/types/db-types/boards'
+import { BACKEND_API_URL } from '@/Shared/assets/env'
 
 function buildSyntheticBoard(nsr: string): BoardDB {
 	const isQuay = nsr.startsWith('NSR:Quay:')
@@ -23,6 +25,7 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 			}
 
 	return {
+		id: nsr,
 		meta: {},
 		tiles: [tile],
 	}
@@ -35,6 +38,7 @@ function StopPage() {
 	useReloadDaily()
 
 	const board = buildSyntheticBoard(nsr)
+	useHeartbeat(board, BACKEND_API_URL, true)
 
 	return (
 		<PageWrapper>
