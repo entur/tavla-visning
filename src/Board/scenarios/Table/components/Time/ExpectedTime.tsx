@@ -1,19 +1,22 @@
 import { nanoid } from 'nanoid'
-import { TableCell } from '../TableCell'
-import { TableColumn } from '../TableColumn'
-import { FormattedTime } from './components/FormattedTime'
+import { useBoardContext } from '@/Board/context'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import { formatDateString, getRelativeTimeString } from '@/Shared/utils/time'
 import { DeparturesContext } from '../../contexts'
+import { TableCell } from '../TableCell'
+import { TableColumn } from '../TableColumn'
+import { FormattedTime } from './components/FormattedTime'
 
 const TWO_MINUTES = 120
+const ONE_MINUTE = 60
 
 function ExpectedTime() {
 	const departures = useNonNullContext(DeparturesContext)
+	const { isArrivals } = useBoardContext()
 
 	const time = departures.map((departure) => ({
-		aimedDepartureTime: departure.aimedDepartureTime,
-		expectedDepartureTime: departure.expectedDepartureTime,
+		aimedTime: isArrivals ? departure.aimedArrivalTime : departure.aimedDepartureTime,
+		expectedTime: isArrivals ? departure.expectedArrivalTime : departure.expectedDepartureTime,
 		cancelled: departure.cancellation,
 		key: nanoid(),
 	}))
@@ -23,9 +26,10 @@ function ExpectedTime() {
 			{time.map((t) => (
 				<TableCell key={t.key}>
 					<Time
-						expectedDepartureTime={t.expectedDepartureTime}
-						aimedDepartureTime={t.aimedDepartureTime}
+						expectedTime={t.expectedTime}
+						aimedTime={t.aimedTime}
 						cancelled={t.cancelled}
+						isArrivalBoard={isArrivals}
 					/>
 				</TableCell>
 			))}
@@ -34,13 +38,15 @@ function ExpectedTime() {
 }
 
 function Time({
-	expectedDepartureTime,
-	aimedDepartureTime,
+	expectedTime,
+	aimedTime,
 	cancelled,
+	isArrivalBoard,
 }: {
-	expectedDepartureTime: string
-	aimedDepartureTime: string
+	expectedTime: string
+	aimedTime: string
 	cancelled: boolean
+	isArrivalBoard?: boolean
 }) {
 	if (cancelled)
 		return (
@@ -48,30 +54,49 @@ function Time({
 				<div className="text-right text-em-lg/em-lg font-semibold text-estimated-time">
 					Innstilt
 				</div>
-				<div className="lineThrough text-right text-em-sm/em-sm">
-					{formatDateString(aimedDepartureTime)}
-				</div>
+				<div className="lineThrough text-right text-em-sm/em-sm">{formatDateString(aimedTime)}</div>
 			</>
 		)
 
-	const timeDeviationInSeconds = Math.abs(
-		(Date.parse(aimedDepartureTime) - Date.parse(expectedDepartureTime)) / 1000,
-	)
+	const secondsSinceArrival = (Date.now() - Date.parse(expectedTime)) / 1000
 
-	if (timeDeviationInSeconds > TWO_MINUTES) {
+	if (isArrivalBoard && secondsSinceArrival > ONE_MINUTE) {
 		return (
 			<>
-				<div className="text-right text-em-xl leading-em-base text-estimated-time">
-					{getRelativeTimeString(expectedDepartureTime)}
+				<div className="text-right text-em-xl leading-em-base">
+					{formatDateString(expectedTime)}
 				</div>
-				<div className="lineThrough text-right text-em-sm/em-xs">
-					{formatDateString(aimedDepartureTime)}
-				</div>
+				<div className="text-right text-em-sm/em-xs">Ankommet</div>
 			</>
 		)
 	}
 
-	return <FormattedTime time={expectedDepartureTime} />
+	const diff = (Date.parse(aimedTime) - Date.parse(expectedTime)) / 1000
+	const timeDeviationInSeconds = Math.abs(diff)
+	const isEarly = diff > 0
+
+	if (timeDeviationInSeconds > TWO_MINUTES) {
+		return (
+			<>
+				<div
+					className={`text-right text-em-xl leading-em-base ${isEarly ? 'text-success' : 'text-estimated-time'}`}
+				>
+					{getRelativeTimeString(expectedTime)}
+				</div>
+				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
+			</>
+		)
+	}
+
+	if (isArrivalBoard && isEarly)
+		return (
+			<>
+				<FormattedTime time={expectedTime} className="text-success" />
+				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
+			</>
+		)
+
+	return <FormattedTime time={expectedTime} className={isEarly ? 'text-success' : undefined} />
 }
 
 export { ExpectedTime }

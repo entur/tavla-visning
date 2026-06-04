@@ -1,8 +1,9 @@
 import { BoardTile, DEFAULT_COMBINED_COLUMNS } from '@board/components/BoardTile'
+import { useBoardContext } from '@/Board/context'
 import { useCombinedTileData } from '@/Board/hooks/useTileData'
+import type { TileVariants } from '@/Shared/components/Tile'
 import type { TileDB } from '@/Shared/types/db-types/boards'
 import { CombinedTileDeviation } from '../Table/components/StopPlaceDeviation'
-import type { TileVariants } from '@/Shared/components/Tile'
 
 type Props = {
 	combinedTile: TileDB[]
@@ -10,7 +11,8 @@ type Props = {
 }
 
 export function CombinedTile({ combinedTile, size }: Props) {
-	const tileData = useCombinedTileData(combinedTile)
+	const { isArrivals } = useBoardContext()
+	const tileData = useCombinedTileData(combinedTile, isArrivals)
 
 	return (
 		<BoardTile

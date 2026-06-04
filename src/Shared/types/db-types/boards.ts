@@ -5,6 +5,7 @@ export type BoardDB = {
 	meta: BoardMetaDB
 	tiles: TileDB[]
 	isCombinedTiles?: boolean
+	isArrivals?: boolean
 	theme?: BoardTheme
 	footer?: BoardFooter
 	transportPalette?: TransportPalette

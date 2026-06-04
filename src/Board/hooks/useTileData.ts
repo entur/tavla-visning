@@ -29,7 +29,12 @@ interface TileData {
 	customNames?: CustomName[]
 }
 
-export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): TileData {
+const ARRIVAL_LINGER_MINUTES = -5
+
+export function useQuaysTileData(
+	{ quays, offset, displayName, name }: TileDB,
+	isArrivals?: boolean,
+): TileData {
 	const hasSelectedQuays = !!quays && quays.length > 0
 
 	const quayQueries = hasSelectedQuays
@@ -38,8 +43,9 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 				variables: {
 					quayId: q.id,
 					whitelistedLines: q.whitelistedLines,
+					arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 				},
-				options: { poll: true, offset: offset ?? 0 },
+				options: { poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_LINGER_MINUTES : 0) },
 			}))
 		: []
 
@@ -57,9 +63,9 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 		.flatMap((quay) => quay.estimatedCalls)
 		.filter(isNotNullOrUndefined)
 		.sort((a, b) => {
-			return (
-				new Date(a.expectedDepartureTime).getTime() - new Date(b.expectedDepartureTime).getTime()
-			)
+			const timeA = isArrivals ? a.expectedArrivalTime : a.expectedDepartureTime
+			const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
+			return new Date(timeA).getTime() - new Date(timeB).getTime()
 		})
 
 	const accumulatedQuaysSituations = getAccumulatedTileSituations(departures, quaysSituations)
@@ -78,13 +84,10 @@ export function useQuaysTileData({ quays, offset, displayName, name }: TileDB): 
 	}
 }
 
-export function useStopPlaceTileData({
-	stopPlaceId,
-	whitelistedLines,
-	offset,
-	displayName,
-	name,
-}: TileDB): TileData {
+export function useStopPlaceTileData(
+	{ stopPlaceId, whitelistedLines, offset, displayName, name }: TileDB,
+	isArrivals?: boolean,
+): TileData {
 	const {
 		data: stopPlaceData,
 		isLoading: stopPlaceLoading,
@@ -94,8 +97,9 @@ export function useStopPlaceTileData({
 		{
 			stopPlaceId: stopPlaceId,
 			whitelistedLines, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
+			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
-		{ poll: true, offset: offset ?? 0 },
+		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_LINGER_MINUTES : 0) },
 	)
 
 	const stopPlaceSituations = getAccumulatedTileSituations(
@@ -117,7 +121,9 @@ export function useStopPlaceTileData({
 	}
 }
 
-export function useCombinedTileData(combinedTile: TileDB[]): TileData {
+export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
+	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
+	const lingerOffset = isArrivals ? ARRIVAL_LINGER_MINUTES : 0
 	const tileHasSelectedQuays = (tile: TileDB): boolean => tile.quays.length > 0
 
 	const quayQueryMeta = combinedTile.filter(tileHasSelectedQuays).flatMap((tile) =>
@@ -126,8 +132,9 @@ export function useCombinedTileData(combinedTile: TileDB[]): TileData {
 			variables: {
 				quayId: q.id,
 				whitelistedLines: q.whitelistedLines,
+				arrivalDeparture,
 			},
-			options: { poll: true, offset: tile.offset },
+			options: { poll: true, offset: (tile.offset ?? 0) + lingerOffset },
 			tileUuid: tile.uuid,
 		})),
 	)
@@ -141,8 +148,9 @@ export function useCombinedTileData(combinedTile: TileDB[]): TileData {
 			variables: {
 				stopPlaceId: tile.stopPlaceId,
 				whitelistedLines: tile.whitelistedLines,
+				arrivalDeparture,
 			},
-			options: { offset: tile.offset, poll: true },
+			options: { offset: (tile.offset ?? 0) + lingerOffset, poll: true },
 		}))
 
 	const {
@@ -171,7 +179,9 @@ export function useCombinedTileData(combinedTile: TileDB[]): TileData {
 	]
 
 	const departures = (estimatedCalls.filter(isNotNullOrUndefined) ?? []).sort((a, b) => {
-		return new Date(a.expectedDepartureTime).getTime() - new Date(b.expectedDepartureTime).getTime()
+		const timeA = isArrivals ? a.expectedArrivalTime : a.expectedDepartureTime
+		const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
+		return new Date(timeA).getTime() - new Date(timeB).getTime()
 	})
 
 	const situations: TSituationWithOrigin[] = [
