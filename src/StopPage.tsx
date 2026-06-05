@@ -1,5 +1,7 @@
 import { PageWrapper } from '@components/PageWrapper.tsx'
+import { useHeartbeat } from '@hooks/useHeartbeat'
 import { useReloadDaily } from '@hooks/useReloadDaily'
+import { BACKEND_API_URL } from '@/Shared/assets/env'
 import { Board } from './Board/scenarios/Board'
 import { Header } from './Shared/components/Header'
 import { InfoMessage } from './Shared/components/InfoMessage'
@@ -26,6 +28,7 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 		meta: {
 			fontSize: 'medium',
 		},
+		id: nsr,
 		tiles: [tile],
 	}
 }
@@ -37,6 +40,7 @@ function StopPage() {
 	useReloadDaily()
 
 	const board = buildSyntheticBoard(nsr)
+	useHeartbeat(board, BACKEND_API_URL, true)
 
 	return (
 		<PageWrapper>

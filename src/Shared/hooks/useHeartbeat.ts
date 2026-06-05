@@ -181,7 +181,7 @@ function shouldSkipHeartbeat(boardId: string): boolean {
 	return false
 }
 
-function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
+function sendHeartbeat(boardId: string, tabId: string, backend_url: string, isDirectLink: boolean) {
 	try {
 		const screenInfo = {
 			width: (window && window.screen && window.screen.width) || 0,
@@ -199,6 +199,7 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
 				screen_width: screenInfo.width,
 				screen_height: screenInfo.height,
 				app: 'tavla-visning',
+				is_direct_link: isDirectLink,
 			}),
 		})
 	} catch (error) {
@@ -211,8 +212,14 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string) {
  * Automatically handles tab ID generation, excludes admin/edit pages, and manages cleanup.
  *
  * @param board - The board object containing the board ID to track
+ * @param backend_url
+ * @param isDirectLink - if the board is from link, not a db entry
  */
-export function useHeartbeat(board: BoardDB | null, backend_url: string) {
+export function useHeartbeat(
+	board: BoardDB | null,
+	backend_url: string,
+	isDirectLink: boolean = false,
+) {
 	const tabIdRef = useRef<string | null>(null)
 
 	useEffect(() => {
@@ -230,16 +237,16 @@ export function useHeartbeat(board: BoardDB | null, backend_url: string) {
 			return
 		}
 
-		sendHeartbeat(board.id, tabIdRef.current, backend_url)
+		sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink)
 
 		// Set up interval for subsequent heartbeats
 		const intervalId = setInterval(() => {
 			if (!board || !board.id || !tabIdRef.current) return
-			sendHeartbeat(board.id, tabIdRef.current, backend_url)
+			sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink)
 		}, HEARTBEAT_INTERVAL_MS)
 
 		return () => {
 			clearInterval(intervalId)
 		}
-	}, [board, backend_url])
+	}, [board, backend_url, isDirectLink])
 }
