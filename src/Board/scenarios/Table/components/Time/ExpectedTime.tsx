@@ -70,28 +70,15 @@ function Time({
 			</>
 		)
 	}
+	const secondsDeviation = (Date.parse(aimedTime) - Date.parse(expectedTime)) / 1000
+	const timeDeviationInSeconds = Math.abs(secondsDeviation)
+	const isEarly = secondsDeviation > 0
 
-	const timeDeviationInSeconds = Math.abs((Date.parse(aimedTime) - Date.parse(expectedTime)) / 1000)
+	const delayMoreThanTwoMinutes = !isEarly && timeDeviationInSeconds > TWO_MINUTES
+	const showStrikethrough =
+		isEarly || (isArrivalBoard ? timeDeviationInSeconds > 0 : delayMoreThanTwoMinutes)
 
-	if (!isArrivalBoard) {
-		if (timeDeviationInSeconds > TWO_MINUTES)
-			return (
-				<>
-					<div className="text-right text-em-xl leading-em-base text-estimated-time">
-						{getRelativeTimeString(expectedTime)}
-					</div>
-					<div className="lineThrough text-right text-em-sm/em-xs">
-						{formatDateString(aimedTime)}
-					</div>
-				</>
-			)
-		return <FormattedTime time={expectedTime} />
-	}
-
-	const secondsDeviation = (Date.parse(expectedTime) - Date.parse(aimedTime)) / 1000
-	const hasDeviation = timeDeviationInSeconds > 0
-
-	if (timeDeviationInSeconds > TWO_MINUTES && secondsDeviation > 0)
+	if (delayMoreThanTwoMinutes)
 		return (
 			<>
 				<div className="text-right text-em-xl leading-em-base text-estimated-time">
@@ -101,7 +88,7 @@ function Time({
 			</>
 		)
 
-	if (hasDeviation)
+	if (showStrikethrough)
 		return (
 			<>
 				<FormattedTime time={expectedTime} />
