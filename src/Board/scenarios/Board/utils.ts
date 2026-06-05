@@ -1,6 +1,6 @@
 import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
 
-import type { BoardDB, BoardFontSize } from '@/Shared/types/db-types/boards'
+import type { BoardFontSize } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment, TTransportMode } from '@/types/graphql-schema'
 import { sortPublicCodes } from '@/utils/transportMode'
 
