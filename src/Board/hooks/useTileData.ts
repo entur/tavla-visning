@@ -29,7 +29,7 @@ interface TileData {
 	customNames?: CustomName[]
 }
 
-const ARRIVAL_LINGER_MINUTES = -5
+const ARRIVAL_HOLD_TIME_MINUTES = -5
 
 export function useQuaysTileData(
 	{ quays, offset, displayName, name }: TileDB,
@@ -45,7 +45,10 @@ export function useQuaysTileData(
 					whitelistedLines: q.whitelistedLines,
 					arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 				},
-				options: { poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_LINGER_MINUTES : 0) },
+				options: {
+					poll: true,
+					offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0),
+				},
 			}))
 		: []
 
@@ -99,7 +102,7 @@ export function useStopPlaceTileData(
 			whitelistedLines, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
-		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_LINGER_MINUTES : 0) },
+		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0) },
 	)
 
 	const stopPlaceSituations = getAccumulatedTileSituations(
@@ -123,7 +126,7 @@ export function useStopPlaceTileData(
 
 export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
-	const lingerOffset = isArrivals ? ARRIVAL_LINGER_MINUTES : 0
+	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 	const tileHasSelectedQuays = (tile: TileDB): boolean => tile.quays.length > 0
 
 	const quayQueryMeta = combinedTile.filter(tileHasSelectedQuays).flatMap((tile) =>
@@ -134,7 +137,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 				whitelistedLines: q.whitelistedLines,
 				arrivalDeparture,
 			},
-			options: { poll: true, offset: (tile.offset ?? 0) + lingerOffset },
+			options: { poll: true, offset: (tile.offset ?? 0) + holdTimeOffset },
 			tileUuid: tile.uuid,
 		})),
 	)
@@ -150,7 +153,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 				whitelistedLines: tile.whitelistedLines,
 				arrivalDeparture,
 			},
-			options: { offset: (tile.offset ?? 0) + lingerOffset, poll: true },
+			options: { offset: (tile.offset ?? 0) + holdTimeOffset, poll: true },
 		}))
 
 	const {

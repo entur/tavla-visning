@@ -8,7 +8,6 @@ import { TableColumn } from '../TableColumn'
 import { FormattedTime } from './components/FormattedTime'
 
 const TWO_MINUTES = 120
-const ONE_MINUTE = 60
 
 function ExpectedTime() {
 	const departures = useNonNullContext(DeparturesContext)
@@ -60,7 +59,7 @@ function Time({
 
 	const secondsSinceArrival = (Date.now() - Date.parse(expectedTime)) / 1000
 
-	if (isArrivalBoard && secondsSinceArrival > ONE_MINUTE) {
+	if (isArrivalBoard && secondsSinceArrival > TWO_MINUTES) {
 		return (
 			<>
 				<div className="text-right text-em-xl leading-em-base">
