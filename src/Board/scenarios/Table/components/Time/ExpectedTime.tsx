@@ -71,32 +71,45 @@ function Time({
 		)
 	}
 
-	const diff = (Date.parse(aimedTime) - Date.parse(expectedTime)) / 1000
-	const timeDeviationInSeconds = Math.abs(diff)
-	const isEarly = diff > 0
+	const timeDeviationInSeconds = Math.abs((Date.parse(aimedTime) - Date.parse(expectedTime)) / 1000)
 
-	if (timeDeviationInSeconds > TWO_MINUTES) {
+	if (!isArrivalBoard) {
+		if (timeDeviationInSeconds > TWO_MINUTES)
+			return (
+				<>
+					<div className="text-right text-em-xl leading-em-base text-estimated-time">
+						{getRelativeTimeString(expectedTime)}
+					</div>
+					<div className="lineThrough text-right text-em-sm/em-xs">
+						{formatDateString(aimedTime)}
+					</div>
+				</>
+			)
+		return <FormattedTime time={expectedTime} />
+	}
+
+	const secondsDeviation = (Date.parse(expectedTime) - Date.parse(aimedTime)) / 1000
+	const hasDeviation = timeDeviationInSeconds > 0
+
+	if (timeDeviationInSeconds > TWO_MINUTES && secondsDeviation > 0)
 		return (
 			<>
-				<div
-					className={`text-right text-em-xl leading-em-base ${isEarly ? 'text-success' : 'text-estimated-time'}`}
-				>
+				<div className="text-right text-em-xl leading-em-base text-estimated-time">
 					{getRelativeTimeString(expectedTime)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
 			</>
 		)
-	}
 
-	if (isArrivalBoard && isEarly)
+	if (hasDeviation)
 		return (
 			<>
-				<FormattedTime time={expectedTime} className="text-success" />
+				<FormattedTime time={expectedTime} />
 				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
 			</>
 		)
 
-	return <FormattedTime time={expectedTime} className={isEarly ? 'text-success' : undefined} />
+	return <FormattedTime time={expectedTime} />
 }
 
 export { ExpectedTime }
