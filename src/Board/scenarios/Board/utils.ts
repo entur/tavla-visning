@@ -16,18 +16,6 @@ export function getFontScale(fontSize: BoardFontSize | undefined) {
 			return 'text-em-base'
 	}
 }
-export function defaultFontSize(board: BoardDB) {
-	if (!board.tiles || board.tiles.length === 0) return 'medium'
-
-	switch (board.tiles.length) {
-		case 1:
-			return 'large'
-		case 2:
-			return 'medium'
-		default:
-			return 'small'
-	}
-}
 
 /**
  * Removes situations from the departure that are also present on the tile stop place to remove duplicate situations,

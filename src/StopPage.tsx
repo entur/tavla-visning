@@ -1,7 +1,7 @@
-import { useReloadDaily } from '@hooks/useReloadDaily'
 import { PageWrapper } from '@components/PageWrapper.tsx'
-import { Header } from './Shared/components/Header'
+import { useReloadDaily } from '@hooks/useReloadDaily'
 import { Board } from './Board/scenarios/Board'
+import { Header } from './Shared/components/Header'
 import { InfoMessage } from './Shared/components/InfoMessage'
 import type { BoardDB, TileDB } from './Shared/types/db-types/boards'
 
@@ -23,7 +23,9 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 			}
 
 	return {
-		meta: {},
+		meta: {
+			fontSize: 'medium',
+		},
 		tiles: [tile],
 	}
 }

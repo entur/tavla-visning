@@ -1,9 +1,9 @@
+import { SingleTile } from '@board/scenarios/SingleTile'
 import { Tile } from '@components/Tile'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
-import { SingleTile } from '@board/scenarios/SingleTile'
 import type { BoardDB } from '@/Shared/types/db-types/boards'
 import { CombinedTile } from '../CombinedTile'
-import { defaultFontSize, getFontScale } from './utils'
+import { getFontScale } from './utils'
 
 function Board({ board }: { board: BoardDB }) {
 	if (!board.tiles || !board.tiles.length)
@@ -14,7 +14,7 @@ function Board({ board }: { board: BoardDB }) {
 		)
 
 	const tiles = board.tiles
-	const fontScaleClass = getFontScale(board.meta?.fontSize || defaultFontSize(board))
+	const fontScaleClass = getFontScale(board.meta?.fontSize)
 
 	const getTileSize = (tileIndex: number) => {
 		if (tiles.length % 2 === 1 && tileIndex === 0) {
