@@ -74,8 +74,7 @@ function Time({
 	const isEarly = secondsDeviation > 0
 
 	const delayMoreThanTwoMinutes = !isEarly && timeDeviationInSeconds > TWO_MINUTES
-	const showStrikethrough =
-		isEarly || (isArrivalBoard ? timeDeviationInSeconds > 0 : delayMoreThanTwoMinutes)
+	const showStrikethrough = timeDeviationInSeconds > TWO_MINUTES
 
 	if (delayMoreThanTwoMinutes)
 		return (
