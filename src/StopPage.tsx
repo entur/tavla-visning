@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@board/components/ErrorBoundary'
 import { PageWrapper } from '@components/PageWrapper.tsx'
 import { useHeartbeat } from '@hooks/useHeartbeat'
 import { useReloadDaily } from '@hooks/useReloadDaily'
@@ -43,11 +44,13 @@ function StopPage() {
 	useHeartbeat(board, BACKEND_API_URL, true)
 
 	return (
-		<PageWrapper>
-			<Header theme="dark" />
-			<Board board={board} />
-			<InfoMessage board={board} showEnturLogo={true} />
-		</PageWrapper>
+		<ErrorBoundary boardId={board.id}>
+			<PageWrapper>
+				<Header theme="dark" />
+				<Board board={board} />
+				<InfoMessage board={board} showEnturLogo={true} />
+			</PageWrapper>
+		</ErrorBoundary>
 	)
 }
 
