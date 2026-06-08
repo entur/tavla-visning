@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { ERROR_REPORT_URL } from '@/Shared/assets/env'
 
 export type ErrorCode = 'display_error' | 'unknown'
