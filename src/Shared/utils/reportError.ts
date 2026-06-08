@@ -9,11 +9,9 @@ export function reportError(boardId: string, errorCode: ErrorCode): void {
 	if (!ERROR_REPORT_URL) return
 	if (!boardId || !BOARD_ID_PATTERN.test(boardId)) return
 
-	try {
-		fetch(ERROR_REPORT_URL, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ boardId: boardId, errorCode: errorCode }),
-		}).catch(() => {})
-	} catch (e) {}
+	fetch(ERROR_REPORT_URL, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ boardId: boardId, errorCode: errorCode }),
+	}).catch(() => {})
 }
