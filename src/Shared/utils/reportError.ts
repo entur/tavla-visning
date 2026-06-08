@@ -12,5 +12,6 @@ export function reportError(boardId: string, errorCode: ErrorCode): void {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
 		body: JSON.stringify({ boardId: boardId, errorCode: errorCode }),
+		keepalive: true,
 	}).catch(() => {})
 }
