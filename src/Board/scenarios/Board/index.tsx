@@ -1,5 +1,6 @@
 import { SingleTile } from '@board/scenarios/SingleTile'
 import { Tile } from '@components/Tile'
+import { BoardContext } from '@/Board/context'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
 import type { BoardDB } from '@/Shared/types/db-types/boards'
 import { CombinedTile } from '../CombinedTile'
@@ -24,24 +25,26 @@ function Board({ board }: { board: BoardDB }) {
 	}
 
 	return (
-		<TileGrid
-			tileCount={board.isCombinedTiles ? 1 : tiles.length}
-			fontScale={fontScaleClass}
-			data-transport-palette={board.transportPalette}
-			data-theme={board.theme}
-		>
-			{board.isCombinedTiles ? (
-				<CombinedTile
-					key={tiles.map((tile) => tile.uuid).join('-')}
-					combinedTile={tiles}
-					size="tall"
-				/>
-			) : (
-				tiles.map((tile, index) => {
-					return <SingleTile key={tile.uuid} {...tile} size={getTileSize(index)} />
-				})
-			)}
-		</TileGrid>
+		<BoardContext.Provider value={{ isArrivals: board.isArrivals ?? false }}>
+			<TileGrid
+				tileCount={board.isCombinedTiles ? 1 : tiles.length}
+				fontScale={fontScaleClass}
+				data-transport-palette={board.transportPalette}
+				data-theme={board.theme}
+			>
+				{board.isCombinedTiles ? (
+					<CombinedTile
+						key={tiles.map((tile) => tile.uuid).join('-')}
+						combinedTile={tiles}
+						size="tall"
+					/>
+				) : (
+					tiles.map((tile, index) => {
+						return <SingleTile key={tile.uuid} {...tile} size={getTileSize(index)} />
+					})
+				)}
+			</TileGrid>
+		</BoardContext.Provider>
 	)
 }
 

@@ -4,6 +4,7 @@ query getQuay(
 	$whitelistedLines: [ID!]
 	$numberOfDepartures: Int = 20
 	$startTime: DateTime
+	$arrivalDeparture: ArrivalDeparture
 ) {
 	quay(id: $quayId) {
 		name
@@ -16,6 +17,7 @@ query getQuay(
 			whiteListed: { lines: $whitelistedLines }
 			includeCancelledTrips: true
 			startTime: $startTime
+			arrivalDeparture: $arrivalDeparture
 		) {
 			...departure
 		}

@@ -1,9 +1,11 @@
-import { getRelativeTimeString, isDateStringToday, getDate } from '@/Shared/utils/time'
+import { getDate, getRelativeTimeString, isDateStringToday } from '@/Shared/utils/time'
 
-function FormattedTime({ time }: { time: string }) {
+function FormattedTime({ time, className }: { time: string; className?: string }) {
 	return (
 		<>
-			<div className="text-nowrap text-right text-em-xl leading-em-base">
+			<div
+				className={`text-nowrap text-right text-em-xl leading-em-base${className ? ` ${className}` : ''}`}
+			>
 				{getRelativeTimeString(time)}
 			</div>
 			{!isDateStringToday(time) && (

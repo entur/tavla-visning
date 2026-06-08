@@ -1,16 +1,16 @@
+import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
+import { Loader } from '@entur/loader'
+import { Tile, type TileVariants } from '@src/Shared/components/Tile'
+import type { ReactNode } from 'react'
+import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
 import { Table } from '@/Board/scenarios/Table'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
-
 import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
-import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
-import { Tile, type TileVariants } from '@src/Shared/components/Tile'
-import type { ReactNode } from 'react'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
-import { Loader } from '@entur/loader'
 
 interface BaseTileProps {
 	displayName?: string
@@ -59,10 +59,12 @@ export function BoardTile({
 	customNames,
 	size,
 }: BaseTileProps) {
+	const { isArrivals } = useBoardContext()
+
 	if (isLoading && !hasData) {
 		return (
 			<Tile state="loading" size={size}>
-				<Loader>Henter avganger..</Loader>
+				<Loader>{isArrivals ? 'Henter ankomster..' : 'Henter avganger..'}</Loader>
 			</Tile>
 		)
 	}
@@ -85,7 +87,7 @@ export function BoardTile({
 						))}
 				</div>
 				<div className="flex h-full w-full items-center justify-center text-center text-tertiary">
-					Ingen avganger i nærmeste fremtid
+					{isArrivals ? 'Ingen ankomster i nærmeste fremtid' : 'Ingen avganger i nærmeste fremtid'}
 				</div>
 			</Tile>
 		)
