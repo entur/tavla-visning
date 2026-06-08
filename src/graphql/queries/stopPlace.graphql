@@ -4,6 +4,7 @@ query StopPlace(
 	$whitelistedLines: [ID!]
 	$numberOfDepartures: Int = 20
 	$startTime: DateTime
+	$arrivalDeparture: ArrivalDeparture
 ) {
 	stopPlace(id: $stopPlaceId) {
 		name
@@ -14,6 +15,7 @@ query StopPlace(
 			whiteListed: { lines: $whitelistedLines }
 			includeCancelledTrips: true
 			startTime: $startTime
+			arrivalDeparture: $arrivalDeparture
 		) {
 			...departure
 		}
