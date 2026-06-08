@@ -1,11 +1,11 @@
-import { useReloadDaily } from '@hooks/useReloadDaily'
-import { useHeartbeat } from '@hooks/useHeartbeat'
 import { PageWrapper } from '@components/PageWrapper.tsx'
-import { Header } from './Shared/components/Header'
+import { useHeartbeat } from '@hooks/useHeartbeat'
+import { useReloadDaily } from '@hooks/useReloadDaily'
+import { BACKEND_API_URL } from '@/Shared/assets/env'
 import { Board } from './Board/scenarios/Board'
+import { Header } from './Shared/components/Header'
 import { InfoMessage } from './Shared/components/InfoMessage'
 import type { BoardDB, TileDB } from './Shared/types/db-types/boards'
-import { BACKEND_API_URL } from '@/Shared/assets/env'
 
 function buildSyntheticBoard(nsr: string): BoardDB {
 	const isQuay = nsr.startsWith('NSR:Quay:')
@@ -25,8 +25,10 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 			}
 
 	return {
+		meta: {
+			fontSize: 'medium',
+		},
 		id: nsr,
-		meta: {},
 		tiles: [tile],
 	}
 }
