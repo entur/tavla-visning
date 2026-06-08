@@ -26,7 +26,7 @@ function Header({
 
 	return (
 		<div
-			className={`relative mb-em-0.25 flex flex-col${isArrivals ? ' pb-em-0.25 border-b-[0.1em] border-lavender' : ''}`}
+			className={`relative mb-em-0.25 flex flex-col${isArrivals ? ` pb-em-0.25 border-b-[0.1em] ${theme === 'light' ? 'border-blue' : 'border-lavender'}` : ''}`}
 		>
 			<div className="flex flex-row items-center justify-between">
 				<div className="relative sm:h-[1.25em] w-full h-[1em]">
