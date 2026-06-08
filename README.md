@@ -10,7 +10,7 @@ Tavla Visning er sanntids avgangstavler for kollektivtrafikk (Entur), optimalise
 
 ## 🚀 Komme i gang
 
-1. Start den lokale databasen i det opprinnelige Tavla-repoet (`localhost:3000`).
+1. Kjør opp [tavla-admin](https://github.com/entur/tavla) lokalt (`localhost:3000`).
 2. Installer avhengigheter:
    ```bash
    pnpm install
