@@ -1,6 +1,6 @@
 import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
 
-import type { BoardDB, BoardFontSize } from '@/Shared/types/db-types/boards'
+import type { BoardFontSize } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment, TTransportMode } from '@/types/graphql-schema'
 import { sortPublicCodes } from '@/utils/transportMode'
 
@@ -14,18 +14,6 @@ export function getFontScale(fontSize: BoardFontSize | undefined) {
 			return 'text-em-lg sm:text-em-xl'
 		default:
 			return 'text-em-base'
-	}
-}
-export function defaultFontSize(board: BoardDB) {
-	if (!board.tiles || board.tiles.length === 0) return 'medium'
-
-	switch (board.tiles.length) {
-		case 1:
-			return 'large'
-		case 2:
-			return 'medium'
-		default:
-			return 'small'
 	}
 }
 
