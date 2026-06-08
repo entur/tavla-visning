@@ -2,6 +2,20 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Keeping This File Up to Date
+
+**Treat `CLAUDE.md` as part of the change, not an afterthought.** When a change touches something documented here, update this file in the same PR. Concretely, update it when you:
+
+- Add, rename, or move a **path alias** (keep in sync with `vite.config.ts` and `tsconfig.app.json`) → update **Path Aliases**
+- Add or remove a **GraphQL endpoint** in `src/Shared/assets/env.ts` → update **GraphQL**
+- Change a **real-time interval** (polling, heartbeat, SSE, daily reload) → update **Real-Time Mechanisms**
+- Add a **display scenario** under `src/Board/scenarios/` or change the **data flow** → update **Architecture**
+- Move or rename a **key file** listed under **Key Files** (verify the link still resolves)
+- Change **tooling, commands, or build setup** (Biome, husky, codegen, legacy targets, deploy) → update **Commands** / **Build Notes**
+- Change **code-style or styling conventions** (lint rules, theming, font scaling) → update **Code Style** / **Styling**
+
+When something documented here moves, the cheapest verification is to check that every linked path under **Key Files** still exists. Keep `README.md` in sync too — it links here and shares the onboarding steps.
+
 ## Project Overview
 
 Tavla Visning is a real-time public transport departure board display system for Entur (Norway). It's a Vite + React migration from a legacy Next.js implementation, optimized for lightweight rendering on display screens.
@@ -96,7 +110,7 @@ Always use aliases for cross-module imports — never relative paths:
 - Biome for lint + format (no ESLint, no Prettier)
 - Single quotes, semicolons only when needed, 2-space indent, 100-char line width
 - `import type` for type-only imports
-- React components: PascalCase directories with `PageWrapper.tsx` (e.g., `Header/PageWrapper.tsx`)
+- React components: PascalCase directories with an `index.tsx` entry (e.g., `Header/index.tsx`)
 - Hooks: camelCase with `use` prefix
 
 ## Styling
@@ -109,7 +123,7 @@ Always use aliases for cross-module imports — never relative paths:
 ## Key Files
 
 - [`src/Page.tsx`](src/Page.tsx) — entry component, routing, theme application, 24h reload
-- [`src/Board/scenarios/Board/PageWrapper.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
+- [`src/Board/scenarios/Board/index.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
 - [`src/Board/hooks/useTileData.ts`](src/Board/hooks/useTileData.ts) — all tile data fetching logic
 - [`src/Shared/hooks/useGetBoard.ts`](src/Shared/hooks/useGetBoard.ts) — board config with postMessage support
 - [`src/Shared/hooks/useQuery.ts`](src/Shared/hooks/useQuery.ts) — SWR wrapper for GraphQL
