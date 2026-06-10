@@ -1,8 +1,9 @@
+import { Paragraph } from '@entur/typography'
+import { isArray } from 'lodash'
+import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileColumnDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
-import { Paragraph } from '@entur/typography'
-import { isArray } from 'lodash'
 import { Destination, Name } from './components/Destination'
 import { FromStopPlace } from './components/FromStopPlace'
 import { Deviation } from './components/Deviation'
@@ -28,13 +29,19 @@ function Table({
 	numberOfVisibleSituations?: number
 	customNames?: CustomName[]
 }) {
+	const { isArrivals } = useBoardContext()
+
 	if (!columns || !isArray(columns))
 		return <div className="flex shrink-0">Du har ikke lagt til noen kolonner ennå</div>
 
 	if (departures.length === 0)
 		return (
 			<div className="flex h-full w-full flex-col items-center justify-center pb-4 text-center text-em-sm">
-				<Paragraph className="!text-primary sm:pb-8">Ingen avganger de neste 24 timene.</Paragraph>
+				<Paragraph className="!text-primary sm:pb-8">
+					{isArrivals
+						? 'Ingen ankomster de neste 24 timene.'
+						: 'Ingen avganger de neste 24 timene.'}
+				</Paragraph>
 			</div>
 		)
 	return (

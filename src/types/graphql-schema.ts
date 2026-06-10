@@ -2165,6 +2165,7 @@ export type TDepartureFragment = {
 	__typename?: 'EstimatedCall'
 	aimedDepartureTime: DateTime
 	expectedDepartureTime: DateTime
+	aimedArrivalTime: DateTime
 	expectedArrivalTime: DateTime
 	cancellation: boolean
 	realtime: boolean
@@ -2229,6 +2230,7 @@ export type TGetQuayQueryVariables = Exact<{
 	whitelistedLines?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>
 	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
 	startTime?: InputMaybe<Scalars['DateTime']['input']>
+	arrivalDeparture?: InputMaybe<TArrivalDeparture>
 }>
 
 export type TGetQuayQuery = {
@@ -2242,6 +2244,7 @@ export type TGetQuayQuery = {
 			__typename?: 'EstimatedCall'
 			aimedDepartureTime: DateTime
 			expectedDepartureTime: DateTime
+			aimedArrivalTime: DateTime
 			expectedArrivalTime: DateTime
 			cancellation: boolean
 			realtime: boolean
@@ -2341,6 +2344,7 @@ export type TGetQuaysQuery = {
 			__typename?: 'EstimatedCall'
 			aimedDepartureTime: DateTime
 			expectedDepartureTime: DateTime
+			aimedArrivalTime: DateTime
 			expectedArrivalTime: DateTime
 			cancellation: boolean
 			realtime: boolean
@@ -2427,6 +2431,7 @@ export type TStopPlaceQueryVariables = Exact<{
 	whitelistedLines?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>
 	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
 	startTime?: InputMaybe<Scalars['DateTime']['input']>
+	arrivalDeparture?: InputMaybe<TArrivalDeparture>
 }>
 
 export type TStopPlaceQuery = {
@@ -2439,6 +2444,7 @@ export type TStopPlaceQuery = {
 			__typename?: 'EstimatedCall'
 			aimedDepartureTime: DateTime
 			expectedDepartureTime: DateTime
+			aimedArrivalTime: DateTime
 			expectedArrivalTime: DateTime
 			cancellation: boolean
 			realtime: boolean

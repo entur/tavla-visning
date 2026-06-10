@@ -1,6 +1,5 @@
-import type * as Types from 'src/types/graphql-schema'
-
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
+import type * as Types from 'src/types/graphql-schema'
 export class TypedDocumentString<TResult, TVariables>
 	extends String
 	implements DocumentTypeDecoration<TResult, TVariables>
@@ -48,6 +47,7 @@ export const DepartureFragment = new TypedDocumentString(
   }
   aimedDepartureTime
   expectedDepartureTime
+  aimedArrivalTime
   expectedArrivalTime
   serviceJourney {
     id
@@ -98,7 +98,7 @@ export const LinesFragment = new TypedDocumentString(
 	{ fragmentName: 'lines' },
 ) as unknown as TypedDocumentString<Types.TLinesFragment, unknown>
 export const GetQuayQuery = new TypedDocumentString(`
-    query getQuay($quayId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
+    query getQuay($quayId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
   quay(id: $quayId) {
     name
     description
@@ -110,6 +110,7 @@ export const GetQuayQuery = new TypedDocumentString(`
       whiteListed: {lines: $whitelistedLines}
       includeCancelledTrips: true
       startTime: $startTime
+      arrivalDeparture: $arrivalDeparture
     ) {
       ...departure
     }
@@ -134,6 +135,7 @@ export const GetQuayQuery = new TypedDocumentString(`
   }
   aimedDepartureTime
   expectedDepartureTime
+  aimedArrivalTime
   expectedArrivalTime
   serviceJourney {
     id
@@ -213,6 +215,7 @@ export const GetQuaysQuery = new TypedDocumentString(`
   }
   aimedDepartureTime
   expectedDepartureTime
+  aimedArrivalTime
   expectedArrivalTime
   serviceJourney {
     id
@@ -256,7 +259,7 @@ fragment situation on PtSituationElement {
   }
 }`) as unknown as TypedDocumentString<Types.TGetQuaysQuery, Types.TGetQuaysQueryVariables>
 export const StopPlaceQuery = new TypedDocumentString(`
-    query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
+    query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
   stopPlace(id: $stopPlaceId) {
     name
     transportMode
@@ -266,6 +269,7 @@ export const StopPlaceQuery = new TypedDocumentString(`
       whiteListed: {lines: $whitelistedLines}
       includeCancelledTrips: true
       startTime: $startTime
+      arrivalDeparture: $arrivalDeparture
     ) {
       ...departure
     }
@@ -285,6 +289,7 @@ export const StopPlaceQuery = new TypedDocumentString(`
   }
   aimedDepartureTime
   expectedDepartureTime
+  aimedArrivalTime
   expectedArrivalTime
   serviceJourney {
     id

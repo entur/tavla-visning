@@ -1,9 +1,12 @@
 import { BoardTile, DEFAULT_COLUMNS } from '@board/components/BoardTile'
+import { useBoardContext } from '@/Board/context'
 import { useQuaysTileData, useStopPlaceTileData } from '@/Board/hooks/useTileData'
 import type { TileVariants } from '@/Shared/components/Tile'
 import type { TileDB } from '@/Shared/types/db-types/boards'
 
-type Props = TileDB & { size?: TileVariants['size'] }
+type Props = TileDB & {
+	size?: TileVariants['size']
+}
 
 export function SingleTile(props: Props) {
 	const hasSelectedQuays = !!props.quays && props.quays.length > 0
@@ -12,7 +15,8 @@ export function SingleTile(props: Props) {
 }
 
 function QuaysTile(props: Props) {
-	const tileData = useQuaysTileData(props)
+	const { isArrivals } = useBoardContext()
+	const tileData = useQuaysTileData(props, isArrivals)
 
 	return (
 		<BoardTile
@@ -25,7 +29,8 @@ function QuaysTile(props: Props) {
 }
 
 function StopPlaceTile(props: Props) {
-	const tileData = useStopPlaceTileData(props)
+	const { isArrivals } = useBoardContext()
+	const tileData = useStopPlaceTileData(props, isArrivals)
 
 	return (
 		<BoardTile
