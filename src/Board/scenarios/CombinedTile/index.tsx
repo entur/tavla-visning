@@ -1,4 +1,8 @@
-import { BoardTile, DEFAULT_COMBINED_COLUMNS_DEPARTURES } from '@board/components/BoardTile'
+import {
+	BoardTile,
+	DEFAULT_COMBINED_COLUMNS_ARRIVALS,
+	DEFAULT_COMBINED_COLUMNS_DEPARTURES,
+} from '@board/components/BoardTile'
 import { useBoardContext } from '@/Board/context'
 import { useCombinedTileData } from '@/Board/hooks/useTileData'
 import type { TileVariants } from '@/Shared/components/Tile'
@@ -17,7 +21,7 @@ export function CombinedTile({ combinedTile, size }: Props) {
 	return (
 		<BoardTile
 			{...tileData}
-			columns={DEFAULT_COMBINED_COLUMNS_DEPARTURES}
+			columns={isArrivals ? DEFAULT_COMBINED_COLUMNS_ARRIVALS : DEFAULT_COMBINED_COLUMNS_DEPARTURES}
 			customDeviation={<CombinedTileDeviation situations={tileData.situations} />}
 			size={size}
 		/>
