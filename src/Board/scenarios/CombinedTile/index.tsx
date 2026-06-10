@@ -1,4 +1,4 @@
-import { BoardTile, DEFAULT_COMBINED_COLUMNS } from '@board/components/BoardTile'
+import { BoardTile, DEFAULT_COMBINED_COLUMNS_DEPARTURES } from '@board/components/BoardTile'
 import { useCombinedTileData } from '@/Board/hooks/useTileData'
 import type { TileDB } from '@/Shared/types/db-types/boards'
 import { CombinedTileDeviation } from '../Table/components/StopPlaceDeviation'
@@ -15,7 +15,7 @@ export function CombinedTile({ combinedTile, size }: Props) {
 	return (
 		<BoardTile
 			{...tileData}
-			columns={DEFAULT_COMBINED_COLUMNS}
+			columns={DEFAULT_COMBINED_COLUMNS_DEPARTURES}
 			customDeviation={<CombinedTileDeviation situations={tileData.situations} />}
 			size={size}
 		/>
