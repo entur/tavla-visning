@@ -1,13 +1,14 @@
-import { Header } from './Shared/components/Header'
-import { Board } from './Board/scenarios/Board'
-import { InfoMessage } from './Shared/components/InfoMessage'
-import { useGetBoard } from './Shared/hooks/useGetBoard'
-import { BoardStatus } from './error'
-import { useRefresh } from '@/Shared/hooks/useRefresh'
-import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
-import { useReloadDaily } from '@/Shared/hooks/useReloadDaily'
+import { ErrorBoundary } from '@board/components/ErrorBoundary'
 import { PageWrapper } from '@components/PageWrapper.tsx'
 import { BACKEND_API_URL } from '@/Shared/assets/env'
+import { useHeartbeat } from '@/Shared/hooks/useHeartbeat'
+import { useRefresh } from '@/Shared/hooks/useRefresh'
+import { useReloadDaily } from '@/Shared/hooks/useReloadDaily'
+import { Board } from './Board/scenarios/Board'
+import { BoardStatus } from './error'
+import { Header } from './Shared/components/Header'
+import { InfoMessage } from './Shared/components/InfoMessage'
+import { useGetBoard } from './Shared/hooks/useGetBoard'
 
 function BoardPage() {
 	const getBoardId = () => {
@@ -41,7 +42,7 @@ function BoardPage() {
 			{loading || error || !updatedBoard ? (
 				<BoardStatus loading={loading} error={error} board={updatedBoard} />
 			) : (
-				<>
+				<ErrorBoundary boardId={updatedBoard.id}>
 					<Header
 						theme={updatedBoard.theme}
 						hideLogo={updatedBoard.hideLogo}
@@ -55,7 +56,7 @@ function BoardPage() {
 						board={updatedBoard}
 						showEnturLogo={updatedBoard?.hideLogo || !!folderLogo}
 					/>
-				</>
+				</ErrorBoundary>
 			)}
 		</PageWrapper>
 	)
