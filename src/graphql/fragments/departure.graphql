@@ -23,6 +23,9 @@ fragment departure on EstimatedCall {
 				colour
 			}
 		}
+		quays(first: 1) {
+			name
+		}
 	}
 	cancellation
 	realtime

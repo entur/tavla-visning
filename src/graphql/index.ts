@@ -61,6 +61,9 @@ export const DepartureFragment = new TypedDocumentString(
         colour
       }
     }
+    quays(first: 1) {
+      name
+    }
   }
   cancellation
   realtime
@@ -146,6 +149,9 @@ export const GetQuayQuery = new TypedDocumentString(`
         colour
       }
     }
+    quays(first: 1) {
+      name
+    }
   }
   cancellation
   realtime
@@ -223,6 +229,9 @@ export const GetQuaysQuery = new TypedDocumentString(`
         colour
       }
     }
+    quays(first: 1) {
+      name
+    }
   }
   cancellation
   realtime
@@ -293,6 +302,9 @@ export const StopPlaceQuery = new TypedDocumentString(`
         textColour
         colour
       }
+    }
+    quays(first: 1) {
+      name
     }
   }
   cancellation

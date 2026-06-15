@@ -6,9 +6,6 @@ export const GRAPHQL_ENDPOINTS: Record<TEndpointNames, string> = {
 	vehicles: 'https://api.entur.io/realtime/v1/vehicles/graphql',
 }
 
-export const COUNTY_ENDPOINT = 'https://ws.geonorge.no/kommuneinfo/v1/fylker'
-export const GEOCODER_ENDPOINT = 'https://api.entur.io/geocoder/v1'
-
 export const CLIENT_NAME = 'entur-tavla'
 
 function getBoardApiUrl() {
@@ -35,3 +32,4 @@ function getBackendApiUrl() {
 
 export const BOARD_API_URL = getBoardApiUrl()
 export const BACKEND_API_URL = getBackendApiUrl()
+export const ERROR_REPORT_URL = `${BOARD_API_URL}/api/report-error`

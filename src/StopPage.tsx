@@ -1,3 +1,4 @@
+import { ErrorBoundary } from '@board/components/ErrorBoundary'
 import { PageWrapper } from '@components/PageWrapper.tsx'
 import { useHeartbeat } from '@hooks/useHeartbeat'
 import { useReloadDaily } from '@hooks/useReloadDaily'
@@ -45,11 +46,13 @@ function StopPage() {
 	const brand = new URLSearchParams(window.location.search).get('brand') ?? ''
 
 	return (
-		<PageWrapper transportPalette={brand}>
-			<Header theme="dark" />
-			<Board board={board} />
-			<InfoMessage board={board} showEnturLogo={true} />
-		</PageWrapper>
+		<ErrorBoundary boardId={board.id}>
+			<PageWrapper>
+				<Header theme="dark" />
+				<Board board={board} />
+				<InfoMessage board={board} showEnturLogo={true} />
+			</PageWrapper>
+		</ErrorBoundary>
 	)
 }
 

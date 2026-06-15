@@ -2190,6 +2190,7 @@ export type TDepartureFragment = {
 				colour: string | null
 			} | null
 		}
+		quays: Array<{ __typename?: 'Quay'; name: string }>
 	}
 	situations: Array<{
 		__typename?: 'PtSituationElement'
@@ -2268,6 +2269,7 @@ export type TGetQuayQuery = {
 						colour: string | null
 					} | null
 				}
+				quays: Array<{ __typename?: 'Quay'; name: string }>
 			}
 			situations: Array<{
 				__typename?: 'PtSituationElement'
@@ -2367,6 +2369,7 @@ export type TGetQuaysQuery = {
 						colour: string | null
 					} | null
 				}
+				quays: Array<{ __typename?: 'Quay'; name: string }>
 			}
 			situations: Array<{
 				__typename?: 'PtSituationElement'
@@ -2466,6 +2469,7 @@ export type TStopPlaceQuery = {
 						colour: string | null
 					} | null
 				}
+				quays: Array<{ __typename?: 'Quay'; name: string }>
 			}
 			situations: Array<{
 				__typename?: 'PtSituationElement'
