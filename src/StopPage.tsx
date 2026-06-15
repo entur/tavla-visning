@@ -43,9 +43,11 @@ function StopPage() {
 	const board = buildSyntheticBoard(nsr)
 	useHeartbeat(board, BACKEND_API_URL, true)
 
+	const brand = new URLSearchParams(window.location.search).get('brand') ?? undefined
+
 	return (
 		<ErrorBoundary boardId={board.id}>
-			<PageWrapper>
+			<PageWrapper transportPalette={brand}>
 				<Header theme="dark" />
 				<Board board={board} />
 				<InfoMessage board={board} showEnturLogo={true} />
