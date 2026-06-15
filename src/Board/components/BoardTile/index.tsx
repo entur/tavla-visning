@@ -35,7 +35,12 @@ interface BaseTileProps {
 
 export const DEFAULT_COLUMNS_DEPARTURES: TileColumnDB[] = ['line', 'destination', 'time']
 
-export const DEFAULT_COLUMNS_ARRIVALS: TileColumnDB[] = ['line', 'fromStopPlace', 'time']
+export const DEFAULT_COLUMNS_ARRIVALS: TileColumnDB[] = [
+	'line',
+	'fromStopPlace',
+	'destination',
+	'time',
+]
 
 export const DEFAULT_COMBINED_COLUMNS_DEPARTURES: TileColumnDB[] = [
 	'line',
