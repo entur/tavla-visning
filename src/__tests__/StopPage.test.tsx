@@ -16,7 +16,7 @@ describe('StopPage', () => {
 	let container: HTMLDivElement
 
 	beforeEach(() => {
-		container = document.createEleme
+		container = document.createElement('div')
 		document.body.appendChild(container)
 	})
 
