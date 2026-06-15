@@ -48,6 +48,7 @@ function BoardPage() {
 						hideLogo={updatedBoard.hideLogo}
 						hideClock={updatedBoard.hideClock}
 						folderLogo={folderLogo}
+						isArrivals={updatedBoard.isArrivals ?? false}
 					/>
 
 					<Board board={updatedBoard} />
