@@ -1,4 +1,8 @@
-import { BoardTile, DEFAULT_COLUMNS } from '@board/components/BoardTile'
+import {
+	BoardTile,
+	DEFAULT_COLUMNS_ARRIVALS,
+	DEFAULT_COLUMNS_DEPARTURES,
+} from '@board/components/BoardTile'
 import { useBoardContext } from '@/Board/context'
 import { useQuaysTileData, useStopPlaceTileData } from '@/Board/hooks/useTileData'
 import type { TileVariants } from '@/Shared/components/Tile'
@@ -21,7 +25,9 @@ function QuaysTile(props: Props) {
 	return (
 		<BoardTile
 			{...tileData}
-			columns={props.columns ?? DEFAULT_COLUMNS}
+			columns={
+				props.columns ?? (isArrivals ? DEFAULT_COLUMNS_ARRIVALS : DEFAULT_COLUMNS_DEPARTURES)
+			}
 			walkingDistance={props.walkingDistance}
 			size={props.size}
 		/>
@@ -35,7 +41,9 @@ function StopPlaceTile(props: Props) {
 	return (
 		<BoardTile
 			{...tileData}
-			columns={props.columns ?? DEFAULT_COLUMNS}
+			columns={
+				props.columns ?? (isArrivals ? DEFAULT_COLUMNS_ARRIVALS : DEFAULT_COLUMNS_DEPARTURES)
+			}
 			walkingDistance={props.walkingDistance}
 			size={props.size}
 		/>

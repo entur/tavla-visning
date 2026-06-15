@@ -6,6 +6,7 @@ import type { TileColumnDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { Destination, Name } from './components/Destination'
 import { Deviation } from './components/Deviation'
+import { FromStopPlace } from './components/FromStopPlace'
 import { Line } from './components/Line'
 import { Platform } from './components/Platform'
 import { AimedTime } from './components/Time/AimedTime'
@@ -55,6 +56,7 @@ function Table({
 					{columns.includes('aimedTime') && <AimedTime />}
 					{columns.includes('arrivalTime') && <ArrivalTime />}
 					{columns.includes('line') && <Line />}
+					{columns.includes('fromStopPlace') && <FromStopPlace />}
 					{columns.includes('destination') && <Destination />}
 					{columns.includes('name') && <Name customNames={customNames} />}
 					{columns.includes('platform') && <Platform />}
