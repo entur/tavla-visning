@@ -47,7 +47,7 @@ function StopPage() {
 
 	return (
 		<ErrorBoundary boardId={board.id}>
-			<PageWrapper>
+			<PageWrapper transportPalette={brand}>
 				<Header theme="dark" />
 				<Board board={board} />
 				<InfoMessage board={board} showEnturLogo={true} />

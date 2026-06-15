@@ -1,8 +1,11 @@
-import { act } from 'react'
+import { act, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import StopPage from '@/StopPage'
 
+vi.mock('@board/components/ErrorBoundary', () => ({
+	ErrorBoundary: ({ children }: { children: ReactNode }) => children,
+}))
 vi.mock('@board/scenarios/Board', () => ({ Board: () => null }))
 vi.mock('@components/Header', () => ({ Header: () => null }))
 vi.mock('@components/InfoMessage', () => ({ InfoMessage: () => null }))
