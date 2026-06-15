@@ -24,7 +24,8 @@
   },
   "pnpm": {
     "overrides": {
-      "immutable": "3.8.3"
+      "immutable": "3.8.3",
+      "shell-quote": "1.8.4"
     },
     "onlyBuiltDependencies": ["esbuild"]
   },
