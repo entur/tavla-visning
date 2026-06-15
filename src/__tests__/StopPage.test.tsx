@@ -16,7 +16,7 @@ describe('StopPage', () => {
 	let container: HTMLDivElement
 
 	beforeEach(() => {
-		container = document.createElement('div')
+		container = document.createEleme
 		document.body.appendChild(container)
 	})
 
@@ -26,7 +26,7 @@ describe('StopPage', () => {
 	})
 
 	it('passes ?brand query param as data-transport-palette', () => {
-		vi.stubGlobal('location', { pathname: '/direktelenke/NSR:StopPlace:337', search: '?brand=atb' })
+		vi.stubGlobal('location', { pathname: '/stop/NSR:StopPlace:337', search: '?brand=atb' })
 		act(() => {
 			createRoot(container).render(<StopPage />)
 		})
@@ -34,7 +34,7 @@ describe('StopPage', () => {
 	})
 
 	it('passes empty string as data-transport-palette when brand is absent', () => {
-		vi.stubGlobal('location', { pathname: '/direktelenke/NSR:StopPlace:337', search: '' })
+		vi.stubGlobal('location', { pathname: '/stop/NSR:StopPlace:337', search: '' })
 		act(() => {
 			createRoot(container).render(<StopPage />)
 		})
@@ -43,7 +43,7 @@ describe('StopPage', () => {
 
 	it('handles different brand values', () => {
 		vi.stubGlobal('location', {
-			pathname: '/direktelenke/NSR:StopPlace:337',
+			pathname: '/stop/NSR:StopPlace:337',
 			search: '?brand=fram',
 		})
 		act(() => {
