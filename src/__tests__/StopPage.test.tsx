@@ -38,7 +38,7 @@ describe('StopPage', () => {
 		act(() => {
 			createRoot(container).render(<StopPage />)
 		})
-		expect(container.firstElementChild?.getAttribute('data-transport-palette')).toBe('')
+		expect(container.firstElementChild?.getAttribute('data-transport-palette')).toBeUndefined
 	})
 
 	it('handles different brand values', () => {
