@@ -110,7 +110,6 @@ Always use aliases for cross-module imports — never relative paths:
 - Biome for lint + format (no ESLint, no Prettier)
 - Single quotes, semicolons only when needed, 2-space indent, 100-char line width
 - `import type` for type-only imports
-- React components: PascalCase directories with an `index.tsx` entry (e.g., `Header/index.tsx`)
 - Hooks: camelCase with `use` prefix
 
 ## Styling
