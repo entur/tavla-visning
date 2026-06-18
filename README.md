@@ -37,6 +37,34 @@ Tavla Visning er sanntids avgangstavler for kollektivtrafikk (Entur), optimalise
 
 Formatering håndheves automatisk via husky + lint-staged ved commit.
 
+## 🧪 Smoketest
+
+Smoketesten kjøres via **BrowserStack** og verifiserer at siden lastes inn på eldre versjon av Chrome.
+
+
+### Forutsetninger
+
+- BrowserStack-konto med Automate-tilgang
+- `BROWSERSTACK_USERNAME` og `BROWSERSTACK_ACCESS_KEY` — hentes fra [BrowserStack Account Settings](https://automate.browserstack.com/dashboard/v2/profile)
+
+### Kjøre smoketest lokalt
+
+Fra prosjektets rotmappe:
+
+```bash
+BROWSERSTACK_USERNAME=ditt-brukernavn \
+BROWSERSTACK_ACCESS_KEY=din-nøkkel \
+pnpm smoketest
+```
+
+Testen er hardkoded mot `https://vis-tavla.dev.entur.no`. Gjør endringer i workflow-filene for å endre URL.
+
+Resultater vises i BrowserStack Automate-dashboardet under prosjektet `tavla-visning`.
+
+### Kjøre smoketest via GitHub Actions
+
+Smoketesten kan testes i GitHub Actions ved å opprette en branch `smoketest` og pushe til denne.
+
 ## 🧭 Videre lesing
 
 - [`CLAUDE.md`](CLAUDE.md) — detaljert arkitektur, datakjede, sanntidsmekanismer, path-aliaser og kodestil.
