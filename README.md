@@ -39,7 +39,9 @@ Formatering håndheves automatisk via husky + lint-staged ved commit.
 
 ## 🧪 Smoketest
 
-Smoketesten kjøres via **BrowserStack** og verifiserer at appen laster og rendrer korrekt på de eldre nettleserne som kjører på display-hardware: Chrome 49, Firefox 52, Safari 11, Edge 80 og Opera 36.
+Smoketesten kjøres via **BrowserStack** og verifiserer at appen laster og rendrer korrekt på de eldre nettleserne som kjører på display-hardware: Chrome 49, Firefox 52, Safari 11 og Edge 80.
+
+> **Merk:** Opera 36 testes ikke — nettleseren er ikke støttet på BrowserStack Automate.
 
 ### Forutsetninger
 
