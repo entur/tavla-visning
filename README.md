@@ -39,7 +39,7 @@ Formatering håndheves automatisk via husky + lint-staged ved commit.
 
 ## 🧪 Smoketest
 
-Smoketesten kjøres via **BrowserStack** og verifiserer at appen laster og rendrer korrekt på de eldre nettleserne som kjører på display-hardware: Chrome 49, Firefox 52, Safari 11 og Edge 80.
+Smoketesten kjøres via **BrowserStack** og verifiserer at siden lastes inn på eldre nettleserne: Chrome 49, Firefox 52, Safari 11 og Edge 80.
 
 > **Merk:** Opera 36 testes ikke — nettleseren er ikke støttet på BrowserStack Automate.
 
@@ -48,7 +48,7 @@ Smoketesten kjøres via **BrowserStack** og verifiserer at appen laster og rendr
 - BrowserStack-konto med Automate-tilgang
 - `BROWSERSTACK_USERNAME` og `BROWSERSTACK_ACCESS_KEY` — hentes fra [BrowserStack Account Settings](https://automate.browserstack.com/dashboard/v2/profile)
 
-### Kjøre testen
+### Kjøre smoketest lokalt
 
 Fra prosjektets rotmappe (avhengigheter installeres med `pnpm install`):
 
@@ -58,18 +58,13 @@ BROWSERSTACK_ACCESS_KEY=din-nøkkel \
 pnpm smoketest
 ```
 
-Som standard tester den mot `https://vis-tavla.dev.entur.no`. For å teste mot en annen URL (f.eks. en lokal build eksponert via en tunnel):
-
-```bash
-BROWSERSTACK_USERNAME=ditt-brukernavn \
-BROWSERSTACK_ACCESS_KEY=din-nøkkel \
-TEST_URL=https://din-tunnel-url.example.com \
-pnpm smoketest
-```
-
-> **Merk:** Testen bruker stoppested Oslo S (`/stop/NSR:StopPlace:59872`), som ikke krever lokal Tavla-database — den henter direkte fra Entur GraphQL.
+Testen er hardkoded mot `https://vis-tavla.dev.entur.no`. Gjør endringer i workflow-filene for å endre URL.
 
 Resultater vises i BrowserStack Automate-dashboardet under prosjektet `tavla-visning`.
+
+### Kjøre smoketest via GitHub Actions
+
+Smoketesten kan testes i GitHub Actions ved å opprette en branch `smoketest` og pushe til denne.
 
 ## 🧭 Videre lesing
 
