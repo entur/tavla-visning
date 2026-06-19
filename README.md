@@ -39,7 +39,7 @@ Formatering håndheves automatisk via husky + lint-staged ved commit.
 
 ## 🧪 Smoketest
 
-Smoketesten kjøres via **BrowserStack** og verifiserer at siden lastes inn på eldre nettleserne: Chrome 49, Firefox 52, Safari 11 og Edge 80.
+Smoketesten kjøres via **BrowserStack** og verifiserer at siden lastes inn på eldre nettlesere: Chrome 49, Firefox 52, Safari 11 og Edge 80.
 
 > **Merk:** Opera 36 testes ikke — nettleseren er ikke støttet på BrowserStack Automate.
 
@@ -50,7 +50,7 @@ Smoketesten kjøres via **BrowserStack** og verifiserer at siden lastes inn på 
 
 ### Kjøre smoketest lokalt
 
-Fra prosjektets rotmappe (avhengigheter installeres med `pnpm install`):
+Fra prosjektets rotmappe:
 
 ```bash
 BROWSERSTACK_USERNAME=ditt-brukernavn \
