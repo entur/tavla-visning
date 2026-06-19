@@ -2,7 +2,6 @@ import { Builder, By, until } from 'selenium-webdriver'
 
 const BROWSERSTACK_HUB = `https://${process.env.BROWSERSTACK_USERNAME}:${process.env.BROWSERSTACK_ACCESS_KEY}@hub-cloud.browserstack.com/wd/hub`
 const TEST_URL = process.env.TEST_URL || 'https://vis-tavla.dev.entur.no'
-// Oslo S — StopPage route requires no backend DB, fetches directly from Entur GraphQL
 const TEST_PATH = '/stop/NSR:StopPlace:59872'
 
 const BSTACK_COMMON = {
@@ -47,78 +46,58 @@ async function runTest(capabilities) {
   const target = `${TEST_URL}${TEST_PATH}`
   console.log(`Starting: ${sessionName}`)
 
-  // `driver` is hoisted so the catch/finally can reach it. Session creation lives inside
-  // the try so a rejected new-session request (e.g. an OS/browser combo not available on
-  // BrowserStack Automate) surfaces its real reason here instead of crashing unlogged.
   let driver
   try {
-    driver = new Builder()
-      .usingServer(BROWSERSTACK_HUB)
-      .withCapabilities(capabilities)
-      .build()
-
-    const session = await driver.getSession()
-    console.log(`  ${sessionName} session ${session.getId()} → ${target}`)
+    driver = await new Builder().usingServer(BROWSERSTACK_HUB).withCapabilities(capabilities).build()
 
     await driver.get(target)
-
-    // Wait for PageWrapper to set data-theme — confirms React hydrated and legacy polyfills ran
     await driver.wait(until.elementLocated(By.css('[data-theme]')), 20000)
-
     await setSessionStatus(driver, 'passed', 'Page loaded and rendered')
+
     console.log(`PASSED: ${sessionName}`)
   } catch (err) {
-    // Log the real error FIRST — marking the session must never mask it.
     console.error(
       `FAILED: ${sessionName}\n` +
         `  name:    ${err.name}\n` +
         `  message: ${err.message}\n` +
+        // Include up to 3 lines of the stack trace (excluding the first "Error:" line), or indicate if unavailable
         `  ${err.stack ? err.stack.split('\n').slice(1, 4).join('\n  ') : '(no stack)'}`
+
     )
     if (driver) {
-      try {
-        await setSessionStatus(driver, 'failed', err.message)
-      } catch (statusErr) {
-        console.error(`  (could not mark ${sessionName} failed: ${statusErr.message})`)
-      }
+      try { await setSessionStatus(driver, 'failed', err.message) } catch {}
     }
     throw err
   } finally {
     if (driver) {
-      try {
-        await driver.quit()
-      } catch (quitErr) {
-        console.error(`  (could not quit ${sessionName}: ${quitErr.message})`)
+      try { await driver.quit() } catch (err) {
+        console.error(`  (could not quit ${sessionName}: ${err.message})`)
       }
     }
   }
 }
 
-async function main() {
-  if (!process.env.BROWSERSTACK_USERNAME || !process.env.BROWSERSTACK_ACCESS_KEY) {
-    console.error('Missing BROWSERSTACK_USERNAME or BROWSERSTACK_ACCESS_KEY')
-    process.exit(1)
-  }
-
-  const results = []
-  for (const caps of BROWSERS) {
-    const sessionName = caps['bstack:options'].sessionName
-    try {
-      await runTest(caps)
-      results.push({ sessionName, ok: true })
-    } catch (err) {
-      results.push({ sessionName, ok: false, reason: err.message })
-    }
-  }
-
-  const failures = results.filter((r) => !r.ok)
-  console.log('\n=== Smoketest summary ===')
-  for (const r of results) {
-    console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${r.sessionName}${r.ok ? '' : ` — ${r.reason}`}`)
-  }
-  console.log(`${results.length - failures.length}/${results.length} passed`)
-
-  process.exit(failures.length > 0 ? 1 : 0)
+if (!process.env.BROWSERSTACK_USERNAME || !process.env.BROWSERSTACK_ACCESS_KEY) {
+  console.error('Missing BROWSERSTACK_USERNAME or BROWSERSTACK_ACCESS_KEY')
+  process.exit(1)
 }
 
-main()
+console.log('View build on BrowserStack: https://automate.browserstack.com/projects/tavla-visning/builds/\n')
+
+Promise.allSettled(BROWSERS.map(runTest))
+  .then((results) => {
+    const summary = results.map((result, i) => ({
+      sessionName: BROWSERS[i]['bstack:options'].sessionName,
+      ok: result.status === 'fulfilled',
+      reason: result.status === 'rejected' ? result.reason?.message : undefined,
+    }))
+
+    const failures = summary.filter((r) => !r.ok)
+    console.log('\n=== Smoketest summary ===')
+    summary.forEach((r) =>
+      console.log(`  ${r.ok ? 'PASS' : 'FAIL'}  ${r.sessionName}${r.ok ? '' : ` — ${r.reason}`}`)
+    )
+    console.log(`${summary.length - failures.length}/${summary.length} passed`)
+
+    process.exit(failures.length > 0 ? 1 : 0)
+  })
