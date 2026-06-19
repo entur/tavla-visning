@@ -2,6 +2,9 @@ name: smoketest
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - ETU-73758-automatic-smokestest
 
 jobs:
   smoketest:
