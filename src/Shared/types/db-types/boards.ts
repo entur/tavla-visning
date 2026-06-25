@@ -57,18 +57,15 @@ export type TileDB = {
 	columns?: TileColumnDB[]
 }
 
-export const TileColumns = {
-	aimedTime: 'Planlagt',
-	arrivalTime: 'Ankomst',
-	line: 'Linje',
-	destination: 'Destinasjon',
-	name: 'Stoppested',
-	platform: 'Plattform',
-	time: 'Forventet',
-	fromStopPlace: 'Fra',
-} as const
-
-export type TileColumnDB = keyof typeof TileColumns
+export type TileColumnDB =
+	| 'aimedTime'
+	| 'arrivalTime'
+	| 'line'
+	| 'destination'
+	| 'name'
+	| 'platform'
+	| 'time'
+	| 'fromStopPlace'
 
 export type BoardWalkingDistanceDB = {
 	distance?: number

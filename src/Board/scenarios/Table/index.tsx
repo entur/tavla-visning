@@ -56,8 +56,8 @@ function Table({
 					{columns.includes('aimedTime') && <AimedTime />}
 					{columns.includes('arrivalTime') && <ArrivalTime />}
 					{columns.includes('line') && <Line />}
-					{columns.includes('fromStopPlace') && <FromStopPlace />}
 					{columns.includes('destination') && <Destination />}
+					{columns.includes('fromStopPlace') && <FromStopPlace />}
 					{columns.includes('name') && <Name customNames={customNames} />}
 					{columns.includes('platform') && <Platform />}
 					{columns.includes('time') && <ExpectedTime />}
