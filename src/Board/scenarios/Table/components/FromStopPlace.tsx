@@ -9,7 +9,7 @@ function FromStopPlace() {
 
 	return (
 		<div className="grow overflow-hidden">
-			<TableColumn title="Kommer fra">
+			<TableColumn title="Fra">
 				{departures.map((departure) => (
 					<TableCell key={nanoid()} className="flex align-middle">
 						<div className="line-clamp-2 justify-items-end overflow-ellipsis hyphens-auto text-em-base/em-base">
