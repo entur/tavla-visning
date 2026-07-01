@@ -21,7 +21,7 @@ function ExpectedTime() {
 	}))
 
 	return (
-		<TableColumn title="Forventet" className="text-right">
+		<TableColumn title={isArrivals ? 'Ankomst' : 'Avgang'} className="text-right">
 			{time.map((t) => (
 				<TableCell key={t.key}>
 					<Time

@@ -9,7 +9,7 @@ function TableColumn({
 }) {
 	return (
 		<div className={`flex flex-col ${className}`}>
-			<div className="mx-2 pb-2 text-em-sm/em-base text-primary">
+			<div className="mx-em-0.25 pb-2 text-em-sm/em-base text-primary">
 				{title ?? <div className="h-[1.1em]" />}
 			</div>
 			{children}

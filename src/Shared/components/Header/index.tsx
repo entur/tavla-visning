@@ -1,8 +1,8 @@
-import { Clock } from '../Clock'
-import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
-import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
 import type { BoardTheme } from '@/Shared/types/db-types/boards'
 import type { FolderLogo } from '@/Shared/types/db-types/folders'
+import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
+import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
+import { Clock } from '../Clock'
 
 type Props = {
 	theme?: BoardTheme
@@ -22,7 +22,7 @@ function Header({
 	const tavlaLogo = theme === 'light' ? TavlaLogoBlue : TavlaLogoWhite
 	const logoSrc = folderLogo || tavlaLogo
 
-	if (hideClock && hideLogo) return null
+	if (hideClock && hideLogo && !isArrivals) return null
 
 	return (
 		<div
