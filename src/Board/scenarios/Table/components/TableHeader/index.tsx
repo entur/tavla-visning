@@ -1,12 +1,14 @@
-import type { BoardWalkingDistanceDB } from '@/Shared/types/db-types/boards'
-import { WalkingDistance } from '../WalkingDistance'
+import type { BoardDrivingDistanceDB, BoardWalkingDistanceDB } from '@/Shared/types/db-types/boards'
+import { DistanceInfo } from '../DistanceInfo'
 
 function TableHeader({
 	heading,
 	walkingDistance,
+	drivingDistance,
 }: {
 	heading: string
 	walkingDistance?: BoardWalkingDistanceDB
+	drivingDistance?: BoardDrivingDistanceDB
 }) {
 	return (
 		<div className="mb-3 flex min-h-[2.2em] flex-row items-center justify-between">
@@ -14,7 +16,7 @@ function TableHeader({
 				{heading}
 			</h1>
 
-			<WalkingDistance walkingDistance={walkingDistance} />
+			<DistanceInfo walkingDistance={walkingDistance} drivingDistance={drivingDistance} />
 		</div>
 	)
 }

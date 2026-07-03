@@ -56,7 +56,7 @@ function getTimeSince(timeAgo: number, divisor: number) {
 	return timeText[divisor] ? `${count} ${timeText[divisor]} siden` : 'en stund siden'
 }
 
-export function formatWalkTime(duration?: number) {
+export function formatDuration(duration?: number) {
 	if (!duration) return '-'
 	if (duration >= DAY_S) {
 		return `1+ dag`
