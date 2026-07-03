@@ -30,6 +30,9 @@ export const SituationFragment = new TypedDocumentString(
     value
     language
   }
+  validityPeriod {
+    endTime
+  }
 }
     `,
 	{ fragmentName: 'situation' },
@@ -80,6 +83,9 @@ export const DepartureFragment = new TypedDocumentString(
   summary {
     value
     language
+  }
+  validityPeriod {
+    endTime
   }
 }`,
 	{ fragmentName: 'departure' },
@@ -177,6 +183,9 @@ fragment situation on PtSituationElement {
     value
     language
   }
+  validityPeriod {
+    endTime
+  }
 }`) as unknown as TypedDocumentString<Types.TGetQuayQuery, Types.TGetQuayQueryVariables>
 export const GetQuaysQuery = new TypedDocumentString(`
     query getQuays($quayIds: [String!], $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
@@ -257,6 +266,9 @@ fragment situation on PtSituationElement {
     value
     language
   }
+  validityPeriod {
+    endTime
+  }
 }`) as unknown as TypedDocumentString<Types.TGetQuaysQuery, Types.TGetQuaysQueryVariables>
 export const StopPlaceQuery = new TypedDocumentString(`
     query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
@@ -322,5 +334,8 @@ fragment situation on PtSituationElement {
   summary {
     value
     language
+  }
+  validityPeriod {
+    endTime
   }
 }`) as unknown as TypedDocumentString<Types.TStopPlaceQuery, Types.TStopPlaceQueryVariables>
