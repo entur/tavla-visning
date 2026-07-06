@@ -130,22 +130,38 @@ export function useStopPlaceTileData(
  * - Empty list = no filter → show everything (admin's "all selected").
  * - Line not in the list → drop the departure.
  * - Line present with empty `frontTexts` → show all directions for that line.
- * - A departure with a missing `frontText` is always shown (never drop data
- *   because of missing metadata).
+ * - A departure with a missing `frontText` is always shown (we don't want to hide departures that are missing data).
  */
-export function keepByLinesWithDirection(
-	dep: TDepartureFragment,
+export function shouldIncludeByLineDirection(
+	departure: TDepartureFragment,
 	linesWithDirection: LineWithDirectionDB[],
 ): boolean {
-	if (linesWithDirection.length === 0) return true
+	const noLinesSelected = linesWithDirection.length === 0
 
-	const lineId = dep.serviceJourney?.line?.id
-	const match = linesWithDirection.find((l) => l.lineId === lineId)
-	if (!match) return false
-	if (match.frontTexts.length === 0) return true
-	const frontText = dep.destinationDisplay?.frontText
-	if (frontText == null) return true
-	return match.frontTexts.includes(frontText)
+	if (noLinesSelected) {
+		return true
+	}
+
+	const departureLineId = departure.serviceJourney?.line?.id
+	const matchingLine = linesWithDirection.find((line) => line.lineId === departureLineId)
+
+	if (!matchingLine) {
+		return false
+	}
+
+	if (matchingLine.frontTexts.length === 0) {
+		//Line matches, but no front texts are selected → show all directions for this line
+		return true
+	}
+
+	const departureFrontText = departure.destinationDisplay?.frontText
+	if (departureFrontText == null) {
+		return true
+	}
+
+	const frontTextMatches = matchingLine.frontTexts.includes(departureFrontText)
+
+	return frontTextMatches
 }
 
 /** Union of selected line ids, or undefined when nothing is selected (no server-side filter). */
@@ -183,7 +199,7 @@ export function useLinesWithDirectionTileData(
 	)
 
 	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? []).filter((dep) =>
-		keepByLinesWithDirection(dep, directions),
+		shouldIncludeByLineDirection(dep, directions),
 	)
 
 	const stopPlaceSituations = getAccumulatedTileSituations(
@@ -258,7 +274,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 			const tile = stopPlaceQueryMeta[index]?.tile
 
 			return (data.stopPlace?.estimatedCalls ?? [])
-				.filter((call) => keepByLinesWithDirection(call, tile?.linesWithDirection ?? []))
+				.filter((call) => shouldIncludeByLineDirection(call, tile?.linesWithDirection ?? []))
 				.map((call) => ({
 					...call,
 					tileUuid: tile?.uuid,

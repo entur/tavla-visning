@@ -17,7 +17,6 @@ type Props = TileDB & {
 }
 
 export function SingleTile(props: Props) {
-	// Precedence: linesWithDirection → selected quays → stop place.
 	if (props.linesWithDirection !== undefined) return <LinesWithDirectionTile {...props} />
 
 	const hasSelectedQuays = !!props.quays && props.quays.length > 0
