@@ -209,9 +209,6 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 
-	// Presedens per flis: linesWithDirection → quays → stopplass. En flis med
-	// linesWithDirection hentes alltid på stopplass-nivå, så quay-gruppen gjelder
-	// kun umigrerte fliser uten feltet.
 	const usesLinesWithDirection = (tile: TileDB): boolean => tile.linesWithDirection !== undefined
 	const tileHasSelectedQuays = (tile: TileDB): boolean =>
 		!usesLinesWithDirection(tile) && tile.quays.length > 0
@@ -231,9 +228,6 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 
 	const quayQueries = quayQueryMeta.map(({ tileUuid: _, ...q }) => q)
 
-	// Stopplass-gruppen dekker både rene stopplass-fliser og linesWithDirection-fliser.
-	// De skiller seg kun i whitelistedLines og om resultatet klient-filtreres (se nedenfor).
-	// Flisen følger med i meta slik at vi kan slå den opp posisjonelt fra resultatet.
 	const stopPlaceQueryMeta = combinedTile
 		.filter((tile) => !tileHasSelectedQuays(tile))
 		.map((tile) => ({
@@ -262,8 +256,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	const estimatedCalls = [
 		...(stopPlaceData?.flatMap((data, index) => {
 			const tile = stopPlaceQueryMeta[index]?.tile
-			// No-op for rene stopplass-fliser (tom liste = vis alt); filtrerer på
-			// (lineId, frontText) for linesWithDirection-fliser.
+
 			return (data.stopPlace?.estimatedCalls ?? [])
 				.filter((call) => keepByLinesWithDirection(call, tile?.linesWithDirection ?? []))
 				.map((call) => ({
