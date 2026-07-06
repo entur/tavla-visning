@@ -38,11 +38,17 @@ export type QuayDB = {
 	whitelistedLines: string[]
 }
 
+export type LineWithDirectionDB = {
+	lineId: string
+	frontTexts: string[]
+}
+
 export type TileDB = {
 	stopPlaceId: string
 	quays: QuayDB[]
 	name: string
 	uuid: string
+	linesWithDirection?: LineWithDirectionDB[]
 
 	//TODO: Old architecture - remove once completely migrated
 	type?: string
