@@ -208,7 +208,10 @@ export function useLinesWithDirectionTileData(
 export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
-	const tileHasSelectedQuays = (tile: TileDB): boolean => tile.quays.length > 0
+
+	const usesLinesWithDirection = (tile: TileDB): boolean => tile.linesWithDirection !== undefined
+	const tileHasSelectedQuays = (tile: TileDB): boolean =>
+		!usesLinesWithDirection(tile) && tile.quays.length > 0
 
 	const quayQueryMeta = combinedTile.filter(tileHasSelectedQuays).flatMap((tile) =>
 		tile.quays.map((q) => ({
@@ -225,17 +228,22 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 
 	const quayQueries = quayQueryMeta.map(({ tileUuid: _, ...q }) => q)
 
-	const stopPlaceQueries = combinedTile
+	const stopPlaceQueryMeta = combinedTile
 		.filter((tile) => !tileHasSelectedQuays(tile))
 		.map((tile) => ({
 			query: StopPlaceQuery,
 			variables: {
 				stopPlaceId: tile.stopPlaceId,
-				whitelistedLines: tile.whitelistedLines,
+				whitelistedLines: usesLinesWithDirection(tile)
+					? whitelistedLinesFromDirection(tile.linesWithDirection)
+					: tile.whitelistedLines,
 				arrivalDeparture,
 			},
 			options: { offset: (tile.offset ?? 0) + holdTimeOffset, poll: true },
+			tile,
 		}))
+
+	const stopPlaceQueries = stopPlaceQueryMeta.map(({ tile: _, ...q }) => q)
 
 	const {
 		data: stopPlaceData,
@@ -247,11 +255,14 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 
 	const estimatedCalls = [
 		...(stopPlaceData?.flatMap((data, index) => {
-			const tile = combinedTile.filter((t) => !tileHasSelectedQuays(t))[index]
-			return (data.stopPlace?.estimatedCalls ?? []).map((call) => ({
-				...call,
-				tileUuid: tile?.uuid,
-			}))
+			const tile = stopPlaceQueryMeta[index]?.tile
+
+			return (data.stopPlace?.estimatedCalls ?? [])
+				.filter((call) => keepByLinesWithDirection(call, tile?.linesWithDirection ?? []))
+				.map((call) => ({
+					...call,
+					tileUuid: tile?.uuid,
+				}))
 		}) ?? []),
 		...(quaysData?.flatMap((data, index) => {
 			const meta = quayQueryMeta[index]
