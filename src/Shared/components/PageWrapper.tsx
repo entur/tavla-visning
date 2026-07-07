@@ -15,7 +15,7 @@ export function PageWrapper({
 }: Props) {
 	return (
 		<div
-			className="w-full root h-full min-h-screen box-inherit bg-(--main-background-color)"
+			className="smoketest w-full root h-full min-h-screen box-inherit bg-(--main-background-color)"
 			data-theme={theme}
 			data-transport-palette={transportPalette}
 			data-color-mode={theme}
