@@ -32,7 +32,7 @@ interface TileData {
 const ARRIVAL_HOLD_TIME_MINUTES = -5
 const DEFAULT_NUMBER_OF_DEPARTURES = 20
 const DIRECTION_NUMBER_OF_DEPARTURES = 50
-const DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION = 5
+const DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION = 10
 
 export function useQuaysTileData(
 	{ quays, offset, displayName, name }: TileDB,
