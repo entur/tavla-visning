@@ -88,7 +88,7 @@ export function useQuaysTileData(
 }
 
 export function useStopPlaceTileData(
-	{ stopPlaceId, whitelistedLines, offset, displayName, name }: TileDB,
+	{ stopPlaceId, whitelistedLines, linesWithDirection, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
 	const {
@@ -99,107 +99,17 @@ export function useStopPlaceTileData(
 		StopPlaceQuery,
 		{
 			stopPlaceId: stopPlaceId,
-			whitelistedLines, // --- Support for old boards with  whitelisted lines. This is not used anymore, but breaks if not supported for legacy boards.
-			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
-		},
-		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0) },
-	)
-
-	const stopPlaceSituations = getAccumulatedTileSituations(
-		stopPlaceData?.stopPlace?.estimatedCalls,
-		stopPlaceData?.stopPlace?.situations,
-	)
-
-	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
-
-	return {
-		displayName: (displayName ?? name) || stopPlaceData?.stopPlace?.name,
-		estimatedCalls: stopPlaceData?.stopPlace?.estimatedCalls ?? [],
-		situations: stopPlaceData?.stopPlace?.situations ?? [],
-		uniqueSituations: stopPlaceSituations ?? [],
-		currentSituationIndex,
-		isLoading: stopPlaceLoading,
-		error: stopPlaceError,
-		hasData: !!stopPlaceData?.stopPlace,
-	}
-}
-
-/**
- * Filters a departure against a tile's selected lines and directions.
- *
- * - Empty list = no filter → show everything (admin's "all selected").
- * - Line not in the list → drop the departure.
- * - Line present with empty `frontTexts` → show all directions for that line.
- * - A departure with a missing `frontText` is always shown (we don't want to hide departures that are missing data).
- */
-export function shouldIncludeByLineDirection(
-	departure: TDepartureFragment,
-	linesWithDirection: LineWithDirectionDB[],
-): boolean {
-	const noLinesSelected = linesWithDirection.length === 0
-
-	if (noLinesSelected) {
-		return true
-	}
-
-	const departureLineId = departure.serviceJourney?.line?.id
-	const matchingLine = linesWithDirection.find((line) => line.lineId === departureLineId)
-
-	if (!matchingLine) {
-		return false
-	}
-
-	if (matchingLine.frontTexts.length === 0) {
-		//Line matches, but no front texts are selected → show all directions for this line
-		return true
-	}
-
-	const departureFrontText = departure.destinationDisplay?.frontText
-	if (departureFrontText == null) {
-		return true
-	}
-
-	const frontTextMatches = matchingLine.frontTexts.includes(departureFrontText)
-
-	return frontTextMatches
-}
-
-/** Union of selected line ids, or undefined when nothing is selected (no server-side filter). */
-function whitelistedLinesFromDirection(
-	linesWithDirection: LineWithDirectionDB[] | undefined,
-): string[] | undefined {
-	const lineIds = [...new Set((linesWithDirection ?? []).map((l) => l.lineId))]
-	return lineIds.length > 0 ? lineIds : undefined
-}
-
-/**
- * Fetches at stop place level and filters departures client-side by
- * `(lineId, frontText)`. Used when a tile has `linesWithDirection` set. Fetching
- * at stop place level (rather than per quay) keeps a departure visible even when
- * it changes platform in realtime.
- */
-export function useLinesWithDirectionTileData(
-	{ stopPlaceId, linesWithDirection, offset, displayName, name }: TileDB,
-	isArrivals?: boolean,
-): TileData {
-	const directions = linesWithDirection ?? []
-
-	const {
-		data: stopPlaceData,
-		isLoading: stopPlaceLoading,
-		error: stopPlaceError,
-	} = useQuery(
-		StopPlaceQuery,
-		{
-			stopPlaceId: stopPlaceId,
-			whitelistedLines: whitelistedLinesFromDirection(directions),
+			whitelistedLines:
+				linesWithDirection !== undefined
+					? whitelistedLinesFromDirection(linesWithDirection)
+					: whitelistedLines,
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
 		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0) },
 	)
 
 	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? []).filter((dep) =>
-		shouldIncludeByLineDirection(dep, directions),
+		shouldIncludeByLineDirection(dep, linesWithDirection ?? []),
 	)
 
 	const stopPlaceSituations = getAccumulatedTileSituations(
@@ -336,6 +246,54 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		hasData: !!(stopPlaceData?.length || quaysData?.length),
 		customNames,
 	}
+}
+
+export function shouldIncludeByLineDirection(
+	departure: TDepartureFragment,
+	linesWithDirection: LineWithDirectionDB[],
+): boolean {
+	const noLinesSelected = linesWithDirection.length === 0
+
+	if (noLinesSelected) {
+		// No lines selected → show all departures
+		return true
+	}
+
+	const departureLineId = departure.serviceJourney?.line?.id
+	const matchingLine = linesWithDirection.find((line) => line.lineId === departureLineId)
+
+	if (!matchingLine) {
+		//Line not selected → hide the departure
+		return false
+	}
+
+	if (matchingLine.frontTexts.length === 0) {
+		//Line matches, but no front texts are selected → show all directions for this line
+		return true
+	}
+
+	const departureFrontText = departure.destinationDisplay?.frontText
+	if (departureFrontText == null) {
+		//Departure has no front text → show it, we don't want to hide departures that are missing data
+		return true
+	}
+
+	const frontTextMatches = matchingLine.frontTexts.includes(departureFrontText)
+
+	//Line matches, and front text matches → show the departure
+	//Line matches, but front text does not match → hide the departure
+	return frontTextMatches
+}
+
+/**
+ * @param linesWithDirection
+ * @returns A list of unique lineIds from the linesWithDirection array, or undefined if the array is empty.
+ */
+function whitelistedLinesFromDirection(
+	linesWithDirection: LineWithDirectionDB[] | undefined,
+): string[] | undefined {
+	const lineIds = [...new Set((linesWithDirection ?? []).map((l) => l.lineId))]
+	return lineIds.length > 0 ? lineIds : undefined
 }
 
 function isNotNullOrUndefined<T>(value: T | null | undefined): value is T {
