@@ -2438,6 +2438,7 @@ export type TStopPlaceQueryVariables = Exact<{
 	>
 	whitelistedLines?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>
 	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
+	numberOfDeparturesPerLineAndDestinationDisplay?: InputMaybe<Scalars['Int']['input']>
 	startTime?: InputMaybe<Scalars['DateTime']['input']>
 	arrivalDeparture?: InputMaybe<TArrivalDeparture>
 }>
