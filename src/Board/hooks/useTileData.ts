@@ -29,6 +29,22 @@ interface TileData {
 	customNames?: CustomName[]
 }
 
+export type TileDataSource = 'linesWithDirection' | 'quays' | 'stopPlace'
+
+/**
+ * Bestemmer hvilken datakilde som skal brukes for å hente avganger for en gitt tile.
+ *
+ * @param tile
+ * @returns En av 'linesWithDirection', 'quays' eller 'stopPlace', som indikerer hvilken datakilde som skal brukes for å hente avganger for den gitte tile.
+ */
+export function resolveTileDataSource(
+	tile: Pick<TileDB, 'linesWithDirection' | 'quays'>,
+): TileDataSource {
+	if (tile.linesWithDirection !== undefined) return 'linesWithDirection'
+	if (tile.quays && tile.quays.length > 0) return 'quays'
+	return 'stopPlace'
+}
+
 const ARRIVAL_HOLD_TIME_MINUTES = -5
 const DEFAULT_NUMBER_OF_DEPARTURES = 20
 const DIRECTION_NUMBER_OF_DEPARTURES = 50
@@ -145,11 +161,11 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 
-	const usesLinesWithDirection = (tile: TileDB): boolean => tile.linesWithDirection !== undefined
-	const tileHasSelectedQuays = (tile: TileDB): boolean =>
-		!usesLinesWithDirection(tile) && tile.quays.length > 0
+	const tileDataSource = (tile: TileDB): TileDataSource => resolveTileDataSource(tile)
+	const isLinesWithDirectionTile = (tile: TileDB) => tileDataSource(tile) === 'linesWithDirection'
+	const isQuayTile = (tile: TileDB) => tileDataSource(tile) === 'quays'
 
-	const quayQueryMeta = combinedTile.filter(tileHasSelectedQuays).flatMap((tile) =>
+	const quayQueryMeta = combinedTile.filter(isQuayTile).flatMap((tile) =>
 		tile.quays.map((q) => ({
 			query: GetQuayQuery,
 			variables: {
@@ -165,18 +181,18 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	const quayQueries = quayQueryMeta.map(({ tileUuid: _, ...q }) => q)
 
 	const stopPlaceQueryMeta = combinedTile
-		.filter((tile) => !tileHasSelectedQuays(tile))
+		.filter((tile) => !isQuayTile(tile))
 		.map((tile) => ({
 			query: StopPlaceQuery,
 			variables: {
 				stopPlaceId: tile.stopPlaceId,
-				whitelistedLines: usesLinesWithDirection(tile)
+				whitelistedLines: isLinesWithDirectionTile(tile)
 					? whitelistedLinesFromDirection(tile.linesWithDirection)
 					: tile.whitelistedLines,
-				numberOfDepartures: usesLinesWithDirection(tile)
+				numberOfDepartures: isLinesWithDirectionTile(tile)
 					? DIRECTION_NUMBER_OF_DEPARTURES
 					: DEFAULT_NUMBER_OF_DEPARTURES,
-				numberOfDeparturesPerLineAndDestinationDisplay: usesLinesWithDirection(tile)
+				numberOfDeparturesPerLineAndDestinationDisplay: isLinesWithDirectionTile(tile)
 					? DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION
 					: undefined,
 				arrivalDeparture,
@@ -305,7 +321,7 @@ export function shouldIncludeByLineDirection(
  * @param linesWithDirection
  * @returns A list of unique lineIds from the linesWithDirection array, or undefined if the array is empty.
  */
-function whitelistedLinesFromDirection(
+export function whitelistedLinesFromDirection(
 	linesWithDirection: LineWithDirectionDB[] | undefined,
 ): string[] | undefined {
 	const lineIds = [...new Set((linesWithDirection ?? []).map((l) => l.lineId))]
