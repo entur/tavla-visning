@@ -1,5 +1,3 @@
-import type { TTransportMode } from '../../../types/graphql-schema'
-
 export type BoardDB = {
 	id?: BoardId
 	meta: BoardMetaDB
