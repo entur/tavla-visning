@@ -12,7 +12,7 @@ const BSTACK_COMMON = {
 const BROWSER = {
   browserName: 'chrome',
   browserVersion: '53.0',
-  'bstack:options': { ...BSTACK_COMMON, os: 'Linux', sessionName: 'smoketest-chrome-53-linux' },
+  'bstack:options': { ...BSTACK_COMMON, os: 'Windows', sessionName: 'smoketest-chrome-53-linux' },
 }
 
 function setSessionStatus(driver, status, reason) {
