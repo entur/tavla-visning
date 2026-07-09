@@ -3,6 +3,7 @@ query StopPlace(
 	$whitelistedTransportModes: [TransportMode]
 	$whitelistedLines: [ID!]
 	$numberOfDepartures: Int = 20
+	$numberOfDeparturesPerLineAndDestinationDisplay: Int
 	$startTime: DateTime
 	$arrivalDeparture: ArrivalDeparture
 ) {
@@ -11,6 +12,7 @@ query StopPlace(
 		transportMode
 		estimatedCalls(
 			numberOfDepartures: $numberOfDepartures
+			numberOfDeparturesPerLineAndDestinationDisplay: $numberOfDeparturesPerLineAndDestinationDisplay
 			whiteListedModes: $whitelistedTransportModes
 			whiteListed: { lines: $whitelistedLines }
 			includeCancelledTrips: true

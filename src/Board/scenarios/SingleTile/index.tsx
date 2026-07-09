@@ -4,7 +4,11 @@ import {
 	DEFAULT_COLUMNS_DEPARTURES,
 } from '@board/components/BoardTile'
 import { useBoardContext } from '@/Board/context'
-import { useQuaysTileData, useStopPlaceTileData } from '@/Board/hooks/useTileData'
+import {
+	resolveTileDataSource,
+	useQuaysTileData,
+	useStopPlaceTileData,
+} from '@/Board/hooks/useTileData'
 import type { TileVariants } from '@/Shared/components/Tile'
 import type { TileDB } from '@/Shared/types/db-types/boards'
 
@@ -13,9 +17,11 @@ type Props = TileDB & {
 }
 
 export function SingleTile(props: Props) {
-	const hasSelectedQuays = !!props.quays && props.quays.length > 0
-
-	return hasSelectedQuays ? <QuaysTile {...props} /> : <StopPlaceTile {...props} />
+	return resolveTileDataSource(props) === 'quays' ? (
+		<QuaysTile {...props} />
+	) : (
+		<StopPlaceTile {...props} />
+	)
 }
 
 function QuaysTile(props: Props) {
