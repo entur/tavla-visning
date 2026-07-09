@@ -21,7 +21,7 @@ describe('shouldIncludeByLineDirection', () => {
 		expect(shouldIncludeByLineDirection(departure('L1', 'Nord'), [])).toBe(true)
 	})
 
-	it('skjuler avgang når linja ikke er valgt', () => {
+	it('skjuler avgang når linja ikke er blant valgte i linesWithDirection', () => {
 		const lwd: LineWithDirectionDB[] = [{ lineId: 'L2', frontTexts: [] }]
 		expect(shouldIncludeByLineDirection(departure('L1', 'Nord'), lwd)).toBe(false)
 	})
@@ -29,14 +29,15 @@ describe('shouldIncludeByLineDirection', () => {
 	it('viser alle retninger når linja matcher og frontTexts er tom', () => {
 		const lwd: LineWithDirectionDB[] = [{ lineId: 'L1', frontTexts: [] }]
 		expect(shouldIncludeByLineDirection(departure('L1', 'Nord'), lwd)).toBe(true)
+		expect(shouldIncludeByLineDirection(departure('L1', 'Sør'), lwd)).toBe(true)
 	})
 
-	it('viser avgang uten frontText (fail-open på manglende data)', () => {
+	it('viser avgang hvis linja er i linesWithDirection, men frontText på avgangen mangler', () => {
 		const lwd: LineWithDirectionDB[] = [{ lineId: 'L1', frontTexts: ['Nord'] }]
 		expect(shouldIncludeByLineDirection(departure('L1', null), lwd)).toBe(true)
 	})
 
-	it('viser avgang når frontText er blant de valgte', () => {
+	it('viser avgang når linje og frontText er blant de valgte i linesWithDirection', () => {
 		const lwd: LineWithDirectionDB[] = [{ lineId: 'L1', frontTexts: ['Nord', 'Sør'] }]
 		expect(shouldIncludeByLineDirection(departure('L1', 'Sør'), lwd)).toBe(true)
 	})
@@ -53,15 +54,15 @@ describe('whitelistedLinesFromDirection', () => {
 		expect(whitelistedLinesFromDirection(undefined)).toBeUndefined()
 	})
 
-	it('gir unike lineIds', () => {
+	it('returnerer alle valgte lineIds', () => {
 		const lwd: LineWithDirectionDB[] = [
 			{ lineId: 'L1', frontTexts: ['Nord'] },
-			{ lineId: 'L2', frontTexts: [] },
+			{ lineId: 'L2', frontTexts: ['Vest'] },
 		]
 		expect(whitelistedLinesFromDirection(lwd)).toEqual(['L1', 'L2'])
 	})
 
-	it('dedupliserer lineIds', () => {
+	it('returnere kun samme linjeId en gang (dedupliserer)', () => {
 		const lwd: LineWithDirectionDB[] = [
 			{ lineId: 'L1', frontTexts: ['Nord'] },
 			{ lineId: 'L1', frontTexts: ['Sør'] },
@@ -70,10 +71,11 @@ describe('whitelistedLinesFromDirection', () => {
 	})
 })
 
+/* Minimal fixture for QuayDB — filteret bruker kun id og whitelistedLines. */
 const quay = (id: string): QuayDB => ({ id, whitelistedLines: [] })
 
 describe('resolveTileDataSource (presedens)', () => {
-	it('linesWithDirection vinner — også tom liste, og selv om quays finnes', () => {
+	it('hvis linesWithDirection finnes på quay så får denne presedens alltid, også for tom liste', () => {
 		expect(resolveTileDataSource({ linesWithDirection: [], quays: [quay('Q1')] })).toBe(
 			'linesWithDirection',
 		)
@@ -85,11 +87,11 @@ describe('resolveTileDataSource (presedens)', () => {
 		).toBe('linesWithDirection')
 	})
 
-	it('quays når linesWithDirection mangler og quays er ikke-tom', () => {
+	it('returnerer quays når linesWithDirection mangler og quays er ikke-tom', () => {
 		expect(resolveTileDataSource({ quays: [quay('Q1')] })).toBe('quays')
 	})
 
-	it('stopPlace når verken linesWithDirection eller ikke-tom quays', () => {
+	it('returnerer stopPlace når verken linesWithDirection finnes eller og quays er []', () => {
 		expect(resolveTileDataSource({ quays: [] })).toBe('stopPlace')
 	})
 })
