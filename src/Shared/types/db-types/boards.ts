@@ -1,5 +1,3 @@
-import type { TTransportMode } from '../../../types/graphql-schema'
-
 export type BoardDB = {
 	id?: BoardId
 	meta: BoardMetaDB
@@ -38,19 +36,21 @@ export type QuayDB = {
 	whitelistedLines: string[]
 }
 
+export type LineWithDirectionDB = {
+	lineId: string
+	frontTexts: string[]
+}
+
 export type TileDB = {
 	stopPlaceId: string
 	quays: QuayDB[]
 	name: string
 	uuid: string
+	linesWithDirection?: LineWithDirectionDB[]
 
-	//TODO: Old architecture - remove once completely migrated
-	type?: string
-	placeId?: string
+	/** @deprecated */
 	whitelistedLines?: string[]
-	// -----
 
-	whitelistedTransportModes?: TTransportMode[]
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB
 	offset?: number

@@ -2201,6 +2201,7 @@ export type TDepartureFragment = {
 			language: string | null
 		}>
 		summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+		validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 	}>
 }
 
@@ -2220,6 +2221,7 @@ export type TSituationFragment = {
 	id: string
 	description: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
 	summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+	validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 }
 
 export type TGetQuayQueryVariables = Exact<{
@@ -2284,6 +2286,7 @@ export type TGetQuayQuery = {
 					value: string
 					language: string | null
 				}>
+				validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 			}>
 		}>
 		situations: Array<{
@@ -2295,6 +2298,7 @@ export type TGetQuayQuery = {
 				language: string | null
 			}>
 			summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+			validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 		}>
 		stopPlace: {
 			__typename?: 'StopPlace'
@@ -2311,6 +2315,7 @@ export type TGetQuayQuery = {
 					value: string
 					language: string | null
 				}>
+				validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 			}>
 		} | null
 		lines: Array<{
@@ -2384,6 +2389,7 @@ export type TGetQuaysQuery = {
 					value: string
 					language: string | null
 				}>
+				validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 			}>
 		}>
 		situations: Array<{
@@ -2395,6 +2401,7 @@ export type TGetQuaysQuery = {
 				language: string | null
 			}>
 			summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+			validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 		}>
 		stopPlace: {
 			__typename?: 'StopPlace'
@@ -2411,6 +2418,7 @@ export type TGetQuaysQuery = {
 					value: string
 					language: string | null
 				}>
+				validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 			}>
 		} | null
 		lines: Array<{
@@ -2430,6 +2438,7 @@ export type TStopPlaceQueryVariables = Exact<{
 	>
 	whitelistedLines?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>
 	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
+	numberOfDeparturesPerLineAndDestinationDisplay?: InputMaybe<Scalars['Int']['input']>
 	startTime?: InputMaybe<Scalars['DateTime']['input']>
 	arrivalDeparture?: InputMaybe<TArrivalDeparture>
 }>
@@ -2484,6 +2493,7 @@ export type TStopPlaceQuery = {
 					value: string
 					language: string | null
 				}>
+				validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 			}>
 		}>
 		situations: Array<{
@@ -2495,6 +2505,7 @@ export type TStopPlaceQuery = {
 				language: string | null
 			}>
 			summary: Array<{ __typename?: 'MultilingualString'; value: string; language: string | null }>
+			validityPeriod: { __typename?: 'ValidityPeriod'; endTime: DateTime | null } | null
 		}>
 	} | null
 }
