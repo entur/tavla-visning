@@ -25,7 +25,9 @@ function Board({ board }: { board: BoardDB }) {
 	}
 
 	return (
-		<BoardContext.Provider value={{ isArrivals: board.isArrivals ?? false }}>
+		<BoardContext.Provider
+			value={{ isArrivals: board.isArrivals ?? false, language: board.language ?? 'nb' }}
+		>
 			<TileGrid
 				tileCount={board.isCombinedTiles ? 1 : tiles.length}
 				fontScale={fontScaleClass}

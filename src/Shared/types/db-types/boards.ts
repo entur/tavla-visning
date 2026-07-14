@@ -9,6 +9,7 @@ export type BoardDB = {
 	transportPalette?: TransportPalette
 	hideLogo?: boolean
 	hideClock?: boolean
+	language?: BoardLanguage
 }
 
 export type BoardId = string
@@ -20,6 +21,7 @@ export type BoardFooter = {
 export type CombinedTilesDB = { ids: BoardId[] }
 
 export type BoardTheme = 'dark' | 'light'
+export type BoardLanguage = 'nb' | 'en'
 export type TransportPalette = 'default' | 'blue-bus' | 'green-bus'
 
 export type BoardMetaDB = {

@@ -36,7 +36,15 @@ export function addMinutesToDate(date: Date, minutesToAdd: number) {
 	return new Date(date.setMinutes(date.getMinutes() + minutesToAdd))
 }
 
-export function getDate(dateString: string) {
+export function getDate(dateString: string, language: 'nb' | 'en' = 'nb') {
+	if (language === 'en') {
+		return Intl.DateTimeFormat('en-US', {
+			month: 'long',
+			day: 'numeric',
+			timeZone: 'Europe/Oslo',
+		}).format(Date.parse(dateString))
+	}
+
 	return Intl.DateTimeFormat('no-NB', {
 		month: 'short',
 		day: '2-digit',
