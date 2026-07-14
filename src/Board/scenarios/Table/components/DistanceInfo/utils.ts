@@ -7,15 +7,11 @@ type TDistanceDisplay = {
 }
 
 export function getDistanceDisplay(walking?: number, driving?: number): TDistanceDisplay {
-	if (walking === undefined) {
-		return driving !== undefined ? { driving } : {}
+	const includeDriving = driving !== undefined && (walking === undefined || walking >= ONE_HOUR_S)
+	const includeWalking = walking !== undefined && (walking <= NINETY_MINUTES_S || !includeDriving)
+
+	return {
+		walking: includeWalking ? walking : undefined,
+		driving: includeDriving ? driving : undefined,
 	}
-
-	if (walking < ONE_HOUR_S) return { walking }
-
-	if (walking <= NINETY_MINUTES_S) {
-		return driving !== undefined ? { walking, driving } : { walking }
-	}
-
-	return driving !== undefined ? { driving } : { walking }
 }

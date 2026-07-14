@@ -10,10 +10,8 @@ function DistanceInfo({
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB
 }) {
-	if (walkingDistance?.visible === false) return null
-
 	const { walking, driving } = getDistanceDisplay(
-		walkingDistance?.distance,
+		walkingDistance?.visible === false ? undefined : walkingDistance?.distance,
 		drivingDistance?.distance,
 	)
 

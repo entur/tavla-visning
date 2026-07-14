@@ -57,7 +57,7 @@ function getTimeSince(timeAgo: number, divisor: number) {
 }
 
 export function formatDuration(duration?: number) {
-	if (!duration) return '-'
+	if (duration === undefined) return '-'
 	if (duration >= DAY_S) {
 		return `1+ dag`
 	}
