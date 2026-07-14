@@ -99,6 +99,20 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 				uuid: 'NAcHs8-mfXJhiL6mKEHPj',
 				name: 'Alta lufthavn Terminal, Alta',
 			},
+			{
+				columns: ['line', 'destination', 'time'],
+				stopPlaceId: 'NSR:StopPlace:59872',
+				quays: [],
+				uuid: 'q4kQ2wZ8vRstYd7NmLbEc',
+				name: 'Oslo S',
+				walkingDistance: {
+					distance: 4200,
+					visible: true,
+				},
+				drivingDistance: {
+					distance: 900,
+				},
+			},
 		],
 	},
 ]

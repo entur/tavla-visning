@@ -8,7 +8,11 @@ import type { TileSituation } from '@/Board/scenarios/Board/utils'
 import { Table } from '@/Board/scenarios/Table'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
-import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
+import type {
+	BoardDrivingDistanceDB,
+	BoardWalkingDistanceDB,
+	TileColumnDB,
+} from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 
@@ -25,6 +29,7 @@ interface BaseTileProps {
 
 	columns: TileColumnDB[]
 	walkingDistance?: BoardWalkingDistanceDB
+	drivingDistance?: BoardDrivingDistanceDB
 
 	customHeader?: ReactNode
 	customDeviation?: ReactNode
@@ -69,6 +74,7 @@ export function BoardTile({
 	hasData,
 	columns,
 	walkingDistance,
+	drivingDistance,
 	customHeader,
 	customDeviation,
 	customNames,
@@ -98,7 +104,11 @@ export function BoardTile({
 				<div className="grow overflow-hidden">
 					{customHeader ??
 						(displayName && (
-							<TableHeader heading={displayName} walkingDistance={walkingDistance} />
+							<TableHeader
+								heading={displayName}
+								walkingDistance={walkingDistance}
+								drivingDistance={drivingDistance}
+							/>
 						))}
 				</div>
 				<div className="flex h-full w-full items-center justify-center text-center text-tertiary">
@@ -112,7 +122,13 @@ export function BoardTile({
 		<Tile state="data" size={size}>
 			<div className="overflow-hidden">
 				{customHeader ??
-					(displayName && <TableHeader heading={displayName} walkingDistance={walkingDistance} />)}
+					(displayName && (
+						<TableHeader
+							heading={displayName}
+							walkingDistance={walkingDistance}
+							drivingDistance={drivingDistance}
+						/>
+					))}
 
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 

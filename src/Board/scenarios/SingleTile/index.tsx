@@ -35,6 +35,7 @@ function QuaysTile(props: Props) {
 				props.columns ?? (isArrivals ? DEFAULT_COLUMNS_ARRIVALS : DEFAULT_COLUMNS_DEPARTURES)
 			}
 			walkingDistance={props.walkingDistance}
+			drivingDistance={props.drivingDistance}
 			size={props.size}
 		/>
 	)
@@ -51,6 +52,7 @@ function StopPlaceTile(props: Props) {
 				props.columns ?? (isArrivals ? DEFAULT_COLUMNS_ARRIVALS : DEFAULT_COLUMNS_DEPARTURES)
 			}
 			walkingDistance={props.walkingDistance}
+			drivingDistance={props.drivingDistance}
 			size={props.size}
 		/>
 	)
