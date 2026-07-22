@@ -3,6 +3,7 @@ import { Tile } from '@components/Tile'
 import { BoardContext } from '@/Board/context'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
 import type { BoardDB } from '@/Shared/types/db-types/boards'
+import { getUiLabel } from '@/Shared/utils/translations'
 import { CombinedTile } from '../CombinedTile'
 import { getFontScale } from './utils'
 
@@ -10,7 +11,7 @@ function Board({ board }: { board: BoardDB }) {
 	if (!board.tiles || !board.tiles.length)
 		return (
 			<Tile state="no_data">
-				<p>Du har ikke lagt til noen stoppesteder ennå.</p>
+				<p>{getUiLabel('noStopPlacesAdded', board.language ?? 'nb')}</p>
 			</Tile>
 		)
 

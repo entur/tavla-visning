@@ -4,6 +4,7 @@ import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileColumnDB } from '@/Shared/types/db-types/boards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
+import { getUiLabel } from '@/Shared/utils/translations'
 import { Destination, Name } from './components/Destination'
 import { Deviation } from './components/Deviation'
 import { FromStopPlace } from './components/FromStopPlace'
@@ -29,18 +30,16 @@ function Table({
 	numberOfVisibleSituations?: number
 	customNames?: CustomName[]
 }) {
-	const { isArrivals } = useBoardContext()
+	const { isArrivals, language } = useBoardContext()
 
 	if (!columns || !isArray(columns))
-		return <div className="flex shrink-0">Du har ikke lagt til noen kolonner ennå</div>
+		return <div className="flex shrink-0">{getUiLabel('noColumnsAdded', language)}</div>
 
 	if (departures.length === 0)
 		return (
 			<div className="flex h-full w-full flex-col items-center justify-center pb-4 text-center text-em-sm">
 				<Paragraph className="!text-primary sm:pb-8">
-					{isArrivals
-						? 'Ingen ankomster de neste 24 timene.'
-						: 'Ingen avganger de neste 24 timene.'}
+					{getUiLabel(isArrivals ? 'noArrivalsNext24Hours' : 'noDeparturesNext24Hours', language)}
 				</Paragraph>
 			</div>
 		)
