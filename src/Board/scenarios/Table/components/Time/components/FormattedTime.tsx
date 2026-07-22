@@ -9,7 +9,7 @@ function FormattedTime({ time, className }: { time: string; className?: string }
 			<div
 				className={`text-nowrap text-right text-em-xl leading-em-base${className ? ` ${className}` : ''}`}
 			>
-				{getRelativeTimeString(time)}
+				{getRelativeTimeString(time, language)}
 			</div>
 			{!isDateStringToday(time) && (
 				<div className="text-right text-em-sm/em-sm">{getDate(time, language)}</div>

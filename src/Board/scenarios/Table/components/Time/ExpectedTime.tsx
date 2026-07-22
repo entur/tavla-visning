@@ -59,7 +59,7 @@ function Time({
 		return (
 			<>
 				<div className="text-right text-em-lg/em-lg font-semibold text-estimated-time">
-					Innstilt
+					{getUiLabel('cancelled', language)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-sm">{formatDateString(aimedTime)}</div>
 			</>
@@ -88,7 +88,7 @@ function Time({
 		return (
 			<>
 				<div className="text-right text-em-xl leading-em-base text-estimated-time">
-					{getRelativeTimeString(expectedTime)}
+					{getRelativeTimeString(expectedTime, language)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
 			</>

@@ -18,6 +18,8 @@ function getColumnLabel(key: keyof typeof columnLabels, language: BoardLanguage)
 const uiLabels = {
 	arrived: { nb: 'Ankommet', en: 'Arrived' },
 	arrivalsHeading: { nb: 'Ankomster', en: 'Arrivals' },
+	cancelled: { nb: 'Innstilt', en: 'Cancelled' },
+	now: { nb: 'Nå', en: 'Now' },
 } as const
 
 function getUiLabel(key: keyof typeof uiLabels, language: BoardLanguage): string {
