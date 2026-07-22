@@ -1,13 +1,16 @@
 import { nanoid } from 'nanoid'
 import { TableCell } from '../TableCell'
 import { TableColumn } from '../TableColumn'
+import { useBoardContext } from '@/Board/context'
 import { TravelTag } from '@/Shared/components/TravelTag'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import { getAirPublicCode } from '@/Shared/utils/publicCode'
+import { getColumnLabel } from '@/Shared/utils/translations'
 import { DeparturesContext } from '../../contexts'
 
 function Line() {
 	const departures = useNonNullContext(DeparturesContext)
+	const { language } = useBoardContext()
 
 	const lines = departures.map((departure) => ({
 		transportMode: departure.serviceJourney.transportMode ?? 'unknown',
@@ -19,7 +22,7 @@ function Line() {
 	}))
 
 	return (
-		<TableColumn title="Linje">
+		<TableColumn title={getColumnLabel('line', language)}>
 			{lines.map((line) => (
 				<TableCell key={line.key}>
 					<TravelTag

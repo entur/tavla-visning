@@ -2,12 +2,15 @@ import { nanoid } from 'nanoid'
 import { DeparturesContext } from '../contexts'
 import { TableCell } from './TableCell'
 import { TableColumn } from './TableColumn'
+import { useBoardContext } from '@/Board/context'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
+import { getColumnLabel } from '@/Shared/utils/translations'
 import { isNotNullOrUndefined } from '@/Shared/utils/typeguards'
 import type { CustomName, TDepartureWithTileUuid } from '@/Board/hooks/useTileData'
 
 function Destination() {
 	const departures = useNonNullContext(DeparturesContext)
+	const { language } = useBoardContext()
 
 	const destinations = departures.map((departure) => ({
 		destination: departure.destinationDisplay?.frontText ?? '',
@@ -16,7 +19,7 @@ function Destination() {
 	}))
 	return (
 		<div className="grow overflow-hidden">
-			<TableColumn title="Destinasjon">
+			<TableColumn title={getColumnLabel('destination', language)}>
 				{destinations.map((destination) => (
 					<TableCell key={destination.key} className="flex align-middle">
 						<div className="line-clamp-1 overflow-ellipsis hyphens-auto text-em-xl2 leading-em-base">
@@ -33,10 +36,11 @@ function Destination() {
 
 function Name({ customNames }: { customNames?: CustomName[] }) {
 	const departures = useNonNullContext(DeparturesContext)
+	const { language } = useBoardContext()
 
 	return (
 		<div className="grow overflow-hidden">
-			<TableColumn title="Stoppested">
+			<TableColumn title={getColumnLabel('stopPlace', language)}>
 				{departures.map((departure) => {
 					const tileUuid = (departure as TDepartureWithTileUuid).tileUuid
 					const customName = customNames?.find((cn) => cn.uuid === tileUuid)?.customName

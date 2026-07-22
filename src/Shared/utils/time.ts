@@ -1,13 +1,16 @@
+import type { BoardLanguage } from '@/Shared/types/db-types/boards'
+import { getUiLabel } from '@/Shared/utils/translations'
+
 const ONE_MINUTE = 60
 const TEN_MINUTES = 600
 
-export function getRelativeTimeString(dateString: string) {
+export function getRelativeTimeString(dateString: string, language: BoardLanguage = 'nb') {
 	const timeDiffInSeconds = (Date.parse(dateString) - Date.now()) / 1000
 
 	// Compensate to avoid optimistic time since fetch of departures happens every 30 seconds
 	const adjustedTimeDiffInSeconds = timeDiffInSeconds - 15
 
-	if (adjustedTimeDiffInSeconds < ONE_MINUTE) return 'Nå'
+	if (adjustedTimeDiffInSeconds < ONE_MINUTE) return getUiLabel('now', language)
 	else if (adjustedTimeDiffInSeconds < TEN_MINUTES)
 		return `${Math.floor(adjustedTimeDiffInSeconds / ONE_MINUTE)} min`
 	return formatDateString(dateString)
@@ -36,7 +39,15 @@ export function addMinutesToDate(date: Date, minutesToAdd: number) {
 	return new Date(date.setMinutes(date.getMinutes() + minutesToAdd))
 }
 
-export function getDate(dateString: string) {
+export function getDate(dateString: string, language: 'nb' | 'en' = 'nb') {
+	if (language === 'en') {
+		return Intl.DateTimeFormat('en-US', {
+			month: 'long',
+			day: 'numeric',
+			timeZone: 'Europe/Oslo',
+		}).format(Date.parse(dateString))
+	}
+
 	return Intl.DateTimeFormat('no-NB', {
 		month: 'short',
 		day: '2-digit',

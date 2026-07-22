@@ -9,6 +9,7 @@ import { Table } from '@/Board/scenarios/Table'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
 import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
+import { getUiLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 
@@ -74,12 +75,14 @@ export function BoardTile({
 	customNames,
 	size,
 }: BaseTileProps) {
-	const { isArrivals } = useBoardContext()
+	const { isArrivals, language } = useBoardContext()
 
 	if (isLoading && !hasData) {
 		return (
 			<Tile state="loading" size={size}>
-				<Loader>{isArrivals ? 'Henter ankomster..' : 'Henter avganger..'}</Loader>
+				<Loader>
+					{getUiLabel(isArrivals ? 'loadingArrivals' : 'loadingDepartures', language)}
+				</Loader>
 			</Tile>
 		)
 	}
@@ -102,7 +105,7 @@ export function BoardTile({
 						))}
 				</div>
 				<div className="flex h-full w-full items-center justify-center text-center text-tertiary">
-					{isArrivals ? 'Ingen ankomster i nærmeste fremtid' : 'Ingen avganger i nærmeste fremtid'}
+					{getUiLabel(isArrivals ? 'noArrivalsNearFuture' : 'noDeparturesNearFuture', language)}
 				</div>
 			</Tile>
 		)

@@ -1,7 +1,9 @@
 import { nanoid } from 'nanoid'
 import { useBoardContext } from '@/Board/context'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
+import type { BoardLanguage } from '@/Shared/types/db-types/boards'
 import { formatDateString, getRelativeTimeString } from '@/Shared/utils/time'
+import { getColumnLabel, getUiLabel } from '@/Shared/utils/translations'
 import { DeparturesContext } from '../../contexts'
 import { TableCell } from '../TableCell'
 import { TableColumn } from '../TableColumn'
@@ -11,7 +13,7 @@ const TWO_MINUTES = 120
 
 function ExpectedTime() {
 	const departures = useNonNullContext(DeparturesContext)
-	const { isArrivals } = useBoardContext()
+	const { isArrivals, language } = useBoardContext()
 
 	const time = departures.map((departure) => ({
 		aimedTime: isArrivals ? departure.aimedArrivalTime : departure.aimedDepartureTime,
@@ -21,7 +23,10 @@ function ExpectedTime() {
 	}))
 
 	return (
-		<TableColumn title={isArrivals ? 'Ankomst' : 'Avgang'} className="text-right">
+		<TableColumn
+			title={getColumnLabel(isArrivals ? 'arrival' : 'departure', language)}
+			className="text-right"
+		>
 			{time.map((t) => (
 				<TableCell key={t.key}>
 					<Time
@@ -29,6 +34,7 @@ function ExpectedTime() {
 						aimedTime={t.aimedTime}
 						cancelled={t.cancelled}
 						isArrivalBoard={isArrivals}
+						language={language}
 					/>
 				</TableCell>
 			))}
@@ -41,17 +47,19 @@ function Time({
 	aimedTime,
 	cancelled,
 	isArrivalBoard,
+	language,
 }: {
 	expectedTime: string
 	aimedTime: string
 	cancelled: boolean
 	isArrivalBoard?: boolean
+	language: BoardLanguage
 }) {
 	if (cancelled)
 		return (
 			<>
 				<div className="text-right text-em-lg/em-lg font-semibold text-estimated-time">
-					Innstilt
+					{getUiLabel('cancelled', language)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-sm">{formatDateString(aimedTime)}</div>
 			</>
@@ -65,7 +73,7 @@ function Time({
 				<div className="text-right text-em-xl leading-em-base">
 					{formatDateString(expectedTime)}
 				</div>
-				<div className="text-right text-em-sm/em-xs">Ankommet</div>
+				<div className="text-right text-em-sm/em-xs">{getUiLabel('arrived', language)}</div>
 			</>
 		)
 	}
@@ -80,7 +88,7 @@ function Time({
 		return (
 			<>
 				<div className="text-right text-em-xl leading-em-base text-estimated-time">
-					{getRelativeTimeString(expectedTime)}
+					{getRelativeTimeString(expectedTime, language)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
 			</>
