@@ -9,8 +9,8 @@ import { Table } from '@/Board/scenarios/Table'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
 import type { BoardWalkingDistanceDB, TileColumnDB } from '@/Shared/types/db-types/boards'
-import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { getUiLabel } from '@/Shared/utils/translations'
+import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 
 interface BaseTileProps {
