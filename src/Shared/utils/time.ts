@@ -39,10 +39,10 @@ export function addMinutesToDate(date: Date, minutesToAdd: number) {
 	return new Date(date.setMinutes(date.getMinutes() + minutesToAdd))
 }
 
-export function getDate(dateString: string, language: 'nb' | 'en' = 'nb') {
+export function getDate(dateString: string, language: BoardLanguage = 'nb') {
 	if (language === 'en') {
 		return Intl.DateTimeFormat('en-US', {
-			month: 'long',
+			month: 'short',
 			day: 'numeric',
 			timeZone: 'Europe/Oslo',
 		}).format(Date.parse(dateString))
