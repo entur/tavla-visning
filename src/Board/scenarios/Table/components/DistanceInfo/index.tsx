@@ -3,7 +3,7 @@ import { formatDuration } from '@/utils/time'
 import { CarIcon, WalkIcon } from '@entur/icons'
 import { getDistanceDisplay } from './utils'
 
-function DistanceInfo({
+export function DistanceInfo({
 	walkingDistance,
 	drivingDistance,
 }: {
@@ -34,5 +34,3 @@ function DistanceInfo({
 		</div>
 	)
 }
-
-export { DistanceInfo }
