@@ -2,6 +2,7 @@ import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import { useBoardContext } from '@/Board/context'
 import type { TSituationFragment, TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
+import { getColumnLabel } from '@/Shared/utils/translations'
 
 const SITUATION_SUMMARY_LENGTH_THRESHOLD = 25
 
@@ -48,12 +49,15 @@ function getSituationText(
 }
 
 function getTransportModeAndPublicCodeText(
+	language: 'nb' | 'en',
 	transportModeList?: TTransportMode[],
 	publicCodeList?: string[],
 ): string | null {
 	if (transportModeList && publicCodeList) {
 		const transportMode =
-			transportModeList.length === 1 ? transportModeNames(transportModeList[0]) : 'Linje'
+			transportModeList.length === 1
+				? transportModeNames(transportModeList[0], language)
+				: getColumnLabel('line', language)
 		const publicCodes = publicCodeList.length === 1 ? publicCodeList[0] : publicCodeList.join(', ')
 
 		return `${transportMode} ${publicCodes}`
@@ -62,7 +66,7 @@ function getTransportModeAndPublicCodeText(
 	}
 }
 
-function TileSituations({
+export function TileSituations({
 	situation,
 	cancelledDeparture,
 	currentSituationNumber,
@@ -85,6 +89,7 @@ function TileSituations({
 
 	const situationText = getSituationText(situation, language)
 	const transportModeWithPublicCode = getTransportModeAndPublicCodeText(
+		language,
 		transportModeList,
 		publicCodeList,
 	)
@@ -126,5 +131,3 @@ function TileSituations({
 		</div>
 	)
 }
-
-export { TileSituations }
