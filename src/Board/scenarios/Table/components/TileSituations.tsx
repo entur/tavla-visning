@@ -15,20 +15,16 @@ function getSituationText(
 	const preferredSummary = situation?.summary.find(
 		(summary) => summary.language === preferredLanguage,
 	)?.value
-	const norwegianSummary =
-		preferredLanguage === 'no'
-			? preferredSummary
-			: situation?.summary.find((summary) => summary.language === 'no')?.value
 
+	const norwegianSummary = situation?.summary.find((summary) => summary.language === 'no')?.value
 	const summary = preferredSummary ?? norwegianSummary ?? situation?.summary[0]?.value
 
 	const preferredDescription = situation?.description.find(
 		(description) => description.language === preferredLanguage,
 	)?.value
-	const norwegianDescription =
-		preferredLanguage === 'no'
-			? preferredDescription
-			: situation?.description.find((description) => description.language === 'no')?.value
+	const norwegianDescription = situation?.description.find(
+		(description) => description.language === 'no',
+	)?.value
 	const description =
 		preferredDescription ?? norwegianDescription ?? situation?.description[0]?.value
 
