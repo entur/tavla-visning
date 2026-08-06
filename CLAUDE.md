@@ -90,6 +90,26 @@ Fragments in `src/Shared/graphql/fragments/`, queries in `src/Shared/graphql/que
 
 Situations must be deduplicated across quays/lines. Use `combineSituations()` and `getAccumulatedTileSituations()` from `src/Board/scenarios/Board/utils.ts`. Situations cycle via `useCycler()`.
 
+### Board Language (i18n)
+
+Boards support Norwegian (default) and English display via `board.language`
+(`BoardDB['language']`, `'nb' | 'en'`). Threaded through `BoardContext`
+(`src/Board/context.ts`) so any component can read it via `useBoardContext()`.
+
+- Column headers and UI text: `getColumnLabel()` / `getUiLabel()` in
+  `src/Shared/utils/translations.ts` — the single lookup table for all
+  board-language strings.
+- Situations: `getSituationText()` in `TileSituations.tsx` prefers the
+  board's language, falls back to Norwegian, then whatever's first in the
+  API response.
+- Dates: `getDate()` in `src/Shared/utils/time.ts` takes a `language`
+  param — `en-US` locale (`"July 14"`) vs `no-NB` (`"14. juli"`).
+- Transport mode names: `transportModeNames()` in `src/utils/transportMode.ts`
+  also takes `language`.
+
+New board-language strings go in `translations.ts`, not inline — keeps
+everything in one place.
+
 ## Path Aliases
 
 Always use aliases for cross-module imports — never relative paths:
@@ -128,6 +148,8 @@ Always use aliases for cross-module imports — never relative paths:
 - [`src/Shared/hooks/useQuery.ts`](src/Shared/hooks/useQuery.ts) — SWR wrapper for GraphQL
 - [`src/Shared/assets/env.ts`](src/Shared/assets/env.ts) — endpoint URLs
 - [`src/Shared/types/db-types/boards.ts`](src/Shared/types/db-types/boards.ts) — `BoardDB` and `TileDB` types
+- [`src/Shared/utils/translations.ts`](src/Shared/utils/translations.ts) — board-language (nb/en) string lookup table
+- [`src/Board/context.ts`](src/Board/context.ts) — `BoardContext`, carries `isArrivals` and `language`
 - [`vite.config.ts`](vite.config.ts) — path aliases, legacy browser targets, CSP headers
 
 ## Pull Requests

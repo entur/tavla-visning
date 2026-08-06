@@ -1,5 +1,6 @@
-import type { BoardTheme } from '@/Shared/types/db-types/boards'
+import type { BoardLanguage, BoardTheme } from '@/Shared/types/db-types/boards'
 import type { FolderLogo } from '@/Shared/types/db-types/folders'
+import { getUiLabel } from '@/Shared/utils/translations'
 import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
 import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
 import { Clock } from '../Clock'
@@ -10,6 +11,7 @@ type Props = {
 	hideClock?: boolean
 	hideLogo?: boolean
 	isArrivals?: boolean
+	language?: BoardLanguage
 }
 
 function Header({
@@ -18,6 +20,7 @@ function Header({
 	theme,
 	folderLogo,
 	isArrivals = false,
+	language = 'nb',
 }: Props) {
 	const tavlaLogo = theme === 'light' ? TavlaLogoBlue : TavlaLogoWhite
 	const logoSrc = folderLogo || tavlaLogo
@@ -33,14 +36,18 @@ function Header({
 					{!hideLogo && (
 						<img
 							src={logoSrc}
-							alt="Logo til tavlen"
+							alt={getUiLabel('boardLogoAlt', language)}
 							className="h-full w-auto object-contain object-left"
 							width="100"
 							height="100"
 						/>
 					)}
 				</div>
-				{isArrivals && <span className="absolute left-1/2 -translate-x-1/2 ">Ankomster</span>}
+				{isArrivals && (
+					<span className="absolute left-1/2 -translate-x-1/2 ">
+						{getUiLabel('arrivalsHeading', language)}
+					</span>
+				)}
 				{!hideClock && <Clock />}
 			</div>
 		</div>

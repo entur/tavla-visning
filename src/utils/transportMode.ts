@@ -1,4 +1,5 @@
 import { HomeIcon, MapPinIcon } from '@entur/icons'
+import type { BoardLanguage } from '@/Shared/types/db-types/boards'
 import type { TTransportMode } from '../types/graphql-schema'
 
 export type TLineFragment = {
@@ -39,36 +40,41 @@ export function sortPublicCodes(a: string, b: string) {
 	})
 }
 
-export function transportModeNames(transportMode: TTransportMode | null | undefined) {
+export function transportModeNames(
+	transportMode: TTransportMode | null | undefined,
+	language: BoardLanguage = 'nb',
+) {
+	const isEnglish = language === 'en'
+
 	switch (transportMode) {
 		case 'air':
-			return 'Fly'
+			return isEnglish ? 'Air' : 'Fly'
 		case 'bus':
-			return 'Buss'
+			return isEnglish ? 'Bus' : 'Buss'
 		case 'cableway':
-			return 'Kabelbane'
+			return isEnglish ? 'Cable car' : 'Kabelbane'
 		case 'water':
-			return 'Båt'
+			return isEnglish ? 'Boat' : 'Båt'
 		case 'funicular':
-			return 'Taubane'
+			return isEnglish ? 'Funicular' : 'Taubane'
 		case 'lift':
-			return 'Heis'
+			return isEnglish ? 'Lift' : 'Heis'
 		case 'rail':
-			return 'Tog'
+			return isEnglish ? 'Train' : 'Tog'
 		case 'metro':
-			return 'T-bane'
+			return isEnglish ? 'Metro' : 'T-bane'
 		case 'tram':
-			return 'Trikk'
+			return isEnglish ? 'Tram' : 'Trikk'
 		case 'trolleybus':
-			return 'Trolley-buss'
+			return isEnglish ? 'Trolleybus' : 'Trolley-buss'
 		case 'monorail':
-			return 'Enskinnebane'
+			return isEnglish ? 'Monorail' : 'Enskinnebane'
 		case 'coach':
-			return 'Langdistansebuss'
+			return isEnglish ? 'Coach' : 'Langdistansebuss'
 		case 'taxi':
-			return 'Taxi'
+			return isEnglish ? 'Taxi' : 'Taxi'
 		case 'unknown':
-			return 'Ukjent'
+			return isEnglish ? 'Unknown' : 'Ukjent'
 		default:
 			return null
 	}

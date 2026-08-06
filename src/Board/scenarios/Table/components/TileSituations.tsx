@@ -1,42 +1,64 @@
 import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
+import { useBoardContext } from '@/Board/context'
 import type { TSituationFragment, TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
+import { getColumnLabel } from '@/Shared/utils/translations'
 
 const SITUATION_SUMMARY_LENGTH_THRESHOLD = 25
 
 function getSituationText(
 	situation: TSituationFragment,
+	boardLanguage: 'nb' | 'en',
 ): { text: string; language: 'no' | 'en' } | undefined {
-	const norwegianSummary = situation?.summary.find((summary) => summary.language === 'no')?.value
-	const summary = norwegianSummary ?? situation?.summary[0]?.value
+	const preferredLanguage = boardLanguage === 'en' ? 'en' : 'no'
 
+	const preferredSummary = situation?.summary.find(
+		(summary) => summary.language === preferredLanguage,
+	)?.value
+
+	const norwegianSummary = situation?.summary.find((summary) => summary.language === 'no')?.value
+	const summary = preferredSummary ?? norwegianSummary ?? situation?.summary[0]?.value
+
+	const preferredDescription = situation?.description.find(
+		(description) => description.language === preferredLanguage,
+	)?.value
 	const norwegianDescription = situation?.description.find(
 		(description) => description.language === 'no',
 	)?.value
+	const description =
+		preferredDescription ?? norwegianDescription ?? situation?.description[0]?.value
 
-	const description = norwegianDescription ?? situation?.description[0]?.value
+	const summaryLanguage = preferredSummary ? preferredLanguage : norwegianSummary ? 'no' : 'en'
+	const descriptionLanguage = preferredDescription
+		? preferredLanguage
+		: norwegianDescription
+			? 'no'
+			: 'en'
 
 	if (description === undefined) {
-		return { text: summary, language: norwegianSummary ? 'no' : 'en' }
+		return { text: summary, language: summaryLanguage }
 	} else if (summary === undefined) {
-		return { text: description, language: norwegianDescription ? 'no' : 'en' }
+		return { text: description, language: descriptionLanguage }
 	} else if (summary.length <= SITUATION_SUMMARY_LENGTH_THRESHOLD) {
 		return {
 			text: `${summary} - ${description}`,
-			language: norwegianSummary ? 'no' : 'en',
+			language: summaryLanguage,
 		}
 	} else {
-		return { text: summary, language: norwegianSummary ? 'no' : 'en' }
+		return { text: summary, language: summaryLanguage }
 	}
 }
 
 function getTransportModeAndPublicCodeText(
+	language: 'nb' | 'en',
 	transportModeList?: TTransportMode[],
 	publicCodeList?: string[],
 ): string | null {
 	if (transportModeList && publicCodeList) {
 		const transportMode =
-			transportModeList.length === 1 ? transportModeNames(transportModeList[0]) : 'Linje'
+			transportModeList.length === 1
+				? transportModeNames(transportModeList[0], language)
+				: getColumnLabel('line', language)
 		const publicCodes = publicCodeList.length === 1 ? publicCodeList[0] : publicCodeList.join(', ')
 
 		return `${transportMode} ${publicCodes}`
@@ -45,7 +67,7 @@ function getTransportModeAndPublicCodeText(
 	}
 }
 
-function TileSituations({
+export function TileSituations({
 	situation,
 	cancelledDeparture,
 	currentSituationNumber,
@@ -60,12 +82,15 @@ function TileSituations({
 	transportModeList?: TTransportMode[]
 	publicCodeList?: string[]
 }) {
+	const { language } = useBoardContext()
+
 	if (!situation) {
 		return null
 	}
 
-	const situationText = getSituationText(situation)
+	const situationText = getSituationText(situation, language)
 	const transportModeWithPublicCode = getTransportModeAndPublicCodeText(
+		language,
 		transportModeList,
 		publicCodeList,
 	)
@@ -107,5 +132,3 @@ function TileSituations({
 		</div>
 	)
 }
-
-export { TileSituations }
