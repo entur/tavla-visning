@@ -1,4 +1,5 @@
 import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
+import { useBoardContext } from '@/Board/context'
 import { PageNavigationIcon } from '@entur/icons'
 
 function TitleSituation({
@@ -7,9 +8,14 @@ function TitleSituation({
 	situation: TSituationWithOrigin | undefined
 	origin?: string
 }) {
+	const { language } = useBoardContext()
+	const preferredLanguage = language === 'en' ? 'en' : 'no'
+
 	const situationText =
+		situation?.summary.find((summary) => summary.language === preferredLanguage)?.value ??
 		situation?.summary.find((summary) => summary.language === 'no')?.value ??
 		situation?.summary[0]?.value ??
+		situation?.description.find((desc) => desc.language === preferredLanguage)?.value ??
 		situation?.description.find((desc) => desc.language === 'no')?.value ??
 		situation?.description[0]?.value ??
 		null
