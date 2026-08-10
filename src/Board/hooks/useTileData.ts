@@ -134,9 +134,9 @@ export function useStopPlaceTileData(
 		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0) },
 	)
 
-	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? []).filter((dep) =>
-		shouldIncludeByLineDirection(dep, linesWithDirection ?? []),
-	)
+	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? [])
+		.filter((dep) => shouldIncludeByLineDirection(dep, linesWithDirection ?? []))
+		.slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
 
 	const stopPlaceSituations = getAccumulatedTileSituations(
 		filteredCalls,
