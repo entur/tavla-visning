@@ -54,6 +54,7 @@ export type TileDB = {
 	whitelistedLines?: string[]
 
 	walkingDistance?: BoardWalkingDistanceDB
+	drivingDistance?: BoardDrivingDistanceDB
 	offset?: number
 	displayName?: string
 	columns?: TileColumnDB[]
@@ -72,4 +73,8 @@ export type TileColumnDB =
 export type BoardWalkingDistanceDB = {
 	distance?: number
 	visible?: boolean
+}
+
+export type BoardDrivingDistanceDB = {
+	distance?: number
 }
