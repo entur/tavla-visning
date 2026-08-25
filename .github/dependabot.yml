@@ -1,0 +1,21 @@
+version: 2
+updates:
+    - package-ecosystem: "npm"
+      directory: "/"
+      cooldown:
+          default-days: 5
+      schedule:
+          interval: "weekly"
+          day: "monday"
+          time: "08:00"
+          timezone: "Europe/Amsterdam"
+      commit-message:
+          prefix: "chore(deps):"
+      groups:
+          patch-minor-dependencies:
+              update-types:
+                  - "patch"
+                  - "minor"
+          major-dependencies:
+              update-types:
+                  - "major"
