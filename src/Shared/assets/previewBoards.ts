@@ -87,8 +87,8 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 		tiles: [
 			{
 				columns: ['line', 'destination', 'time'],
-				stopPlaceId: 'NSR:StopPlace:56826',
-				name: 'Alta sentrum, Alta',
+				stopPlaceId: 'NSR:StopPlace:59977',
+				name: 'Trondheim S',
 				quays: [],
 				uuid: '6hojyqhlUQXu53IZ5Jzyr',
 			},
