@@ -87,8 +87,8 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 		tiles: [
 			{
 				columns: ['line', 'destination', 'time'],
-				stopPlaceId: 'NSR:StopPlace:59977',
-				name: 'Trondheim S',
+				stopPlaceId: 'NSR:StopPlace:64236',
+				name: 'Løkkeveien, Alta',
 				quays: [],
 				uuid: '6hojyqhlUQXu53IZ5Jzyr',
 			},
@@ -98,20 +98,6 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 				quays: [],
 				uuid: 'NAcHs8-mfXJhiL6mKEHPj',
 				name: 'Alta lufthavn Terminal, Alta',
-			},
-			{
-				columns: ['line', 'destination', 'time'],
-				stopPlaceId: 'NSR:StopPlace:59872',
-				quays: [],
-				uuid: 'q4kQ2wZ8vRstYd7NmLbEc',
-				name: 'Oslo S',
-				walkingDistance: {
-					distance: 4200,
-					visible: true,
-				},
-				drivingDistance: {
-					distance: 900,
-				},
 			},
 		],
 	},
