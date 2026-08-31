@@ -3,6 +3,7 @@
 @import "@entur/tokens/dist/semantic.css";
 @import "@entur/tokens/dist/data.css";
 @import "@entur/tokens/dist/transport.css";
+@import "@entur/menu/dist/styles.css";
 @import "./transport-palettes.css";
 @tailwind base;
 @tailwind components;
