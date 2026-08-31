@@ -16,8 +16,8 @@ importers:
         specifier: 5.0.4
         version: 5.0.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@entur/icons':
-        specifier: 8.2.0
-        version: 8.2.0(react@19.1.1)
+        specifier: 10.0.3
+        version: 10.0.3(react@19.1.1)
       '@entur/loader':
         specifier: 0.5.35
         version: 0.5.35(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
