@@ -37,7 +37,7 @@
     "@entur/icons": "10.0.3",
     "@entur/loader": "0.8.4",
     "@entur/tokens": "4.1.0",
-    "@entur/typography": "2.0.3",
+    "@entur/typography": "3.0.4",
     "abortcontroller-polyfill": "1.7.8",
     "class-variance-authority": "0.7.1",
     "graphql": "16.12.0",

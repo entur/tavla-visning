@@ -25,8 +25,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       '@entur/typography':
-        specifier: 2.0.3
-        version: 2.0.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 3.0.4
+        version: 3.0.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       abortcontroller-polyfill:
         specifier: 1.7.8
         version: 1.7.8
@@ -862,41 +862,20 @@ packages:
     peerDependencies:
       react: '>=18.0.0'
 
-  '@entur/icons@8.2.0':
-    resolution: {integrity: sha512-LxLGpOzDeenPYy86Y8Mor6+Yc85klkE8dqnXsLM5XPM6EaltxXtKt0L87bokIZ5YJFO0VXqe+xViGsWt3sQ1Tg==}
-    peerDependencies:
-      react: '>=16.8.0'
-
   '@entur/loader@0.8.4':
     resolution: {integrity: sha512-6YfkqWD9uZTsU/JIYOAJelNySgVsyRNAupgXmt1WKuUUu0UzTgKIqn0MBTRi0zB/JYDdK+8z5CCYtaSbbhSR6g==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
 
-  '@entur/tokens@3.20.0':
-    resolution: {integrity: sha512-G6eoS3qvYIACyqtqLcTsyMeiqaQ6rd+mQuWTzHw9aQjjgD45Jng01DbaotV9BDo9tX+URqPR2Uw3JIvkXx9tOA==}
-
   '@entur/tokens@4.1.0':
     resolution: {integrity: sha512-QLjOOxbiOA9C3zbeagqaxVvMiE2U31q9tRWQ5xkHc6O7u08IdInSjo2f8w3/uOofUoOasU/vMB5DDrBAxPVnsA==}
-
-  '@entur/typography@2.0.3':
-    resolution: {integrity: sha512-6WA4nd/U8hp6XwIBT5W2xqi3cSBBVIwXed1NRfy0ExFWo+ksZMrKoLHoV2liXT8wWr6PQBbIovw+XWpFNkSr8A==}
-    hasBin: true
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
 
   '@entur/typography@3.0.4':
     resolution: {integrity: sha512-DWwMfapmNtf69gl8x3Im1thyLTK+yagEHWY/+ioF2hCSgZcCUAP2PRC2z9AlhRAZyFG6/8nWi9wqK5tkzYZkIg==}
     peerDependencies:
       react: '>=18.0.0'
       react-dom: '>=18.0.0'
-
-  '@entur/utils@0.12.5':
-    resolution: {integrity: sha512-d8jesPxM7NCpwV8hb5Ks+7NqtSdpZvTp7L1bA/V4IFlRmJ52nlln95JvYm1Pab+wChEaal43Sb3Vy7yzUl0G0g==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
 
   '@entur/utils@0.15.0':
     resolution: {integrity: sha512-pbHPHRLXACwBGdAW4yqpuqYmNNRyV7ydh69Nlmxqd58PQa42vsIChhTioFT3RvgmQHJXbtgh+jTyaXKpPIC3RA==}
@@ -2331,10 +2310,6 @@ packages:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
     engines: {node: '>=8'}
 
-  flat@5.0.2:
-    resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
-    hasBin: true
-
   foreground-child@3.3.1:
     resolution: {integrity: sha512-gIXjKqtFuWEgzFRJA9WCQeSJLZDjgJUOMCMzxtvFq/37KojM1BFGufqsCy0r4qSQmYLsZYMeyRqzIWOMup03sw==}
     engines: {node: '>=14'}
@@ -2379,12 +2354,6 @@ packages:
 
   glob@10.4.5:
     resolution: {integrity: sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
-    hasBin: true
-
-  glob@11.0.3:
-    resolution: {integrity: sha512-2Nim7dha1KVkaiF4q6Dj+ngPPMdfvLJEOpZk/jKiUAkqKebpGAWQXAq9z1xu9HKu5lWfqw/FASuccEjyznjPaA==}
-    engines: {node: 20 || >=22}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
     hasBin: true
 
@@ -2576,10 +2545,6 @@ packages:
   jackspeak@3.4.3:
     resolution: {integrity: sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==}
 
-  jackspeak@4.1.1:
-    resolution: {integrity: sha512-zptv57P3GpL+O0I7VdMJNBZCu+BPHVQUk55Ft8/QCJjTVxrnJHuVuX/0Bl2A6/+2oyR/ZMEuFKwmzqqZ/U5nPQ==}
-    engines: {node: 20 || >=22}
-
   jiti@1.21.7:
     resolution: {integrity: sha512-/imKNG4EbWNrVjoNC/1H5/9GFy+tqjGBHCaSsN+P2RnPqjsLmv6UD3Ej+Kj8nBWaRAwyk7kK5ZUc+OEatnTR3A==}
     hasBin: true
@@ -2753,10 +2718,6 @@ packages:
 
   lru-cache@10.4.3:
     resolution: {integrity: sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==}
-
-  lru-cache@11.2.2:
-    resolution: {integrity: sha512-F9ODfyqML2coTIsQpSkRHnLSZMtkU8Q+mSfcaIyKwy58u+8k5nvAYeiNhsyMARvzNcXJ9QfWVrcPsC9e9rAxtg==}
-    engines: {node: 20 || >=22}
 
   lru-cache@11.5.1:
     resolution: {integrity: sha512-RPimw/7aMdv2oqRrxKwvZXcPfwBrn/JZ2xYcY9Hus/6LaS3VOAKVWKWgNLCFSiOm1ESXinjsDlidVU7JlnCN2A==}
@@ -2980,10 +2941,6 @@ packages:
   path-scurry@1.11.1:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
-
-  path-scurry@2.0.0:
-    resolution: {integrity: sha512-ypGJsmGtdXUOeM5u93TyeIEfEhM6s+ljAhrk5vAvSx8uyY/02OvrZnA0YNGUrPXfpJMgI1ODd3nwz8Npx4O4cg==}
-    engines: {node: 20 || >=22}
 
   path-scurry@2.0.2:
     resolution: {integrity: sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==}
@@ -4594,11 +4551,6 @@ snapshots:
       '@entur/tokens': 4.1.0
       react: 19.1.1
 
-  '@entur/icons@8.2.0(react@19.1.1)':
-    dependencies:
-      '@entur/tokens': 3.20.0
-      react: 19.1.1
-
   '@entur/loader@0.8.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
       '@entur/tokens': 4.1.0
@@ -4608,26 +4560,9 @@ snapshots:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
 
-  '@entur/tokens@3.20.0':
-    dependencies:
-      flat: 5.0.2
-      hex-rgb: 4.3.0
-
   '@entur/tokens@4.1.0':
     dependencies:
       hex-rgb: 4.3.0
-
-  '@entur/typography@2.0.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
-    dependencies:
-      '@entur/icons': 8.2.0(react@19.1.1)
-      '@entur/tokens': 3.20.0
-      '@entur/utils': 0.12.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      classnames: 2.5.1
-      modern-normalize: 3.0.1
-      react: 19.1.1
-      react-dom: 19.1.1(react@19.1.1)
-    optionalDependencies:
-      glob: 11.0.3
 
   '@entur/typography@3.0.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
@@ -4640,12 +4575,6 @@ snapshots:
       react-dom: 19.1.1(react@19.1.1)
     optionalDependencies:
       glob: 13.0.6
-
-  '@entur/utils@0.12.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
-    dependencies:
-      react: 19.1.1
-      react-dom: 19.1.1(react@19.1.1)
-      tiny-warning: 1.0.3
 
   '@entur/utils@0.15.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
@@ -6253,8 +6182,6 @@ snapshots:
       locate-path: 5.0.0
       path-exists: 4.0.0
 
-  flat@5.0.2: {}
-
   foreground-child@3.3.1:
     dependencies:
       cross-spawn: 7.0.6
@@ -6295,16 +6222,6 @@ snapshots:
       minipass: 7.1.2
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
-
-  glob@11.0.3:
-    dependencies:
-      foreground-child: 3.3.1
-      jackspeak: 4.1.1
-      minimatch: 10.2.3
-      minipass: 7.1.2
-      package-json-from-dist: 1.0.1
-      path-scurry: 2.0.0
-    optional: true
 
   glob@13.0.6:
     dependencies:
@@ -6487,11 +6404,6 @@ snapshots:
     optionalDependencies:
       '@pkgjs/parseargs': 0.11.0
 
-  jackspeak@4.1.1:
-    dependencies:
-      '@isaacs/cliui': 8.0.2
-    optional: true
-
   jiti@1.21.7: {}
 
   jiti@2.6.1: {}
@@ -6663,9 +6575,6 @@ snapshots:
       tslib: 2.8.1
 
   lru-cache@10.4.3: {}
-
-  lru-cache@11.2.2:
-    optional: true
 
   lru-cache@11.5.1: {}
 
@@ -6849,12 +6758,6 @@ snapshots:
     dependencies:
       lru-cache: 10.4.3
       minipass: 7.1.2
-
-  path-scurry@2.0.0:
-    dependencies:
-      lru-cache: 11.2.2
-      minipass: 7.1.2
-    optional: true
 
   path-scurry@2.0.2:
     dependencies:
