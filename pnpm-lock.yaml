@@ -19,8 +19,8 @@ importers:
         specifier: 10.0.3
         version: 10.0.3(react@19.1.1)
       '@entur/loader':
-        specifier: 0.5.35
-        version: 0.5.35(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+        specifier: 0.8.4
+        version: 0.8.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
       '@entur/tokens':
         specifier: 3.20.0
         version: 3.20.0
@@ -866,12 +866,6 @@ packages:
     resolution: {integrity: sha512-LxLGpOzDeenPYy86Y8Mor6+Yc85klkE8dqnXsLM5XPM6EaltxXtKt0L87bokIZ5YJFO0VXqe+xViGsWt3sQ1Tg==}
     peerDependencies:
       react: '>=16.8.0'
-
-  '@entur/loader@0.5.35':
-    resolution: {integrity: sha512-gA9DD5KgIHZ4ilWTixfPJP6j6wBS2AnzZ+DYEjuyJBeIy3hAxAPFsD9olLwaM2JiVfV0sXf5QBFMtscRqi89+g==}
-    peerDependencies:
-      react: '>=16.8.0'
-      react-dom: '>=16.8.0'
 
   '@entur/loader@0.8.4':
     resolution: {integrity: sha512-6YfkqWD9uZTsU/JIYOAJelNySgVsyRNAupgXmt1WKuUUu0UzTgKIqn0MBTRi0zB/JYDdK+8z5CCYtaSbbhSR6g==}
@@ -4604,15 +4598,6 @@ snapshots:
     dependencies:
       '@entur/tokens': 3.20.0
       react: 19.1.1
-
-  '@entur/loader@0.5.35(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
-    dependencies:
-      '@entur/tokens': 3.20.0
-      '@entur/typography': 2.0.3(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      '@entur/utils': 0.12.5(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
-      classnames: 2.5.1
-      react: 19.1.1
-      react-dom: 19.1.1(react@19.1.1)
 
   '@entur/loader@0.8.4(react-dom@19.1.1(react@19.1.1))(react@19.1.1)':
     dependencies:
