@@ -33,7 +33,7 @@
     "onlyBuiltDependencies": ["esbuild"]
   },
   "dependencies": {
-    "@entur/button": "3.4.1",
+    "@entur/button": "5.0.4",
     "@entur/icons": "8.2.0",
     "@entur/loader": "0.5.35",
     "@entur/tokens": "3.20.0",
