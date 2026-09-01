@@ -1,8 +1,8 @@
 import type { BoardLanguage, BoardTheme } from '@/Shared/types/db-types/boards'
 import type { FolderLogo } from '@/Shared/types/db-types/folders'
 import { getUiLabel } from '@/Shared/utils/translations'
-import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
-import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
+//import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
+//import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
 import { Clock } from '../Clock'
 import { Logo } from '@entur/menu'
 
@@ -23,8 +23,8 @@ function Header({
 	isArrivals = false,
 	language = 'nb',
 }: Props) {
-	const tavlaLogo = theme === 'light' ? TavlaLogoBlue : TavlaLogoWhite
-	const logoSrc = folderLogo || tavlaLogo
+	//const tavlaLogo = theme === 'light' ? TavlaLogoBlue : TavlaLogoWhite
+	//const logoSrc = folderLogo || tavlaLogo
 
 	if (hideClock && hideLogo && !isArrivals) return null
 
