@@ -1,4 +1,5 @@
 import type { BoardLanguage } from '@/Shared/types/db-types/boards'
+import type { TTransportMode } from '@/types/graphql-schema'
 
 const columnLabels = {
 	line: { nb: 'Linje', en: 'Line' },
@@ -53,4 +54,35 @@ function getUiLabel(key: keyof typeof uiLabels, language: BoardLanguage): string
 	return uiLabels[key][language]
 }
 
-export { getColumnLabel, getUiLabel }
+const transportModeToPlatformMapping = {
+	air: { nb: 'Gate', en: 'Gate' },
+	bus: { nb: 'Plattform', en: 'Platform' },
+	cableway: { nb: 'Plattform', en: 'Platform' },
+	coach: { nb: 'Plattform', en: 'Platform' },
+	funicular: { nb: 'Plattform', en: 'Platform' },
+	lift: { nb: 'Plattform', en: 'Platform' },
+	metro: { nb: 'Spor', en: 'Track' },
+	monorail: { nb: 'Spor', en: 'Track' },
+	rail: { nb: 'Spor', en: 'Track' },
+	taxi: { nb: 'Plattform', en: 'Platform' },
+	tram: { nb: 'Plattform', en: 'Platform' },
+	trolleybus: { nb: 'Plattform', en: 'Platform' },
+	unknown: { nb: 'Plattform', en: 'Platform' },
+	water: { nb: 'Kai', en: 'Quay' },
+} as Readonly<Record<TTransportMode, { nb: string; en: string }>>
+
+function getPlatformLabel(transportModes: TTransportMode[], language: BoardLanguage): string {
+	const mappedTransportModes = transportModes.map(
+		(transportMode) => transportModeToPlatformMapping[transportMode][language],
+	)
+
+	const uniqueMappedTransportModes = Array.from(new Set(mappedTransportModes))
+
+	if (uniqueMappedTransportModes.length === 1) {
+		return uniqueMappedTransportModes[0]
+	}
+
+	return transportModeToPlatformMapping.unknown[language]
+}
+
+export { getColumnLabel, getUiLabel, getPlatformLabel }
