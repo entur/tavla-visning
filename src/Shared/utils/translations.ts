@@ -5,7 +5,6 @@ const columnLabels = {
 	line: { nb: 'Linje', en: 'Line' },
 	destination: { nb: 'Destinasjon', en: 'Destination' },
 	stopPlace: { nb: 'Stoppested', en: 'Stop' },
-	platform: { nb: 'Plattform', en: 'Platform' },
 	from: { nb: 'Fra', en: 'From' },
 	planned: { nb: 'Planlagt', en: 'Planned' },
 	arrival: { nb: 'Ankomst', en: 'Arrival' },
@@ -69,7 +68,7 @@ const transportModeToPlatformMapping = {
 	trolleybus: { nb: 'Plattform', en: 'Platform' },
 	unknown: { nb: 'Plattform', en: 'Platform' },
 	water: { nb: 'Kai', en: 'Quay' },
-} as Readonly<Record<TTransportMode, { nb: string; en: string }>>
+} as const satisfies Readonly<Record<TTransportMode, { nb: string; en: string }>>
 
 function getPlatformLabel(transportModes: TTransportMode[], language: BoardLanguage): string {
 	const mappedTransportModes = transportModes.map(
