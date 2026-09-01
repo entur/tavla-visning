@@ -5,6 +5,7 @@
 @import "@entur/tokens/dist/transport.css";
 @import "@entur/menu/dist/styles.css";
 @import "./transport-palettes.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -272,4 +273,23 @@
 	.lineThrough {
 		text-decoration: line-through;
 	}
+}
+
+.tavla-header-logo {
+	--eds-logo-text-size: 1em;
+	align-items: flex-end;
+	gap: 0.4em;
+}
+@media (min-width: 640px) {
+	.tavla-header-logo {
+		--eds-logo-text-size: 1.25em;
+	}
+}
+.tavla-header-logo .eds-logo__svg {
+	height: 100%;
+	width: auto;
+}
+.tavla-header-logo .eds-logo__product-name {
+	text-box-trim: trim-both;
+	text-box-edge: cap alphabetic;
 }

@@ -4,6 +4,7 @@ import { getUiLabel } from '@/Shared/utils/translations'
 import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
 import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
 import { Clock } from '../Clock'
+import { Logo } from '@entur/menu'
 
 type Props = {
 	theme?: BoardTheme
@@ -27,15 +28,35 @@ function Header({
 
 	if (hideClock && hideLogo && !isArrivals) return null
 
+	/** <img
+							src={logoSrc}
+							alt={getUiLabel('boardLogoAlt', language)}
+							className="h-full w-auto object-contain object-left"
+							width="100"
+							height="100"
+						/> */
+
+	/** Må gjøre logosrc om til at den er den egendefinerte logoen dersom man har det, ikke bare Logo direkte
+	 * Hvis folderLogo er null eller en tom streng så skal det være tavlalogo
+	 */
+
 	return (
 		<div
 			className={`relative mb-em-0.25 flex flex-col${isArrivals ? ` pb-em-0.25 border-b-[0.1em] ${theme === 'light' ? 'border-blue' : 'border-lavender'}` : ''}`}
 		>
 			<div className="flex flex-row items-center justify-between">
 				<div className="relative sm:h-[1.25em] w-full h-[1em]">
-					{!hideLogo && (
+					{!hideLogo && !folderLogo && (
+						<Logo
+							alt={getUiLabel('boardLogoAlt', language)}
+							productName="Tavla"
+							className="tavla-header-logo h-full w-auto object-contain object-left"
+							size="small"
+						/>
+					)}
+					{!hideLogo && folderLogo && (
 						<img
-							src={logoSrc}
+							src={folderLogo}
 							alt={getUiLabel('boardLogoAlt', language)}
 							className="h-full w-auto object-contain object-left"
 							width="100"
