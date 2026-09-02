@@ -295,6 +295,30 @@
 }
 
 .tavla-footer-logo {
+	--eds-logo-text-size: max(12px, 0.6em);
+	height: 0.6em;
+	align-items: flex-end;
+	gap: 0.25em;
+	min-height: 12px;
+}
+@media (min-width: 768px) {
+	.tavla-footer-logo {
+		--eds-logo-text-size: min(25px, 0.75em);
+		height: 0.75em;
+		max-height: 25px;
+	}
+}
+.tavla-footer-logo .eds-logo__svg {
+	height: 100%;
+	width: auto;
+}
+.tavla-footer-logo .eds-logo__product-name {
+	text-box-trim: trim-both;
+	text-box-edge: cap alphabetic;
+}
+
+/*
+.tavla-footer-logo {
 	--eds-logo-text-size: 12px;
 	height: 12px;
 	align-items: flex-end;
@@ -315,3 +339,4 @@
 	text-box-trim: trim-both;
 	text-box-edge: cap alphabetic;
 }
+*/
