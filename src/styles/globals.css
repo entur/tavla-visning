@@ -293,3 +293,25 @@
 	text-box-trim: trim-both;
 	text-box-edge: cap alphabetic;
 }
+
+.tavla-footer-logo {
+	--eds-logo-text-size: 12px;
+	height: 12px;
+	align-items: flex-end;
+	gap: 3px;
+}
+@media (min-width: 768px) {
+	.tavla-footer-logo {
+		--eds-logo-text-size: 25px;
+		height: 25px;
+		gap: 6px;
+	}
+}
+.tavla-footer-logo .eds-logo__svg {
+	height: 100%;
+	width: auto;
+}
+.tavla-footer-logo .eds-logo__product-name {
+	text-box-trim: trim-both;
+	text-box-edge: cap alphabetic;
+}

@@ -1,8 +1,6 @@
 import type { BoardLanguage, BoardTheme } from '@/Shared/types/db-types/boards'
 import type { FolderLogo } from '@/Shared/types/db-types/folders'
 import { getUiLabel } from '@/Shared/utils/translations'
-//import TavlaLogoBlue from '../../assets/logos/Tavla-blue.svg'
-//import TavlaLogoWhite from '../../assets/logos/Tavla-white.svg'
 import { Clock } from '../Clock'
 import { Logo } from '@entur/menu'
 
@@ -23,22 +21,7 @@ function Header({
 	isArrivals = false,
 	language = 'nb',
 }: Props) {
-	//const tavlaLogo = theme === 'light' ? TavlaLogoBlue : TavlaLogoWhite
-	//const logoSrc = folderLogo || tavlaLogo
-
 	if (hideClock && hideLogo && !isArrivals) return null
-
-	/** <img
-							src={logoSrc}
-							alt={getUiLabel('boardLogoAlt', language)}
-							className="h-full w-auto object-contain object-left"
-							width="100"
-							height="100"
-						/> */
-
-	/** Må gjøre logosrc om til at den er den egendefinerte logoen dersom man har det, ikke bare Logo direkte
-	 * Hvis folderLogo er null eller en tom streng så skal det være tavlalogo
-	 */
 
 	return (
 		<div
@@ -47,12 +30,7 @@ function Header({
 			<div className="flex flex-row items-center justify-between">
 				<div className="relative sm:h-[1.25em] w-full h-[1em]">
 					{!hideLogo && !folderLogo && (
-						<Logo
-							alt={getUiLabel('boardLogoAlt', language)}
-							productName="Tavla"
-							className="tavla-header-logo h-full w-auto object-contain object-left"
-							size="small"
-						/>
+						<Logo productName="Tavla" className="tavla-header-logo h-full w-auto" size="small" />
 					)}
 					{!hideLogo && folderLogo && (
 						<img
