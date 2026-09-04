@@ -34,7 +34,7 @@ function Platform() {
 	)
 
 	return (
-		<TableColumn title={title}>
+		<TableColumn title={title} className="min-w-[3em]">
 			{updatedPlatforms.map((platform) => (
 				<TableCell key={platform.key}>{platform.publicCode}</TableCell>
 			))}
