@@ -58,7 +58,7 @@ function Time({
 	if (cancelled)
 		return (
 			<>
-				<div className="text-right text-em-lg/em-lg font-semibold text-estimated-time">
+				<div className="text-right text-em-lg/em-lg font-semibold text-cancelled-time">
 					{getUiLabel('cancelled', language)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-sm">{formatDateString(aimedTime)}</div>
@@ -87,7 +87,7 @@ function Time({
 	if (delayMoreThanTwoMinutes)
 		return (
 			<>
-				<div className="text-right text-em-xl leading-em-base text-estimated-time">
+				<div className="text-right text-em-xl leading-em-base">
 					{getRelativeTimeString(expectedTime, language)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
