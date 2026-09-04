@@ -72,7 +72,9 @@ const transportModeToPlatformMapping = {
 
 function getPlatformLabel(transportModes: TTransportMode[], language: BoardLanguage): string {
 	const mappedTransportModes = transportModes.map(
-		(transportMode) => transportModeToPlatformMapping[transportMode][language],
+		(transportMode) =>
+			transportModeToPlatformMapping[transportMode]?.[language] ??
+			transportModeToPlatformMapping.unknown[language],
 	)
 
 	const uniqueMappedTransportModes = Array.from(new Set(mappedTransportModes))

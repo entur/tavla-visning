@@ -13,19 +13,19 @@ function Platform() {
 	const departures = useNonNullContext(DeparturesContext)
 	const { language } = useBoardContext()
 
-	const platforms = departures.map((departure) => ({
-		publicCode: departure.quay.publicCode,
-		key: nanoid(),
-		transportMode: departure.serviceJourney.transportMode,
-		subMode: departure.serviceJourney.transportSubmode,
-	}))
-
 	// Overskriver transportMode for railReplacementBus to rail for platform fordi vi ønsker å vise "Spor"
-	const updatedPlatforms = platforms.map((platform) => {
-		if (platform.transportMode === 'bus' && platform.subMode === 'railReplacementBus') {
-			return { ...platform, transportMode: 'rail' as TTransportMode }
+	const updatedPlatforms = departures.map((departure) => {
+		const transportMode = departure.serviceJourney.transportMode
+		const subMode = departure.serviceJourney.transportSubmode
+
+		return {
+			publicCode: departure.quay.publicCode,
+			key: nanoid(),
+			transportMode:
+				transportMode === 'bus' && subMode === 'railReplacementBus'
+					? ('rail' as TTransportMode)
+					: transportMode,
 		}
-		return platform
 	})
 
 	const title = getPlatformLabel(
