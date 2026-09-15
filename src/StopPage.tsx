@@ -50,7 +50,7 @@ function StopPage() {
 			<PageWrapper transportPalette={brand}>
 				<Header theme="dark" />
 				<Board board={board} />
-				<InfoMessage board={board} showEnturLogo={true} />
+				<InfoMessage board={board} showEnturLogo={false} />
 			</PageWrapper>
 		</ErrorBoundary>
 	)
