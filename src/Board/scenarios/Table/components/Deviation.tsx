@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { TSituationFragment } from '@/types/graphql-schema'
 import { removeStopPlaceSituations } from '../../Board/utils'
@@ -10,14 +11,16 @@ type Situation = {
 	type: 'situation'
 	situations: TSituationFragment[]
 	isHighlighted: boolean
+	key: string
 }
 
 type Cancellation = {
 	type: 'cancellation'
 	isHighlighted: boolean
+	key: string
 }
 
-type NoDeviation = { type: 'no-deviation' }
+type NoDeviation = { type: 'no-deviation'; key: string }
 
 type Deviation = Situation | Cancellation | NoDeviation
 
@@ -42,22 +45,23 @@ function Deviation({
 			removeStopPlaceSituations(departure.situations, stopPlaceSituations) ?? []
 
 		if (departure.cancellation) {
-			return { type: 'cancellation', isHighlighted }
+			return { type: 'cancellation', isHighlighted, key: nanoid() }
 		}
 		if (filteredSituations.length > 0) {
 			return {
 				type: 'situation',
 				situations: filteredSituations,
 				isHighlighted,
+				key: nanoid(),
 			}
 		}
-		return { type: 'no-deviation' }
+		return { type: 'no-deviation', key: nanoid() }
 	})
 
 	return (
 		<TableColumn>
-			{deviations.map((deviation, index) => (
-				<TableCell key={`${deviation.type}-${index}`}>
+			{deviations.map((deviation) => (
+				<TableCell key={deviation.key}>
 					<DeviationCell deviation={deviation} />
 				</TableCell>
 			))}
