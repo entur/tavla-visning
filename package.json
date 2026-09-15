@@ -34,11 +34,11 @@
     "onlyBuiltDependencies": ["esbuild"]
   },
   "dependencies": {
-    "@entur/button": "3.4.1",
-    "@entur/icons": "8.2.0",
+    "@entur/button": "5.0.5",
+    "@entur/icons": "10.0.4",
     "@entur/loader": "0.8.5",
-    "@entur/tokens": "3.20.0",
-    "@entur/typography": "2.0.3",
+    "@entur/tokens": "4.1.1",
+    "@entur/typography": "3.0.5",
     "abortcontroller-polyfill": "1.7.8",
     "class-variance-authority": "0.7.1",
     "graphql": "16.12.0",
