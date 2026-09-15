@@ -1,3 +1,4 @@
+import { nanoid } from 'nanoid'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { TSituationFragment } from '@/types/graphql-schema'
 import { removeStopPlaceSituations } from '../../Board/utils'
@@ -56,8 +57,8 @@ function Deviation({
 
 	return (
 		<TableColumn>
-			{deviations.map((deviation, index) => (
-				<TableCell key={`${deviation.type}-${index}`}>
+			{deviations.map((deviation) => (
+				<TableCell key={nanoid()}>
 					<DeviationCell deviation={deviation} />
 				</TableCell>
 			))}
