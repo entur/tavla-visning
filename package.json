@@ -67,7 +67,7 @@
     "core-js": "3.46.0",
     "globals": "16.4.0",
     "husky": "9.1.7",
-    "jsdom": "29.1.1",
+    "jsdom": "30.0.1",
     "lint-staged": "16.2.6",
     "postcss": "8.5.23",
     "regenerator-runtime": "0.14.1",
@@ -75,7 +75,7 @@
     "tailwindcss": "3.4.14",
     "typescript": "6.0.2",
     "vite": "7.3.5",
-    "vitest": "4.1.11"
+    "vitest": "5.0.0"
   },
   "engines": {
     "pnpm": ">=10.26.0",
