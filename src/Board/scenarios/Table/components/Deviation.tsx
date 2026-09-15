@@ -11,16 +11,14 @@ type Situation = {
 	type: 'situation'
 	situations: TSituationFragment[]
 	isHighlighted: boolean
-	key: string
 }
 
 type Cancellation = {
 	type: 'cancellation'
 	isHighlighted: boolean
-	key: string
 }
 
-type NoDeviation = { type: 'no-deviation'; key: string }
+type NoDeviation = { type: 'no-deviation' }
 
 type Deviation = Situation | Cancellation | NoDeviation
 
@@ -45,23 +43,22 @@ function Deviation({
 			removeStopPlaceSituations(departure.situations, stopPlaceSituations) ?? []
 
 		if (departure.cancellation) {
-			return { type: 'cancellation', isHighlighted, key: nanoid() }
+			return { type: 'cancellation', isHighlighted }
 		}
 		if (filteredSituations.length > 0) {
 			return {
 				type: 'situation',
 				situations: filteredSituations,
 				isHighlighted,
-				key: nanoid(),
 			}
 		}
-		return { type: 'no-deviation', key: nanoid() }
+		return { type: 'no-deviation' }
 	})
 
 	return (
 		<TableColumn>
 			{deviations.map((deviation) => (
-				<TableCell key={deviation.key}>
+				<TableCell key={nanoid()}>
 					<DeviationCell deviation={deviation} />
 				</TableCell>
 			))}
