@@ -5,7 +5,7 @@ import {
 	whitelistedLinesFromDirection,
 } from '@/Board/hooks/useTileData'
 import type { LineWithDirectionDB, QuayDB } from '@/Shared/types/db-types/boards'
-import type { TDepartureFragment } from '@/types/graphql-schema'
+import type { TDepartureFragment } from '@/types/graphql-operations'
 
 // Minimal fixture — filteret bruker kun serviceJourney.line.id og
 // destinationDisplay.frontText.

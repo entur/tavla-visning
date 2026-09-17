@@ -1,5 +1,6 @@
+import type * as Types from 'src/types/graphql-operations'
+
 import type { DocumentTypeDecoration } from '@graphql-typed-document-node/core'
-import type * as Types from 'src/types/graphql-schema'
 export class TypedDocumentString<TResult, TVariables>
 	extends String
 	implements DocumentTypeDecoration<TResult, TVariables>
@@ -113,7 +114,7 @@ export const GetQuayQuery = new TypedDocumentString(`
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
       whiteListedModes: $whitelistedTransportModes
-      whiteListed: {lines: $whitelistedLines}
+      whiteListed: { lines: $whitelistedLines }
       includeCancelledTrips: true
       startTime: $startTime
       arrivalDeparture: $arrivalDeparture
@@ -197,7 +198,7 @@ export const GetQuaysQuery = new TypedDocumentString(`
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
       whiteListedModes: $whitelistedTransportModes
-      whiteListed: {lines: $whitelistedLines}
+      whiteListed: { lines: $whitelistedLines }
       includeCancelledTrips: true
       startTime: $startTime
     ) {
@@ -279,7 +280,7 @@ export const StopPlaceQuery = new TypedDocumentString(`
       numberOfDepartures: $numberOfDepartures
       numberOfDeparturesPerLineAndDestinationDisplay: $numberOfDeparturesPerLineAndDestinationDisplay
       whiteListedModes: $whitelistedTransportModes
-      whiteListed: {lines: $whitelistedLines}
+      whiteListed: { lines: $whitelistedLines }
       includeCancelledTrips: true
       startTime: $startTime
       arrivalDeparture: $arrivalDeparture

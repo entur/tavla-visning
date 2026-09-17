@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
-import type { TSituationFragment } from '@/types/graphql-schema'
+import type { TSituationFragment } from '@/types/graphql-operations'
 import { removeStopPlaceSituations } from '../../Board/utils'
 import { DeparturesContext } from '../contexts'
 import { DeviationIcon } from './DeviationIcon'

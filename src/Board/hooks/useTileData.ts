@@ -1,7 +1,7 @@
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import type { LineWithDirectionDB, TileDB } from '@/Shared/types/db-types/boards'
-import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
+import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import {
 	combineSituations,
 	getAccumulatedTileSituations,
