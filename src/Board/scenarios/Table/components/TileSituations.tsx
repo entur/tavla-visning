@@ -1,6 +1,7 @@
 import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import { useBoardContext } from '@/Board/context'
-import type { TSituationFragment, TTransportMode } from '@/types/graphql-schema'
+import type { TSituationFragment } from '@/types/graphql-operations'
+import type { TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
 import { getColumnLabel } from '@/Shared/utils/translations'
 
