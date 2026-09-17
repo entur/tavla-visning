@@ -8,7 +8,7 @@ import { CombinedTile } from '../CombinedTile'
 import { getFontScale } from './utils'
 
 function Board({ board }: { board: BoardDB }) {
-	if (!board.tiles || !board.tiles.length)
+	if (!board.tiles?.length)
 		return (
 			<Tile state="no_data">
 				<p>{getUiLabel('noStopPlacesAdded', board.language ?? 'nb')}</p>
