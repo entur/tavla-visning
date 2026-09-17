@@ -4,7 +4,7 @@ Tavla Visning er sanntids avgangstavler for kollektivtrafikk (Entur), optimalise
 
 ## 📦 Forutsetninger
 
-- **Node** ≥ 22.13.0
+- **Node** ^22.22.2 || ^24.15.0 || >=26.0.0 (jsdom 30 sitt krav)
 - **pnpm** ≥ 10.26.0
 - Den **lokale Tavla-databasen** fra det opprinnelige Next.js-repoet må kjøre på `localhost:3000`. Appen henter board-konfigurasjon derfra.
 
