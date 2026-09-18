@@ -1,7 +1,8 @@
 import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
 
 import type { BoardFontSize } from '@/Shared/types/db-types/boards'
-import type { TDepartureFragment, TSituationFragment, TTransportMode } from '@/types/graphql-schema'
+import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
+import type { TTransportMode } from '@/types/graphql-schema'
 import { sortPublicCodes } from '@/utils/transportMode'
 
 export function getFontScale(fontSize: BoardFontSize | undefined) {

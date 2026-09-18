@@ -14,7 +14,7 @@ import type {
 	TileColumnDB,
 } from '@/Shared/types/db-types/boards'
 import { getUiLabel } from '@/Shared/utils/translations'
-import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-schema'
+import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
 
 interface BaseTileProps {
