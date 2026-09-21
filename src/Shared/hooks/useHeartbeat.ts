@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <Need backwards compatibility> */
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
-import type { BoardDB } from '../types/db-types/boards'
 import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
+import type { BoardDB } from '../types/db-types/boards'
 
 const HEARTBEAT_INTERVAL_MS = 60000 // 1 minute - how often to send heartbeat
 
@@ -181,7 +181,13 @@ function shouldSkipHeartbeat(boardId: string): boolean {
 	return false
 }
 
-function sendHeartbeat(boardId: string, tabId: string, backend_url: string, isDirectLink: boolean) {
+function sendHeartbeat(
+	boardId: string,
+	tabId: string,
+	backend_url: string,
+	isDirectLink: boolean,
+	county?: string,
+) {
 	try {
 		const screenInfo = {
 			width: (window && window.screen && window.screen.width) || 0,
@@ -200,6 +206,7 @@ function sendHeartbeat(boardId: string, tabId: string, backend_url: string, isDi
 				screen_height: screenInfo.height,
 				app: 'tavla-visning',
 				is_direct_link: isDirectLink,
+				county: county,
 			}),
 		})
 	} catch (error) {
@@ -237,12 +244,15 @@ export function useHeartbeat(
 			return
 		}
 
-		sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink)
+		// Antar at første element i board.tiles representerer fylket for hele tavlen, hvis det er tilgjengelig
+		const county = board.tiles?.[0]?.county
+
+		sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink, county)
 
 		// Set up interval for subsequent heartbeats
 		const intervalId = setInterval(() => {
 			if (!board || !board.id || !tabIdRef.current) return
-			sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink)
+			sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink, county)
 		}, HEARTBEAT_INTERVAL_MS)
 
 		return () => {
