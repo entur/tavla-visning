@@ -58,6 +58,7 @@ export type TileDB = {
 	offset?: number
 	displayName?: string
 	columns?: TileColumnDB[]
+	county?: string
 }
 
 export type TileColumnDB =
