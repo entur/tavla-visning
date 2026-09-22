@@ -8,7 +8,7 @@ type BoardContextValue = {
 }
 
 const BoardContext = createContext<BoardContextValue>({
-	boardId: '',
+	boardId: undefined,
 	isArrivals: false,
 	language: 'nb',
 })
