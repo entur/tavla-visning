@@ -23,7 +23,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 
 	componentDidCatch(error: Error): void {
 		if (this.props.boardId) {
-			reportError(this.props.boardId, 'display_error')
+			reportError(this.props.boardId, 'display_error', error?.message ?? 'Unknown error')
 		}
 		console.error('ErrorBoundary caught:', error)
 	}
