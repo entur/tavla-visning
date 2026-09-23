@@ -24,7 +24,9 @@ function BoardPage() {
 		return boardId
 	}
 
-	const { board, folderLogo, loading, error } = useGetBoard(getBoardId())
+	const boardId = getBoardId()
+
+	const { board, folderLogo, loading, error } = useGetBoard(boardId)
 
 	const refreshedBoard = useRefresh(board, BACKEND_API_URL) ?? board
 	const updatedBoard = refreshedBoard ?? board
@@ -40,7 +42,7 @@ function BoardPage() {
 	return (
 		<PageWrapper theme={theme} transportPalette={updatedBoard?.transportPalette} title={title}>
 			{loading || error || !updatedBoard ? (
-				<BoardStatus loading={loading} error={error} board={updatedBoard} />
+				<BoardStatus loading={loading} error={error} board={updatedBoard} boardId={boardId} />
 			) : (
 				<ErrorBoundary boardId={updatedBoard.id}>
 					<Header

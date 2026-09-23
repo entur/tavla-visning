@@ -3,15 +3,17 @@ import { Heading3 } from '@entur/typography'
 import BeaverIllustration from './Shared/assets/illustrations/BeaverIllustration.png'
 import { Loader } from '@entur/loader'
 import type { BoardDB } from './Shared/types/db-types/boards'
+import { reportError } from '@utils/reportError'
 
 interface BoardStatusProps {
 	loading: boolean
 	error: string | null
 	board: BoardDB | null
 	theme?: string
+	boardId: string
 }
 
-export function BoardStatus({ loading, error, board }: BoardStatusProps) {
+export function BoardStatus({ loading, error, board, boardId }: BoardStatusProps) {
 	const containerClass = 'flex h-screen w-full items-center flex-col justify-center text-2xl'
 
 	if (loading) {
@@ -24,6 +26,7 @@ export function BoardStatus({ loading, error, board }: BoardStatusProps) {
 	}
 
 	if (error) {
+		reportError(boardId, 'fetch_board', error)
 		return (
 			<div className="mx-auto flex h-[70vh] flex-col items-center justify-center gap-5 lg:w-1/4">
 				<Heading3 className="bg-transparent">Ups, denne tavla finnes ikke!</Heading3>

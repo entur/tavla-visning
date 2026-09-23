@@ -1,6 +1,6 @@
 import { ERROR_REPORT_URL } from '@/Shared/assets/env'
 
-export type ErrorCode = 'display_error' | 'unknown' | 'fetch_journey_planner'
+export type ErrorCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
 
 const BOARD_ID_PATTERN = /^[a-zA-Z0-9]{20}$/
 
