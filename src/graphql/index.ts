@@ -292,6 +292,7 @@ export const StopPlaceQuery = new TypedDocumentString(`
     }
     quays {
       id
+      publicCode
       situations {
         ...situation
       }

@@ -376,6 +376,7 @@ export type TStopPlaceQuery = {
 		}>
 		quays: Array<{
 			id: string
+			publicCode: string | null
 			situations: Array<{
 				id: string
 				description: Array<{ value: string; language: string | null }>

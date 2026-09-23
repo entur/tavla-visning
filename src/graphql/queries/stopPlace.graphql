@@ -26,6 +26,7 @@ query StopPlace(
 		}
 		quays {
 			id
+			publicCode
 			situations {
 				...situation
 			}

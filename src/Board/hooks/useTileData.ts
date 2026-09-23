@@ -1,6 +1,8 @@
+import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import type { LineWithDirectionDB, TileDB } from '@/Shared/types/db-types/boards'
+import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import {
 	combineSituations,
@@ -111,6 +113,7 @@ export function useStopPlaceTileData(
 	isArrivals?: boolean,
 ): TileData {
 	const usesLinesWithDirection = linesWithDirection !== undefined
+	const { language } = useBoardContext()
 
 	const {
 		data: stopPlaceData,
@@ -142,7 +145,18 @@ export function useStopPlaceTileData(
 	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
 		.filter(isNotNullOrUndefined)
 		.filter((quay) => selectedQuayIds.length === 0 || selectedQuayIds.includes(quay.id))
-	const selectedQuaysSituations = relevantQuays.flatMap((quay) => quay.situations)
+
+	const platformLabel = getPlatformLabel(
+		(stopPlaceData?.stopPlace?.transportMode ?? []).filter(isNotNullOrUndefined),
+		language,
+	)
+
+	const selectedQuaysSituations: TSituationWithOrigin[] = relevantQuays.flatMap((quay) =>
+		quay.situations.map((situation) => ({
+			...situation,
+			origin: quay.publicCode ? `${platformLabel} ${quay.publicCode}` : undefined,
+		})),
+	)
 
 	const situations = combineSituations([
 		...(stopPlaceData?.stopPlace?.situations ?? []),
