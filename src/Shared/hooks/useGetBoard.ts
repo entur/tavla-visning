@@ -171,7 +171,10 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 				})
 
 				if (!res.ok) {
-					throw new Error(`API returned status ${res.status}`)
+					const errorData = await res.json().catch(() => null)
+					throw new Error(
+						`API returned status ${res.status}: ${errorData?.error ?? 'No error message'}`,
+					)
 				}
 
 				const data: BoardApiResponse = await res.json()
