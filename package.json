@@ -25,14 +25,6 @@
       "pnpm exec biome format --write ./src"
     ]
   },
-  "pnpm": {
-    "overrides": {
-      "immutable": "3.8.3",
-      "shell-quote": "1.8.4",
-      "lodash@<4.18.0": "4.18.1"
-    },
-    "onlyBuiltDependencies": ["esbuild"]
-  },
   "dependencies": {
     "@entur/button": "5.0.5",
     "@entur/icons": "10.0.4",
