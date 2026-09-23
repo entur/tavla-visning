@@ -107,7 +107,7 @@ export function useQuaysTileData(
 }
 
 export function useStopPlaceTileData(
-	{ stopPlaceId, whitelistedLines, linesWithDirection, offset, displayName, name }: TileDB,
+	{ stopPlaceId, whitelistedLines, linesWithDirection, offset, displayName, name, quays }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
 	const usesLinesWithDirection = linesWithDirection !== undefined
@@ -138,17 +138,25 @@ export function useStopPlaceTileData(
 		.filter((dep) => shouldIncludeByLineDirection(dep, linesWithDirection ?? []))
 		.slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
 
-	const stopPlaceSituations = getAccumulatedTileSituations(
-		filteredCalls,
-		stopPlaceData?.stopPlace?.situations,
-	)
+	const selectedQuayIds = quays?.map((q) => q.id) ?? []
+	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
+		.filter(isNotNullOrUndefined)
+		.filter((quay) => selectedQuayIds.length === 0 || selectedQuayIds.includes(quay.id))
+	const selectedQuaysSituations = relevantQuays.flatMap((quay) => quay.situations)
+
+	const situations = combineSituations([
+		...(stopPlaceData?.stopPlace?.situations ?? []),
+		...selectedQuaysSituations,
+	])
+
+	const stopPlaceSituations = getAccumulatedTileSituations(filteredCalls, situations)
 
 	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
 
 	return {
 		displayName: (displayName ?? name) || stopPlaceData?.stopPlace?.name,
 		estimatedCalls: filteredCalls,
-		situations: stopPlaceData?.stopPlace?.situations ?? [],
+		situations,
 		uniqueSituations: stopPlaceSituations ?? [],
 		currentSituationIndex,
 		isLoading: stopPlaceLoading,

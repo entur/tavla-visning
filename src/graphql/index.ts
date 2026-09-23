@@ -290,6 +290,12 @@ export const StopPlaceQuery = new TypedDocumentString(`
     situations {
       ...situation
     }
+    quays {
+      id
+      situations {
+        ...situation
+      }
+    }
   }
 }
     fragment departure on EstimatedCall {
