@@ -24,5 +24,12 @@ query StopPlace(
 		situations {
 			...situation
 		}
+		quays {
+			id
+			publicCode
+			situations {
+				...situation
+			}
+		}
 	}
 }

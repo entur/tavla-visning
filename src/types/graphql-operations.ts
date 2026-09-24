@@ -374,5 +374,15 @@ export type TStopPlaceQuery = {
 			summary: Array<{ value: string; language: string | null }>
 			validityPeriod: { endTime: DateTime | null } | null
 		}>
+		quays: Array<{
+			id: string
+			publicCode: string | null
+			situations: Array<{
+				id: string
+				description: Array<{ value: string; language: string | null }>
+				summary: Array<{ value: string; language: string | null }>
+				validityPeriod: { endTime: DateTime | null } | null
+			}>
+		} | null> | null
 	} | null
 }
