@@ -1,11 +1,12 @@
 import type { BoardLanguage } from '@/Shared/types/db-types/boards'
+import { getServerNow } from '@/Shared/utils/serverTime'
 import { getUiLabel } from '@/Shared/utils/translations'
 
 const ONE_MINUTE = 60
 const TEN_MINUTES = 600
 
 export function getRelativeTimeString(dateString: string, language: BoardLanguage = 'nb') {
-	const timeDiffInSeconds = (Date.parse(dateString) - Date.now()) / 1000
+	const timeDiffInSeconds = (Date.parse(dateString) - getServerNow()) / 1000
 
 	// Compensate to avoid optimistic time since fetch of departures happens every 30 seconds
 	const adjustedTimeDiffInSeconds = timeDiffInSeconds - 15
@@ -55,8 +56,15 @@ export function getDate(dateString: string, language: BoardLanguage = 'nb') {
 	}).format(Date.parse(dateString))
 }
 
+function toOsloDateKey(timestamp: number) {
+	return Intl.DateTimeFormat('en-CA', {
+		timeZone: 'Europe/Oslo',
+		year: 'numeric',
+		month: '2-digit',
+		day: '2-digit',
+	}).format(timestamp)
+}
+
 export function isDateStringToday(dateString: string) {
-	const today = new Date().setHours(0, 0, 0, 0)
-	const timestampDay = new Date(Date.parse(dateString)).setHours(0, 0, 0, 0)
-	return today === timestampDay
+	return toOsloDateKey(getServerNow()) === toOsloDateKey(Date.parse(dateString))
 }

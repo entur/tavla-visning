@@ -1,5 +1,6 @@
-import { type TEndpointNames, GRAPHQL_ENDPOINTS, CLIENT_NAME } from '@/Shared/assets/env'
-import { formatDateToISO, addMinutesToDate } from '@/Shared/utils/time'
+import { CLIENT_NAME, GRAPHQL_ENDPOINTS, type TEndpointNames } from '@/Shared/assets/env'
+import { getServerNow } from '@/Shared/utils/serverTime'
+import { addMinutesToDate, formatDateToISO } from '@/Shared/utils/time'
 import type { TypedDocumentString } from './index'
 
 async function fetchWithTimeout(
@@ -28,7 +29,7 @@ export async function fetcher<Data, Variables>([query, variables, endpointName, 
 	TEndpointNames,
 	number,
 ]) {
-	const startTime = formatDateToISO(addMinutesToDate(new Date(), offset))
+	const startTime = formatDateToISO(addMinutesToDate(new Date(getServerNow()), offset))
 	const mergedVariables = { ...variables, startTime }
 
 	return fetchWithTimeout(GRAPHQL_ENDPOINTS[endpointName], {

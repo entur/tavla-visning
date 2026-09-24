@@ -2,9 +2,10 @@
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
 import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
+import { applyServerTime } from '@/Shared/utils/serverTime'
 import type { BoardDB } from '../types/db-types/boards'
 
-const HEARTBEAT_INTERVAL_MS = 60000 // 1 minute - how often to send heartbeat
+const HEARTBEAT_INTERVAL_MS = 60000
 
 declare global {
 	interface Window {
@@ -195,6 +196,7 @@ function sendHeartbeat(
 		}
 		const userAgent = (window && window.navigator && window.navigator.userAgent) || 'Unknown'
 
+		const sentAtMs = Date.now()
 		safeFetch(`${backend_url}/heartbeat`, {
 			method: 'POST',
 			headers: { 'Content-Type': 'text/plain' },
@@ -209,6 +211,16 @@ function sendHeartbeat(
 				county: county,
 			}),
 		})
+			.then((response) => {
+				if (!response.ok) return
+				try {
+					const parsed = JSON.parse(response.text) as { time?: number }
+					if (typeof parsed.time === 'number') applyServerTime(parsed.time, sentAtMs)
+				} catch {}
+			})
+			.catch((error) => {
+				console.error('Failed to send heartbeat for board:', boardId, 'tab:', tabId, error)
+			})
 	} catch (error) {
 		console.error('Failed to send heartbeat for board:', boardId, 'tab:', tabId, error)
 	}

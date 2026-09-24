@@ -1,12 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
+import { getServerNow } from '@/Shared/utils/serverTime'
 
 function Clock() {
 	const [currentTime, setCurrentTime] = useState<string>()
 
 	useEffect(() => {
 		const formatTime = () => {
-			const now = new Date()
+			const now = new Date(getServerNow())
 			return new Intl.DateTimeFormat('en-GB', {
 				hour: '2-digit',
 				minute: '2-digit',
