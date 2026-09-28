@@ -56,7 +56,7 @@ export function getDate(dateString: string, language: BoardLanguage = 'nb') {
 	}).format(Date.parse(dateString))
 }
 
-function toOsloDateKey(timestamp: number) {
+function formatTimestampToOsloDate(timestamp: number) {
 	return Intl.DateTimeFormat('en-CA', {
 		timeZone: 'Europe/Oslo',
 		year: 'numeric',
@@ -66,5 +66,8 @@ function toOsloDateKey(timestamp: number) {
 }
 
 export function isDateStringToday(dateString: string) {
-	return toOsloDateKey(getServerNow()) === toOsloDateKey(Date.parse(dateString))
+	const formattedDateServer = formatTimestampToOsloDate(getServerNow())
+	const formattedDateString = formatTimestampToOsloDate(Date.parse(dateString))
+
+	return formattedDateServer === formattedDateString
 }
