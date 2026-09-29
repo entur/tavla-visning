@@ -1,8 +1,7 @@
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
 import { Loader } from '@entur/loader'
 import { Tile, type TileVariants } from '@src/Shared/components/Tile'
-import { reportError } from '@utils/reportError'
-import { type ReactNode, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
@@ -82,17 +81,7 @@ export function BoardTile({
 	customNames,
 	size,
 }: BaseTileProps) {
-	const { boardId, isArrivals, language } = useBoardContext()
-
-	useEffect(() => {
-		if (!error) return
-		reportError(
-			boardId ?? '',
-			'fetch_journey_planner',
-			error.message || 'Unknown error',
-			error.name,
-		)
-	}, [error, boardId])
+	const { isArrivals, language } = useBoardContext()
 
 	if (isLoading && !hasData) {
 		return (

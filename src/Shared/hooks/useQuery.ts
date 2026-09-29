@@ -8,6 +8,7 @@ export type TUseQueryOptions = {
 	endpoint: TEndpointNames
 	offset?: number
 	enabled?: boolean
+	onError?: (error: Error) => void
 }
 
 export function useQuery<Data, Variables>(
@@ -26,7 +27,11 @@ export function useQuery<Data, Variables>(
 
 	const { data, error, isLoading } = useSWR<Data>(
 		shouldFetch ? [query, variables, mergedOptions.endpoint, mergedOptions.offset ?? 0] : null,
-		fetcher,
+		(key: readonly [TypedDocumentString<Data, Variables>, Variables, TEndpointNames, number]) =>
+			fetcher<Data, Variables>(key).catch((err) => {
+				mergedOptions.onError?.(err)
+				throw err
+			}),
 		{
 			revalidateOnFocus: true,
 			revalidateOnReconnect: true,
@@ -43,7 +48,10 @@ export type TQuery<Data, Variables> = {
 	options?: Partial<TUseQueryOptions>
 }
 
-export function useQueries<Data, Variables>(queries: Array<TQuery<Data, Variables>>) {
+export function useQueries<Data, Variables>(
+	queries: Array<TQuery<Data, Variables>>,
+	onError?: (error: Error) => void,
+) {
 	const swrOptions = {
 		revalidateOnFocus: true,
 		revalidateOnReconnect: true,
@@ -56,7 +64,12 @@ export function useQueries<Data, Variables>(queries: Array<TQuery<Data, Variable
 		(queries) =>
 			Promise.all(
 				queries.map((query) =>
-					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0]),
+					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0]).catch(
+						(err) => {
+							onError?.(err)
+							throw err
+						},
+					),
 				),
 			),
 		swrOptions,

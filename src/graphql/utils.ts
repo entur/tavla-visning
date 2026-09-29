@@ -22,7 +22,7 @@ async function fetchWithTimeout(
 	}
 }
 
-export async function fetcher<Data, Variables>([query, variables, endpointName, offset]: [
+export async function fetcher<Data, Variables>([query, variables, endpointName, offset]: readonly [
 	TypedDocumentString<Data, Variables>,
 	Variables,
 	TEndpointNames,
