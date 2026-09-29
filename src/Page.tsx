@@ -42,7 +42,7 @@ function BoardPage() {
 	return (
 		<PageWrapper theme={theme} transportPalette={updatedBoard?.transportPalette} title={title}>
 			{loading || error || !updatedBoard ? (
-				<BoardStatus loading={loading} error={error} board={updatedBoard} boardId={boardId} />
+				<BoardStatus loading={loading} error={error} board={updatedBoard} />
 			) : (
 				<ErrorBoundary boardId={updatedBoard.id}>
 					<Header

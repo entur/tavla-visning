@@ -56,6 +56,7 @@ export function useQuaysTileData(
 	{ quays, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
+	const { boardId } = useBoardContext()
 	const hasSelectedQuays = !!quays && quays.length > 0
 
 	const quayQueries = hasSelectedQuays
@@ -73,7 +74,11 @@ export function useQuaysTileData(
 			}))
 		: []
 
-	const { data: quaysData, isLoading: quaysLoading, error: quaysError } = useQueries(quayQueries)
+	const {
+		data: quaysData,
+		isLoading: quaysLoading,
+		error: quaysError,
+	} = useQueries(quayQueries, boardId)
 
 	const quayResults = quaysData?.map((d) => d.quay).filter(isNotNullOrUndefined) ?? []
 
@@ -113,7 +118,7 @@ export function useStopPlaceTileData(
 	isArrivals?: boolean,
 ): TileData {
 	const usesLinesWithDirection = linesWithDirection !== undefined
-	const { language } = useBoardContext()
+	const { language, boardId } = useBoardContext()
 
 	const {
 		data: stopPlaceData,
@@ -134,7 +139,11 @@ export function useStopPlaceTileData(
 				: undefined,
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
-		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0) },
+		{
+			poll: true,
+			offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0),
+			boardId,
+		},
 	)
 
 	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? [])
@@ -180,6 +189,7 @@ export function useStopPlaceTileData(
 }
 
 export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
+	const { boardId } = useBoardContext()
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 
@@ -229,9 +239,13 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		data: stopPlaceData,
 		error: stopPlaceError,
 		isLoading: stopPlaceLoading,
-	} = useQueries(stopPlaceQueries)
+	} = useQueries(stopPlaceQueries, boardId)
 
-	const { data: quaysData, error: quaysError, isLoading: quaysLoading } = useQueries(quayQueries)
+	const {
+		data: quaysData,
+		error: quaysError,
+		isLoading: quaysLoading,
+	} = useQueries(quayQueries, boardId)
 
 	const estimatedCalls = [
 		...(stopPlaceData?.flatMap((data, index) => {

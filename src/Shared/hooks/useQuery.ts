@@ -1,13 +1,15 @@
+import { reportError } from '@shared/utils/reportError'
 import useSWR from 'swr'
-import type { TEndpointNames } from '../assets/env'
 import type { TypedDocumentString } from '@/graphql'
 import { fetcher } from '@/graphql/utils'
+import type { TEndpointNames } from '../assets/env'
 
 export type TUseQueryOptions = {
 	poll: boolean
 	endpoint: TEndpointNames
 	offset?: number
 	enabled?: boolean
+	boardId?: string
 }
 
 export function useQuery<Data, Variables>(
@@ -23,10 +25,27 @@ export function useQuery<Data, Variables>(
 	}
 
 	const shouldFetch = mergedOptions.enabled !== false
+	const key = shouldFetch
+		? [query, variables, mergedOptions.endpoint, mergedOptions.offset ?? 0]
+		: null
 
 	const { data, error, isLoading } = useSWR<Data>(
-		shouldFetch ? [query, variables, mergedOptions.endpoint, mergedOptions.offset ?? 0] : null,
-		fetcher,
+		key,
+		() =>
+			fetcher<Data, Variables>([
+				query,
+				variables,
+				mergedOptions.endpoint,
+				mergedOptions.offset ?? 0,
+			]).catch((err) => {
+				reportError(
+					mergedOptions.boardId ?? '',
+					'fetch_journey_planner',
+					err.message || 'Unknown error',
+					err.name,
+				)
+				throw err
+			}),
 		{
 			revalidateOnFocus: true,
 			revalidateOnReconnect: true,
@@ -43,7 +62,10 @@ export type TQuery<Data, Variables> = {
 	options?: Partial<TUseQueryOptions>
 }
 
-export function useQueries<Data, Variables>(queries: Array<TQuery<Data, Variables>>) {
+export function useQueries<Data, Variables>(
+	queries: Array<TQuery<Data, Variables>>,
+	boardId?: string,
+) {
 	const swrOptions = {
 		revalidateOnFocus: true,
 		revalidateOnReconnect: true,
@@ -56,7 +78,17 @@ export function useQueries<Data, Variables>(queries: Array<TQuery<Data, Variable
 		(queries) =>
 			Promise.all(
 				queries.map((query) =>
-					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0]),
+					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0]).catch(
+						(err) => {
+							reportError(
+								boardId ?? '',
+								'fetch_journey_planner',
+								err.message || 'Unknown error',
+								err.name,
+							)
+							throw err
+						},
+					),
 				),
 			),
 		swrOptions,
