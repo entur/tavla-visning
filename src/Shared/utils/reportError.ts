@@ -1,18 +1,18 @@
 import { ERROR_REPORT_URL } from '@/Shared/assets/env'
 
-export type ErrorCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
+export type ErrorType = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
 
 const BOARD_ID_PATTERN = /^[a-zA-Z0-9]{20}$/
 const NSR_ID_PATTERN = /^NSR:(Quay|StopPlace):\d+$/i
 
-export function reportError(boardId: string, errorCode: ErrorCode, message: string): void {
+export function reportError(boardId: string, errorType: ErrorType, message: string): void {
 	if (!ERROR_REPORT_URL) return
 	if (!boardId || (!BOARD_ID_PATTERN.test(boardId) && !NSR_ID_PATTERN.test(boardId))) return
 
 	fetch(ERROR_REPORT_URL, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId: boardId, errorCode: errorCode, message: message }),
+		body: JSON.stringify({ boardId, errorType, message }),
 		keepalive: true,
 	}).catch(() => {})
 }
