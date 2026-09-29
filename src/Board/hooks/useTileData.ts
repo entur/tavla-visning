@@ -3,7 +3,6 @@ import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import type { LineWithDirectionDB, TileDB } from '@/Shared/types/db-types/boards'
 import { getPlatformLabel } from '@/Shared/utils/translations'
-import { reportError } from '@/Shared/utils/reportError'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import {
 	combineSituations,
@@ -53,15 +52,10 @@ const DEFAULT_NUMBER_OF_DEPARTURES = 20
 const DIRECTION_NUMBER_OF_DEPARTURES = 50
 const DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION = 10
 
-function reportFetchError(boardId: string | undefined, error: Error) {
-	reportError(boardId ?? '', 'fetch_journey_planner', error.message || 'Unknown error', error.name)
-}
-
 export function useQuaysTileData(
 	{ quays, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
-	const { boardId } = useBoardContext()
 	const hasSelectedQuays = !!quays && quays.length > 0
 
 	const quayQueries = hasSelectedQuays
@@ -79,11 +73,7 @@ export function useQuaysTileData(
 			}))
 		: []
 
-	const {
-		data: quaysData,
-		isLoading: quaysLoading,
-		error: quaysError,
-	} = useQueries(quayQueries, (err) => reportFetchError(boardId, err))
+	const { data: quaysData, isLoading: quaysLoading, error: quaysError } = useQueries(quayQueries)
 
 	const quayResults = quaysData?.map((d) => d.quay).filter(isNotNullOrUndefined) ?? []
 
@@ -123,7 +113,7 @@ export function useStopPlaceTileData(
 	isArrivals?: boolean,
 ): TileData {
 	const usesLinesWithDirection = linesWithDirection !== undefined
-	const { language, boardId } = useBoardContext()
+	const { language } = useBoardContext()
 
 	const {
 		data: stopPlaceData,
@@ -144,11 +134,7 @@ export function useStopPlaceTileData(
 				: undefined,
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
-		{
-			poll: true,
-			offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0),
-			onError: (err) => reportFetchError(boardId, err),
-		},
+		{ poll: true, offset: (offset ?? 0) + (isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0) },
 	)
 
 	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? [])
@@ -194,7 +180,6 @@ export function useStopPlaceTileData(
 }
 
 export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
-	const { boardId } = useBoardContext()
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 
@@ -244,13 +229,9 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		data: stopPlaceData,
 		error: stopPlaceError,
 		isLoading: stopPlaceLoading,
-	} = useQueries(stopPlaceQueries, (err) => reportFetchError(boardId, err))
+	} = useQueries(stopPlaceQueries)
 
-	const {
-		data: quaysData,
-		error: quaysError,
-		isLoading: quaysLoading,
-	} = useQueries(quayQueries, (err) => reportFetchError(boardId, err))
+	const { data: quaysData, error: quaysError, isLoading: quaysLoading } = useQueries(quayQueries)
 
 	const estimatedCalls = [
 		...(stopPlaceData?.flatMap((data, index) => {
