@@ -182,6 +182,18 @@ function shouldSkipHeartbeat(boardId: string): boolean {
 	return false
 }
 
+function parseServerTime(body: string): number | null {
+	try {
+		const parsed = JSON.parse(body)
+		if (typeof parsed !== 'object' || parsed === null || !('time' in parsed)) {
+			return null
+		}
+		return typeof parsed.time === 'number' ? parsed.time : null
+	} catch {
+		return null
+	}
+}
+
 function sendHeartbeat(
 	boardId: string,
 	tabId: string,
@@ -213,10 +225,8 @@ function sendHeartbeat(
 		})
 			.then((response) => {
 				if (!response.ok) return
-				try {
-					const parsed = JSON.parse(response.text) as { time?: number }
-					if (typeof parsed.time === 'number') applyServerTime(parsed.time, sentAtMs)
-				} catch {}
+				const time = parseServerTime(response.text)
+				if (time !== null) applyServerTime(time, sentAtMs)
 			})
 			.catch((error) => {
 				console.error('Failed to send heartbeat for board:', boardId, 'tab:', tabId, error)
