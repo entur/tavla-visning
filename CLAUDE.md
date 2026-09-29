@@ -61,7 +61,7 @@ Board configs also arrive via `postMessage` for embedded iframe displays. Truste
 
 - **30s polling** via SWR in `useQuery` for departure data
 - **`useRefresh()`** — SSE subscription to backend for board config changes
-- **`useHeartbeat()`** — sends keep-alive every 60s for analytics
+- **`useHeartbeat()`** — sends keep-alive every 60s for analytics; the response also carries the backend's current time, used to sync a local clock offset (`src/Shared/utils/serverTime.ts`) so the displayed clock and departure times stay correct even when the display hardware's own system clock is wrong
 - **24h reload** — `Page.tsx` forces full page refresh daily
 
 ### GraphQL
@@ -151,6 +151,7 @@ Always use aliases for cross-module imports — never relative paths:
 - [`src/Shared/assets/env.ts`](src/Shared/assets/env.ts) — endpoint URLs
 - [`src/Shared/types/db-types/boards.ts`](src/Shared/types/db-types/boards.ts) — `BoardDB` and `TileDB` types
 - [`src/Shared/utils/translations.ts`](src/Shared/utils/translations.ts) — board-language (nb/en) string lookup table
+- [`src/Shared/utils/serverTime.ts`](src/Shared/utils/serverTime.ts) — server clock offset, synced via `useHeartbeat()`; use `getServerNow()` instead of `new Date()`/`Date.now()` anywhere "now" needs to be correct regardless of the display's own system clock
 - [`src/Board/context.ts`](src/Board/context.ts) — `BoardContext`, carries `isArrivals` and `language`
 - [`vite.config.ts`](vite.config.ts) — path aliases, legacy browser targets, CSP headers
 

@@ -1,3 +1,4 @@
+import { getServerNow } from '@/Shared/utils/serverTime'
 import type { TSituationFragment } from '@/types/graphql-operations'
 import { useCycler } from '../../useCycler'
 import { TitleSituation } from '../Situation'
@@ -6,7 +7,7 @@ const timerInMilliseconds = 10000
 
 function filterValidSituations(situations?: TSituationFragment[]): TSituationFragment[] {
 	if (!situations) return []
-	const now = Date.now()
+	const now = getServerNow()
 	return situations.filter((s) => {
 		const endTime = s.validityPeriod?.endTime
 		return !endTime || new Date(endTime).getTime() > now

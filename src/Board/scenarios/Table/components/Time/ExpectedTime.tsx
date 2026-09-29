@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import { useBoardContext } from '@/Board/context'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { BoardLanguage } from '@/Shared/types/db-types/boards'
+import { getServerNow } from '@/Shared/utils/serverTime'
 import { formatDateString, getRelativeTimeString } from '@/Shared/utils/time'
 import { getColumnLabel, getUiLabel } from '@/Shared/utils/translations'
 import { DeparturesContext } from '../../contexts'
@@ -65,7 +66,7 @@ function Time({
 			</>
 		)
 
-	const secondsSinceArrival = (Date.now() - Date.parse(expectedTime)) / 1000
+	const secondsSinceArrival = (getServerNow() - Date.parse(expectedTime)) / 1000
 
 	if (isArrivalBoard && secondsSinceArrival > TWO_MINUTES) {
 		return (
