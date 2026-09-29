@@ -2,6 +2,7 @@ import { Button } from '@entur/button'
 import { Heading3 } from '@entur/typography'
 import BeaverIllustration from './Shared/assets/illustrations/BeaverIllustration.png'
 import { Loader } from '@entur/loader'
+import { useEffect } from 'react'
 import type { BoardDB } from './Shared/types/db-types/boards'
 import { reportError } from '@utils/reportError'
 
@@ -16,6 +17,11 @@ interface BoardStatusProps {
 export function BoardStatus({ loading, error, board, boardId }: BoardStatusProps) {
 	const containerClass = 'flex h-screen w-full items-center flex-col justify-center text-2xl'
 
+	useEffect(() => {
+		if (!error) return
+		reportError(boardId, 'fetch_board', error)
+	}, [error, boardId])
+
 	if (loading) {
 		return (
 			<div className={containerClass}>
@@ -26,7 +32,6 @@ export function BoardStatus({ loading, error, board, boardId }: BoardStatusProps
 	}
 
 	if (error) {
-		reportError(boardId, 'fetch_board', error)
 		return (
 			<div className="mx-auto flex h-[70vh] flex-col items-center justify-center gap-5 lg:w-1/4">
 				<Heading3 className="bg-transparent">Ups, denne tavla finnes ikke!</Heading3>

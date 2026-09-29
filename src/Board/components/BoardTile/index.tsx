@@ -1,7 +1,8 @@
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
 import { Loader } from '@entur/loader'
 import { Tile, type TileVariants } from '@src/Shared/components/Tile'
-import type { ReactNode } from 'react'
+import { reportError } from '@utils/reportError'
+import { type ReactNode, useEffect } from 'react'
 import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
@@ -15,8 +16,7 @@ import type {
 } from '@/Shared/types/db-types/boards'
 import { getUiLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
-import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
-import { reportError } from '@utils/reportError'
+import { DataFetchingFailed } from '../DataFetchingFailed'
 
 interface BaseTileProps {
 	displayName?: string
@@ -84,6 +84,16 @@ export function BoardTile({
 }: BaseTileProps) {
 	const { boardId, isArrivals, language } = useBoardContext()
 
+	useEffect(() => {
+		if (!error) return
+		reportError(
+			boardId ?? '',
+			'fetch_journey_planner',
+			error.message || 'Unknown error',
+			error.name,
+		)
+	}, [error, boardId])
+
 	if (isLoading && !hasData) {
 		return (
 			<Tile state="loading" size={size}>
@@ -95,11 +105,9 @@ export function BoardTile({
 	}
 
 	if (error || !hasData) {
-		reportError(boardId ?? '', 'fetch_journey_planner', error?.message ?? 'Unknown error')
-
 		return (
 			<Tile state="error" size={size}>
-				<DataFetchingFailed timeout={error?.message === FetchErrorTypes.TIMEOUT} />
+				<DataFetchingFailed error={error} />
 			</Tile>
 		)
 	}
