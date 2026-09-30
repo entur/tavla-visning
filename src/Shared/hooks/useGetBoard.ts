@@ -187,9 +187,11 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 				dispatch({ type: 'SUCCESS', board: data.board, folderLogo: data.folderLogo })
 			} catch (err) {
 				console.error('useGetBoard: Failed to fetch board', err)
-				const message = err instanceof Error ? err.message : 'Unknown error'
-				reportError(boardId, 'fetch_board', message, err instanceof Error ? err.name : undefined)
-				dispatch({ type: 'ERROR', message })
+
+				const error = err instanceof Error ? err : new Error('Unknown error')
+
+				reportError(boardId, 'fetch_board', error.message, error.name)
+				dispatch({ type: 'ERROR', message: error.message })
 			}
 		}
 
