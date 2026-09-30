@@ -25,19 +25,17 @@ export function useQuery<Data, Variables>(
 	}
 
 	const shouldFetch = mergedOptions.enabled !== false
-	const key = shouldFetch
-		? [query, variables, mergedOptions.endpoint, mergedOptions.offset ?? 0]
-		: null
+	const key: [TypedDocumentString<Data, Variables>, Variables, TEndpointNames, number] = [
+		query,
+		variables,
+		mergedOptions.endpoint,
+		mergedOptions.offset ?? 0,
+	]
 
 	const { data, error, isLoading } = useSWR<Data>(
-		key,
+		shouldFetch ? key : null,
 		() =>
-			fetcher<Data, Variables>([
-				query,
-				variables,
-				mergedOptions.endpoint,
-				mergedOptions.offset ?? 0,
-			]).catch((err) => {
+			fetcher<Data, Variables>(key).catch((err) => {
 				reportError(
 					mergedOptions.boardId ?? '',
 					'fetch_journey_planner',
