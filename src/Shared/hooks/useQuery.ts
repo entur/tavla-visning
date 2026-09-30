@@ -1,4 +1,4 @@
-import { reportError } from '@shared/utils/reportError'
+import { reportError, reportSuccess } from '@shared/utils/report'
 import useSWR from 'swr'
 import type { TypedDocumentString } from '@/graphql'
 import { fetcher } from '@/graphql/utils'
@@ -35,15 +35,20 @@ export function useQuery<Data, Variables>(
 	const { data, error, isLoading } = useSWR<Data>(
 		shouldFetch ? key : null,
 		() =>
-			fetcher<Data, Variables>(key).catch((err) => {
-				reportError(
-					mergedOptions.boardId ?? '',
-					'fetch_journey_planner',
-					err.message || 'Unknown error',
-					err.name,
-				)
-				throw err
-			}),
+			fetcher<Data, Variables>(key)
+				.then((res) => {
+					reportSuccess(mergedOptions.boardId ?? '', 'fetch_journey_planner')
+					return res
+				})
+				.catch((err) => {
+					reportError(
+						mergedOptions.boardId ?? '',
+						'fetch_journey_planner',
+						err.message || 'Unknown error',
+						err.name,
+					)
+					throw err
+				}),
 		{
 			revalidateOnFocus: true,
 			revalidateOnReconnect: true,
@@ -76,8 +81,12 @@ export function useQueries<Data, Variables>(
 		(queries) =>
 			Promise.all(
 				queries.map((query) =>
-					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0]).catch(
-						(err) => {
+					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0])
+						.then((res) => {
+							reportSuccess(boardId ?? '', 'fetch_journey_planner')
+							return res
+						})
+						.catch((err) => {
 							reportError(
 								boardId ?? '',
 								'fetch_journey_planner',
@@ -85,8 +94,7 @@ export function useQueries<Data, Variables>(
 								err.name,
 							)
 							throw err
-						},
-					),
+						}),
 				),
 			),
 		swrOptions,

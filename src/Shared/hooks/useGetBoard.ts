@@ -1,4 +1,4 @@
-import { reportError } from '@shared/utils/reportError'
+import { reportError, reportSuccess } from '@shared/utils/report'
 import { useEffect, useReducer, useRef } from 'react'
 import { BOARD_API_URL } from '../assets/env'
 import { PREVIEW_BOARDS } from '../assets/previewBoards'
@@ -184,6 +184,7 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 					throw new Error('No board in response')
 				}
 
+				reportSuccess(boardId, 'fetch_board')
 				dispatch({ type: 'SUCCESS', board: data.board, folderLogo: data.folderLogo })
 			} catch (err) {
 				console.error('useGetBoard: Failed to fetch board', err)
