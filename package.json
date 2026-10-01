@@ -59,7 +59,7 @@
     "core-js": "3.50.0",
     "husky": "9.1.7",
     "jsdom": "30.1.1",
-    "lint-staged": "16.2.6",
+    "lint-staged": "17.6.0",
     "postcss": "8.5.28",
     "regenerator-runtime": "0.14.1",
     "selenium-webdriver": "4.49.0",
