@@ -15,8 +15,7 @@ import type {
 } from '@/Shared/types/db-types/boards'
 import { getUiLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
-import { DataFetchingFailed, FetchErrorTypes } from '../DataFetchingFailed'
-import { reportError } from '@utils/reportError'
+import { DataFetchingFailed } from '../DataFetchingFailed'
 
 interface BaseTileProps {
 	displayName?: string
@@ -82,7 +81,7 @@ export function BoardTile({
 	customNames,
 	size,
 }: BaseTileProps) {
-	const { boardId, isArrivals, language } = useBoardContext()
+	const { isArrivals, language } = useBoardContext()
 
 	if (isLoading && !hasData) {
 		return (
@@ -95,11 +94,9 @@ export function BoardTile({
 	}
 
 	if (error || !hasData) {
-		reportError(boardId ?? '', 'fetch_journey_planner', error?.message ?? 'Unknown error')
-
 		return (
 			<Tile state="error" size={size}>
-				<DataFetchingFailed timeout={error?.message === FetchErrorTypes.TIMEOUT} />
+				<DataFetchingFailed error={error} />
 			</Tile>
 		)
 	}

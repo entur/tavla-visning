@@ -1,7 +1,8 @@
+import { reportError } from '@shared/utils/reportError'
 import { useEffect, useReducer, useRef } from 'react'
-import type { BoardDB } from '../types/db-types/boards'
 import { BOARD_API_URL } from '../assets/env'
 import { PREVIEW_BOARDS } from '../assets/previewBoards'
+import type { BoardDB } from '../types/db-types/boards'
 
 export interface BoardApiResponse {
 	board: BoardDB
@@ -186,7 +187,11 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 				dispatch({ type: 'SUCCESS', board: data.board, folderLogo: data.folderLogo })
 			} catch (err) {
 				console.error('useGetBoard: Failed to fetch board', err)
-				dispatch({ type: 'ERROR', message: err instanceof Error ? err.message : 'Unknown error' })
+
+				const error = err instanceof Error ? err : new Error('Unknown error')
+
+				reportError(boardId, 'fetch_board', error.message, error.name)
+				dispatch({ type: 'ERROR', message: error.message })
 			}
 		}
 
