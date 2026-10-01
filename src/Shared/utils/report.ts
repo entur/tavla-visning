@@ -1,6 +1,7 @@
 import { LOG_REPORT_URL } from '@/Shared/assets/env'
 
-export type ErrorCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
+export type ReportCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
+export type ReportLevel = 'error' | 'warning' | 'info'
 
 const BOARD_ID_PATTERN = /^[a-zA-Z0-9]{20}$/
 const NSR_ID_PATTERN = /^NSR:(Quay|StopPlace):\d+$/i
@@ -11,31 +12,34 @@ function isReportableBoardId(boardId: string): boolean {
 
 export function reportError(
 	boardId: string,
-	errorCode: ErrorCode,
+	code: ReportCode,
 	message: string,
 	errorName?: string,
+	level?: ReportLevel,
 ): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
+	if (!level) level = 'error'
 
 	const online = typeof navigator !== 'undefined' ? navigator.onLine : undefined
 
 	fetch(LOG_REPORT_URL, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId, errorCode, message, errorName, online }),
+		body: JSON.stringify({ boardId, level, code, message, errorName, online }),
 		keepalive: true,
 	}).catch(() => {})
 }
 
-export function reportSuccess(boardId: string, errorCode: ErrorCode): void {
+export function reportSuccess(boardId: string, code: ReportCode, level?: ReportLevel): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
+	if (!level) level = 'info'
 
 	fetch(LOG_REPORT_URL, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId, errorCode, status: 'ok' }),
+		body: JSON.stringify({ boardId, level, code, message: 'ok' }),
 		keepalive: true,
 	}).catch(() => {})
 }
