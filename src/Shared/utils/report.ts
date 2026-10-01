@@ -1,6 +1,6 @@
 import { LOG_REPORT_URL } from '@/Shared/assets/env'
 
-export type ReportCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
+export type LogCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
 export type ReportLevel = 'error' | 'warning' | 'info'
 
 const BOARD_ID_PATTERN = /^[a-zA-Z0-9]{20}$/
@@ -12,7 +12,7 @@ function isReportableBoardId(boardId: string): boolean {
 
 export function reportError(
 	boardId: string,
-	code: ReportCode,
+	code: LogCode,
 	message: string,
 	errorName?: string,
 	level?: ReportLevel,
@@ -31,7 +31,7 @@ export function reportError(
 	}).catch(() => {})
 }
 
-export function reportSuccess(boardId: string, code: ReportCode, level?: ReportLevel): void {
+export function reportSuccess(boardId: string, code: LogCode, level?: ReportLevel): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
 	if (!level) level = 'info'
