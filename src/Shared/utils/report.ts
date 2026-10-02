@@ -15,18 +15,16 @@ export function reportError(
 	code: LogCode,
 	message: string,
 	errorName?: string,
-	level?: ReportLevel,
 ): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
-	if (!level) level = 'error'
 
 	const online = typeof navigator !== 'undefined' ? navigator.onLine : undefined
 
 	fetch(LOG_REPORT_URL, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId, level, code, message, errorName, online }),
+		body: JSON.stringify({ boardId, level: 'error', code, message, errorName, online }),
 		keepalive: true,
 	}).catch(() => {})
 }
