@@ -32,12 +32,12 @@ export function reportError(
 export function reportSuccess(boardId: string, code: LogCode, level?: ReportLevel): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
-	if (!level) level = 'info'
+	const levelToReport = level ?? 'info'
 
 	fetch(LOG_REPORT_URL, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId, level, code, message: `${code} ok` }),
+		body: JSON.stringify({ boardId, level: levelToReport, code, message: `${code} ok` }),
 		keepalive: true,
 	}).catch(() => {})
 }
