@@ -39,7 +39,7 @@ export function reportSuccess(boardId: string, code: LogCode, level?: ReportLeve
 	fetch(LOG_REPORT_URL, {
 		method: 'POST',
 		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId, level, code, message: 'ok' }),
+		body: JSON.stringify({ boardId, level, code, message: `${code} ok` }),
 		keepalive: true,
 	}).catch(() => {})
 }
