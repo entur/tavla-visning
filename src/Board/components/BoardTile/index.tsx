@@ -125,7 +125,7 @@ export function BoardTile({
 
 	return (
 		<Tile state="data" size={size}>
-			<div className="overflow-hidden">
+			<div className="overflow-hidden grow">
 				{customHeader ??
 					(displayName && (
 						<TableHeader
