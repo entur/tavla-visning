@@ -2,6 +2,7 @@
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
 import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
+import { hasPreviewQueryParam } from '@/Shared/utils/preview'
 import { applyServerTime } from '@/Shared/utils/serverTime'
 import type { BoardDB } from '../types/db-types/boards'
 
@@ -163,23 +164,7 @@ function shouldSkipHeartbeat(boardId: string): boolean {
 		return true
 	}
 
-	const search = window.location.search
-	if (!search) {
-		return false
-	}
-
-	try {
-		const params = new URLSearchParams(search)
-		if (params.get('isPreview') === 'true') {
-			return true
-		}
-	} catch {
-		if (search.includes('isPreview=true')) {
-			return true
-		}
-	}
-
-	return false
+	return hasPreviewQueryParam()
 }
 
 function parseServerTime(body: string): number | null {

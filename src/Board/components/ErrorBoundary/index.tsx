@@ -1,6 +1,6 @@
-import React from 'react'
-import { reportError } from '@utils/reportError'
 import { DataFetchingFailed } from '@board/components/DataFetchingFailed'
+import { reportError } from '@utils/report'
+import React from 'react'
 
 interface Props {
 	boardId: string | undefined
