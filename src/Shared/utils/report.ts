@@ -1,5 +1,4 @@
 import { LOG_REPORT_URL } from '@/Shared/assets/env'
-import { hasPreviewQueryParam } from '@/Shared/utils/preview'
 
 export type LogCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
 export type ReportLevel = 'error' | 'warning' | 'info'
@@ -19,7 +18,6 @@ export function reportError(
 ): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
-	if (hasPreviewQueryParam()) return
 
 	const online = typeof navigator !== 'undefined' ? navigator.onLine : undefined
 
@@ -34,7 +32,6 @@ export function reportError(
 export function reportSuccess(boardId: string, code: LogCode, level?: ReportLevel): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
-	if (hasPreviewQueryParam()) return
 	const levelToReport = level ?? 'info'
 
 	fetch(LOG_REPORT_URL, {
