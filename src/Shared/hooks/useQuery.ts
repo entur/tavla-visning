@@ -81,22 +81,22 @@ export function useQueries<Data, Variables>(
 		(queries) =>
 			Promise.all(
 				queries.map((query) =>
-					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0])
-						.then((res) => {
-							reportSuccess(boardId ?? '', 'fetch_journey_planner')
-							return res
-						})
-						.catch((err) => {
-							reportError(
-								boardId ?? '',
-								'fetch_journey_planner',
-								err.message || 'Unknown error',
-								err.name,
-							)
-							throw err
-						}),
+					fetcher([query.query, query.variables, endpointName, query.options?.offset ?? 0]),
 				),
-			),
+			)
+				.then((res) => {
+					reportSuccess(boardId ?? '', 'fetch_journey_planner')
+					return res
+				})
+				.catch((err) => {
+					reportError(
+						boardId ?? '',
+						'fetch_journey_planner',
+						err.message || 'Unknown error',
+						err.name,
+					)
+					throw err
+				}),
 		swrOptions,
 	)
 
