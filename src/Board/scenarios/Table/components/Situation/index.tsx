@@ -1,6 +1,37 @@
-import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
-import { useBoardContext } from '@/Board/context'
 import { PageNavigationIcon } from '@entur/icons'
+import { useBoardContext } from '@/Board/context'
+import type { TSituationWithOrigin } from '@/Board/hooks/useTileData'
+
+const getShortOrigin = (origin?: string) => {
+	if (!origin?.includes(', ')) {
+		return origin
+	}
+
+	const parts = origin.split(', ')
+	const wordsPerPart = parts.map((part) => part.split(' '))
+
+	const bases = wordsPerPart.map((words) => words.slice(0, -1).join(' '))
+	const baseSet = new Set(bases)
+	if (baseSet.size !== 1) {
+		return origin
+	}
+	const [baseValue] = baseSet
+
+	const numbers = wordsPerPart.map((words) => Number(words.at(-1)))
+	if (numbers.some((number) => Number.isNaN(number))) {
+		return origin
+	}
+
+	const isConsecutive = numbers.every(
+		(number, index) => index === 0 || number === numbers[index - 1] + 1,
+	)
+
+	if (isConsecutive) {
+		return `${baseValue} ${numbers[0]}-${numbers[numbers.length - 1]}`
+	}
+
+	return `${baseValue} ${numbers.join(', ')}`
+}
 
 function TitleSituation({
 	situation,
@@ -21,6 +52,8 @@ function TitleSituation({
 		null
 
 	const origin = situation?.origin
+	const shortOrigin = getShortOrigin(origin)
+
 	if (!situationText) return null
 
 	return (
@@ -29,7 +62,7 @@ function TitleSituation({
 				<PageNavigationIcon aria-hidden="true" size="0.5em" />
 			</div>
 			<p className="font-normal">
-				{origin && <b>{`${origin}: `}</b>}
+				{origin && <b>{`${shortOrigin}: `}</b>}
 				{situationText}
 			</p>
 		</div>
