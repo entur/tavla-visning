@@ -258,3 +258,55 @@
 	--metro-color-transparent: rgba(162, 129, 206, 0.15);
 	--taxi-color-transparent: rgba(179, 190, 196, 0.15);
 }
+
+/* Brakar palette */
+[data-theme="light"][data-transport-palette="brakar"] {
+	--bus-color: #8b2745;
+	--regional-bus-color: #464646;
+	--coach-color: #464646;
+	--rail-color: #00367f;
+	--water-color: #443d91;
+	--air-color: #464646;
+	--cableway-color: #8b2745;
+	--funicular-color: #8b2745;
+	--metro-color: #00367f;
+	--taxi-color: #461423;
+	--tram-color: #8b2745;
+
+	--bus-color-transparent: rgba(139, 39, 69, 0.15);
+	--regional-bus-color-transparent: rgba(70, 70, 70, 0.15);
+	--coach-color-transparent: rgba(70, 70, 70, 0.15);
+	--rail-color-transparent: rgba(0, 54, 127, 0.15);
+	--water-color-transparent: rgba(68, 61, 145, 0.15);
+	--air-color-transparent: rgba(70, 70, 70, 0.15);
+	--cableway-color-transparent: rgba(139, 39, 69, 0.15);
+	--funicular-color-transparent: rgba(139, 39, 69, 0.15);
+	--tram-color-transparent: rgba(139, 39, 69, 0.15);
+	--metro-color-transparent: rgba(0, 54, 127, 0.15);
+	--taxi-color-transparent: rgba(70, 20, 35, 0.15);
+}
+[data-transport-palette="brakar"] {
+	--bus-color: #fcdf3d;
+	--regional-bus-color: #efefef;
+	--coach-color: #efefef;
+	--rail-color: #60a2d7;
+	--water-color: #b0dff5;
+	--air-color: #efefef;
+	--cableway-color: #fcdf3d;
+	--funicular-color: #fcdf3d;
+	--metro-color: #60a2d7;
+	--taxi-color: #b97d8f;
+	--tram-color: #fcdf3d;
+
+	--bus-color-transparent: rgba(252, 223, 61, 0.15);
+	--regional-bus-color-transparent: rgba(239, 239, 239, 0.15);
+	--coach-color-transparent: rgba(239, 239, 239, 0.15);
+	--rail-color-transparent: rgba(96, 162, 215, 0.15);
+	--water-color-transparent: rgba(176, 223, 245, 0.15);
+	--air-color-transparent: rgba(239, 239, 239, 0.15);
+	--cableway-color-transparent: rgba(252, 223, 61, 0.15);
+	--funicular-color-transparent: rgba(252, 223, 61, 0.15);
+	--tram-color-transparent: rgba(252, 223, 61, 0.15);
+	--metro-color-transparent: rgba(96, 162, 215, 0.15);
+	--taxi-color-transparent: rgba(185, 125, 143, 0.15);
+}
