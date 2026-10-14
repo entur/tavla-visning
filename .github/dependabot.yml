@@ -10,8 +10,92 @@ updates:
           time: "08:00"
           timezone: "Europe/Amsterdam"
       commit-message:
-          prefix: "chore(deps):"
+          prefix: "📦 "
+      ignore:
+          # Tailwind v4 støttes ikke på legacy-skjermene vi må kjøre på. Team-beslutning okt. 2026
+          - dependency-name: "tailwindcss"
+            update-types: ["version-update:semver-major"]
       groups:
+          entur-linje-patch-minor:
+              patterns:
+                  - "@entur/*"
+              update-types:
+                  - "patch"
+                  - "minor"
+          entur-linje-major:
+              patterns:
+                  - "@entur/*"
+              update-types:
+                  - "major"
+          graphql-patch-minor:
+              patterns:
+                  - "graphql"
+                  - "@graphql-codegen/*"
+                  - "@graphql-typed-document-node/*"
+              update-types:
+                  - "patch"
+                  - "minor"
+          graphql-major:
+              patterns:
+                  - "graphql"
+                  - "@graphql-codegen/*"
+                  - "@graphql-typed-document-node/*"
+              update-types:
+                  - "major"
+          react-patch-minor:
+              patterns:
+                  - "react"
+                  - "react-dom"
+                  - "@types/react"
+                  - "@types/react-dom"
+              update-types:
+                  - "patch"
+                  - "minor"
+          react-major:
+              patterns:
+                  - "react"
+                  - "react-dom"
+                  - "@types/react"
+                  - "@types/react-dom"
+              update-types:
+                  - "major"
+          # Alt som finnes for å få gamle nettlesermotorer til å fungere. En
+          # major her er nøyaktig den typen endring som stille kan brekke
+          # legacy-skjermstøtte 
+          legacy-browser-support-patch-minor:
+              patterns:
+                  - "@vitejs/plugin-legacy"
+                  - "core-js"
+                  - "regenerator-runtime"
+                  - "autoprefixer"
+                  - "postcss"
+                  - "tailwindcss"
+              update-types:
+                  - "patch"
+                  - "minor"
+          legacy-browser-support-major:
+              patterns:
+                  - "@vitejs/plugin-legacy"
+                  - "core-js"
+                  - "regenerator-runtime"
+                  - "autoprefixer"
+                  - "postcss"
+                  - "tailwindcss"
+              update-types:
+                  - "major"
+          vite-patch-minor:
+              patterns:
+                  - "vite"
+                  - "@vitejs/plugin-react-swc"
+              update-types:
+                  - "patch"
+                  - "minor"
+          vite-major:
+              patterns:
+                  - "vite"
+                  - "@vitejs/plugin-react-swc"
+              update-types:
+                  - "major"
           patch-minor-dependencies:
               update-types:
                   - "patch"
