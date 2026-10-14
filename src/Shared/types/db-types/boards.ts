@@ -22,7 +22,15 @@ export type CombinedTilesDB = { ids: BoardId[] }
 
 export type BoardTheme = 'dark' | 'light'
 export type BoardLanguage = 'nb' | 'en'
-export type TransportPalette = 'default' | 'blue-bus' | 'green-bus'
+export type TransportPalette =
+	| 'default'
+	| 'blue-bus'
+	| 'green-bus'
+	| 'atb'
+	| 'fram'
+	| 'svipper'
+	| 'reis'
+	| 'brakar'
 
 export type BoardMetaDB = {
 	title?: string

@@ -1,6 +1,6 @@
+import type { VariantProps } from 'class-variance-authority'
 import type React from 'react'
 import { tileStyles } from './tileStyles'
-import type { VariantProps } from 'class-variance-authority'
 
 export type TileVariants = VariantProps<typeof tileStyles>
 
@@ -13,4 +13,5 @@ function Tile({ state, size, children, ...rest }: TileProps) {
 		</div>
 	)
 }
+
 export { Tile }

@@ -138,7 +138,7 @@ Always use aliases for cross-module imports — never relative paths:
 
 - Tailwind utility classes only — no CSS modules
 - CSS variables for theming: `var(--main-background-color)`, `var(--main-text-color)` (see `src/styles/globals.css`)
-- Data attributes control theme: `data-theme="dark|light"`, `data-transport-palette="default|blue-bus|green-bus"`
+- Data attributes control theme: `data-theme="dark|light"`, `data-transport-palette="default|blue-bus|green-bus|atb|fram|svipper|reis|brakar"`
 - Font scaling via `getFontScale()` from `src/Board/scenarios/Board/utils.ts` with `text-em-*` classes
 
 ## Key Files
