@@ -18,7 +18,7 @@ function InfoMessage({ board, showEnturLogo }: { board: BoardDB; showEnturLogo: 
 				<img
 					src={EnturLogo}
 					alt="Entur logo"
-					className="mx-4 mt-4 h-[max(20px,0.8em)] w-auto object-contain object-right"
+					className="enturLogo mx-4 mt-4 w-auto object-contain object-right"
 				/>
 			)}
 		</footer>
