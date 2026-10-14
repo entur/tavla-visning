@@ -59,7 +59,7 @@ export function combineSituations(situations: TSituationWithOrigin[]) {
 			const existingOrigins = situationById[id].origin
 				?.split(', ')
 				.concat([situation.origin ?? ''])
-				.sort()
+				.sort(sortPublicCodes)
 
 			situationById[id].origin = existingOrigins?.join(', ')
 		} else {
