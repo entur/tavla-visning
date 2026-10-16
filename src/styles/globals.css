@@ -239,6 +239,11 @@
 		@apply rounded border border-secondary bg-primary p-4;
 	}
 
+	.enturLogo {
+		height: 0.8em; /* fallback for old browsers without max-support*/
+		height: max(20px, 0.8em);
+	}
+
 	.table-custom-nth-child {
 		&:nth-child(6n + 1),
 		&:nth-child(6n + 2),
