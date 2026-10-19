@@ -93,7 +93,7 @@ export function BoardTile({
 		)
 	}
 
-	if (error || !hasData) {
+	if (!hasData || (error && estimatedCalls.length === 0)) {
 		return (
 			<Tile state="error" size={size}>
 				<DataFetchingFailed error={error} />

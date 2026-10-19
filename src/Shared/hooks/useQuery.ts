@@ -73,6 +73,7 @@ export function useQueries<Data, Variables>(
 		revalidateOnFocus: true,
 		revalidateOnReconnect: true,
 		refreshInterval: 30000,
+		keepPreviousData: true,
 	}
 	const endpointName = 'journey-planner'
 

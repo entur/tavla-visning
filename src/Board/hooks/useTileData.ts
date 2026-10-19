@@ -10,6 +10,7 @@ import {
 	type TileSituation,
 } from '../scenarios/Board/utils'
 import { useCycler } from '../scenarios/Table/useCycler'
+import { getServerNow } from '@/Shared/utils/serverTime'
 
 export type TDepartureWithTileUuid = TDepartureFragment & { tileUuid?: string }
 export type TSituationWithOrigin = TSituationFragment & { origin?: string }
@@ -32,6 +33,18 @@ interface TileData {
 }
 
 export type TileDataSource = 'linesWithDirection' | 'quays' | 'stopPlace'
+
+function filterPastDepartures(
+	departures: TDepartureFragment[],
+	isArrivals?: boolean,
+): TDepartureFragment[] {
+	const now = getServerNow()
+	return departures.filter((departure) => {
+		const holdTime = isArrivals ? now + ARRIVAL_HOLD_TIME_MINUTES * 60 * 1000 : now
+		const time = isArrivals ? departure.expectedArrivalTime : departure.expectedDepartureTime
+		return new Date(time).getTime() >= holdTime
+	})
+}
 
 /**
  * Bestemmer hvilken datakilde som skal brukes for å hente avganger for en gitt tile.
@@ -88,14 +101,17 @@ export function useQuaysTileData(
 		return [...spSituations, ...qSituations]
 	})
 
-	const departures = quayResults
-		.flatMap((quay) => quay.estimatedCalls)
-		.filter(isNotNullOrUndefined)
-		.sort((a, b) => {
-			const timeA = isArrivals ? a.expectedArrivalTime : a.expectedDepartureTime
-			const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
-			return new Date(timeA).getTime() - new Date(timeB).getTime()
-		})
+	const departures = filterPastDepartures(
+		quayResults
+			.flatMap((quay) => quay.estimatedCalls)
+			.filter(isNotNullOrUndefined)
+			.sort((a, b) => {
+				const timeA = isArrivals ? a.expectedArrivalTime : a.expectedDepartureTime
+				const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
+				return new Date(timeA).getTime() - new Date(timeB).getTime()
+			}),
+		isArrivals,
+	)
 
 	const accumulatedQuaysSituations = getAccumulatedTileSituations(departures, quaysSituations)
 
@@ -146,9 +162,12 @@ export function useStopPlaceTileData(
 		},
 	)
 
-	const filteredCalls = (stopPlaceData?.stopPlace?.estimatedCalls ?? [])
-		.filter((dep) => shouldIncludeByLineDirection(dep, linesWithDirection ?? []))
-		.slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
+	const filteredCalls = filterPastDepartures(
+		(stopPlaceData?.stopPlace?.estimatedCalls ?? [])
+			.filter((dep) => shouldIncludeByLineDirection(dep, linesWithDirection ?? []))
+			.slice(0, DEFAULT_NUMBER_OF_DEPARTURES),
+		isArrivals,
+	)
 
 	const selectedQuayIds = quays?.map((q) => q.id) ?? []
 	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
@@ -267,11 +286,14 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		}) ?? []),
 	]
 
-	const departures = (estimatedCalls.filter(isNotNullOrUndefined) ?? []).sort((a, b) => {
-		const timeA = isArrivals ? a.expectedArrivalTime : a.expectedDepartureTime
-		const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
-		return new Date(timeA).getTime() - new Date(timeB).getTime()
-	})
+	const departures = filterPastDepartures(
+		(estimatedCalls.filter(isNotNullOrUndefined) ?? []).sort((a, b) => {
+			const timeA = isArrivals ? a.expectedArrivalTime : a.expectedDepartureTime
+			const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
+			return new Date(timeA).getTime() - new Date(timeB).getTime()
+		}),
+		isArrivals,
+	)
 
 	const situations: TSituationWithOrigin[] = [
 		...(stopPlaceData?.flatMap((data) => {
