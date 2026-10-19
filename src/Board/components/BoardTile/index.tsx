@@ -144,6 +144,7 @@ export function BoardTile({
 					currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
 					numberOfVisibleSituations={uniqueSituations?.length}
 					customNames={customNames}
+					hasFetchError={!!error}
 				/>
 			</div>
 

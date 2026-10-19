@@ -9,6 +9,8 @@ import { DeparturesContext } from '../../contexts'
 import { TableCell } from '../TableCell'
 import { TableColumn } from '../TableColumn'
 import { FormattedTime } from './components/FormattedTime'
+import { useContext } from 'react'
+import { HasFetchErrorContext } from '../../contexts'
 
 const TWO_MINUTES = 120
 
@@ -56,6 +58,8 @@ function Time({
 	isArrivalBoard?: boolean
 	language: BoardLanguage
 }) {
+	const hasFetchError = useContext(HasFetchErrorContext)
+
 	if (cancelled)
 		return (
 			<>
@@ -89,7 +93,7 @@ function Time({
 		return (
 			<>
 				<div className="text-right text-em-xl leading-em-base">
-					{getRelativeTimeString(expectedTime, language)}
+					{getRelativeTimeString(expectedTime, language, hasFetchError)}
 				</div>
 				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
 			</>
