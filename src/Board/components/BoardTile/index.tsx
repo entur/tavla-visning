@@ -85,7 +85,7 @@ export function BoardTile({
 	const { isArrivals, language, boardId } = useBoardContext()
 	const hasFetchError = !!error
 	const showingCachedData = hasFetchError && hasData && estimatedCalls.length > 0
-	const showingErrorScreen = hasFetchError && hasData && estimatedCalls.length === 0
+	const isCacheExpired = hasFetchError && hasData && estimatedCalls.length === 0
 
 	useEffect(() => {
 		if (showingCachedData) {
@@ -95,14 +95,14 @@ export function BoardTile({
 				'Fetch failed, showing cached departures/arrivals that have not expired.',
 			)
 		}
-		if (showingErrorScreen) {
+		if (isCacheExpired) {
 			reportError(
 				boardId ?? '',
 				'error_screen_cache_expired',
 				'Showing error screen, all cached departures/arrivals have expired.',
 			)
 		}
-	}, [showingCachedData, showingErrorScreen, boardId])
+	}, [showingCachedData, isCacheExpired, boardId])
 
 	if (isLoading && !hasData) {
 		return (

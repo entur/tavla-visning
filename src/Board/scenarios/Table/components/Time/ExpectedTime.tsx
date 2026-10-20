@@ -1,16 +1,15 @@
 import { nanoid } from 'nanoid'
+import { useContext } from 'react'
 import { useBoardContext } from '@/Board/context'
+import { DeparturesContext, HasFetchErrorContext } from '@/Board/scenarios/Table/contexts'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { BoardLanguage } from '@/Shared/types/db-types/boards'
 import { getServerNow } from '@/Shared/utils/serverTime'
 import { formatDateString, getRelativeTimeString } from '@/Shared/utils/time'
 import { getColumnLabel, getUiLabel } from '@/Shared/utils/translations'
-import { DeparturesContext } from '../../contexts'
 import { TableCell } from '../TableCell'
 import { TableColumn } from '../TableColumn'
 import { FormattedTime } from './components/FormattedTime'
-import { useContext } from 'react'
-import { HasFetchErrorContext } from '../../contexts'
 
 const TWO_MINUTES = 120
 
