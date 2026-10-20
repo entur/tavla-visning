@@ -5,7 +5,13 @@ import { getUiLabel } from '@/Shared/utils/translations'
 const ONE_MINUTE = 60
 const TEN_MINUTES = 600
 
-export function getRelativeTimeString(dateString: string, language: BoardLanguage = 'nb') {
+export function getRelativeTimeString(
+	dateString: string,
+	language: BoardLanguage = 'nb',
+	showAbsoluteTime: boolean,
+) {
+	if (showAbsoluteTime) return formatDateString(dateString)
+
 	const timeDiffInSeconds = (Date.parse(dateString) - getServerNow()) / 1000
 
 	// Compensate to avoid optimistic time since fetch of departures happens every 30 seconds

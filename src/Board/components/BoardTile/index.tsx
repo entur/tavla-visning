@@ -1,7 +1,7 @@
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
 import { Loader } from '@entur/loader'
 import { Tile, type TileVariants } from '@src/Shared/components/Tile'
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
@@ -16,6 +16,7 @@ import type {
 import { getUiLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import { DataFetchingFailed } from '../DataFetchingFailed'
+import { reportError } from '@/Shared/utils/report'
 
 interface BaseTileProps {
 	displayName?: string
@@ -81,7 +82,27 @@ export function BoardTile({
 	customNames,
 	size,
 }: BaseTileProps) {
-	const { isArrivals, language } = useBoardContext()
+	const { isArrivals, language, boardId } = useBoardContext()
+	const hasFetchError = !!error
+	const showingCachedData = hasFetchError && hasData && estimatedCalls.length > 0
+	const isCacheExpired = hasFetchError && hasData && estimatedCalls.length === 0
+
+	useEffect(() => {
+		if (showingCachedData) {
+			reportError(
+				boardId ?? '',
+				'showing_cached_data',
+				'Fetch failed, showing cached departures/arrivals that have not expired.',
+			)
+		}
+		if (isCacheExpired) {
+			reportError(
+				boardId ?? '',
+				'error_screen_cache_expired',
+				'Showing error screen, all cached departures/arrivals have expired.',
+			)
+		}
+	}, [showingCachedData, isCacheExpired, boardId])
 
 	if (isLoading && !hasData) {
 		return (
@@ -93,7 +114,7 @@ export function BoardTile({
 		)
 	}
 
-	if (error || !hasData) {
+	if (!hasData || (error && estimatedCalls.length === 0)) {
 		return (
 			<Tile state="error" size={size}>
 				<DataFetchingFailed error={error} />
@@ -144,6 +165,7 @@ export function BoardTile({
 					currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
 					numberOfVisibleSituations={uniqueSituations?.length}
 					customNames={customNames}
+					hasFetchError={!!error}
 				/>
 			</div>
 

@@ -1,6 +1,12 @@
 import { LOG_REPORT_URL } from '@/Shared/assets/env'
 
-export type LogCode = 'display_error' | 'unknown' | 'fetch_journey_planner' | 'fetch_board'
+export type LogCode =
+	| 'display_error'
+	| 'unknown'
+	| 'fetch_journey_planner'
+	| 'fetch_board'
+	| 'showing_cached_data'
+	| 'error_screen_cache_expired'
 export type ReportLevel = 'error' | 'warning' | 'info'
 
 const BOARD_ID_PATTERN = /^[a-zA-Z0-9]{20}$/
