@@ -4,9 +4,7 @@ import { getServerNow } from '@/Shared/utils/serverTime'
 const DEFAULT_INTERVAL_MS = 30000
 
 /**
- * Returns the current server time, re-rendering the caller on an interval so
- * time-based filtering keeps working even when no new data arrives (e.g. the
- * browser is offline and SWR has stopped retrying).
+ * Returnerer server-nå tidspunktet med jevne mellomrom.
  */
 export function useServerNow(intervalMs: number = DEFAULT_INTERVAL_MS): number {
 	const [now, setNow] = useState(() => getServerNow())
