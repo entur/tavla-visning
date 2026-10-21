@@ -52,6 +52,7 @@ export function useQuery<Data, Variables>(
 		{
 			revalidateOnFocus: true,
 			revalidateOnReconnect: true,
+			refreshWhenOffline: true,
 			refreshInterval: mergedOptions.poll ? 30000 : undefined,
 			keepPreviousData: true,
 		},
@@ -72,6 +73,7 @@ export function useQueries<Data, Variables>(
 	const swrOptions = {
 		revalidateOnFocus: true,
 		revalidateOnReconnect: true,
+		refreshWhenOffline: true,
 		refreshInterval: 30000,
 		keepPreviousData: true,
 	}

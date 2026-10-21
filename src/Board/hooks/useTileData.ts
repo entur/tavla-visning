@@ -1,6 +1,7 @@
 import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
+import { useServerNow } from '@/Shared/hooks/useServerNow'
 import type { LineWithDirectionDB, TileDB } from '@/Shared/types/db-types/boards'
 import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
@@ -10,7 +11,6 @@ import {
 	type TileSituation,
 } from '../scenarios/Board/utils'
 import { useCycler } from '../scenarios/Table/useCycler'
-import { getServerNow } from '@/Shared/utils/serverTime'
 
 export type TDepartureWithTileUuid = TDepartureFragment & { tileUuid?: string }
 export type TSituationWithOrigin = TSituationFragment & { origin?: string }
@@ -36,9 +36,9 @@ export type TileDataSource = 'linesWithDirection' | 'quays' | 'stopPlace'
 
 function filterPastDepartures(
 	departures: TDepartureFragment[],
+	now: number,
 	isArrivals?: boolean,
 ): TDepartureFragment[] {
-	const now = getServerNow()
 	return departures.filter((departure) => {
 		const holdTime = isArrivals ? now + ARRIVAL_HOLD_TIME_MINUTES * 60 * 1000 : now
 		const time = isArrivals ? departure.expectedArrivalTime : departure.expectedDepartureTime
@@ -70,6 +70,7 @@ export function useQuaysTileData(
 	isArrivals?: boolean,
 ): TileData {
 	const { boardId } = useBoardContext()
+	const now = useServerNow()
 	const hasSelectedQuays = !!quays && quays.length > 0
 
 	const quayQueries = hasSelectedQuays
@@ -110,6 +111,7 @@ export function useQuaysTileData(
 				const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
 				return new Date(timeA).getTime() - new Date(timeB).getTime()
 			}),
+		now,
 		isArrivals,
 	)
 
@@ -135,6 +137,7 @@ export function useStopPlaceTileData(
 ): TileData {
 	const usesLinesWithDirection = linesWithDirection !== undefined
 	const { language, boardId } = useBoardContext()
+	const now = useServerNow()
 
 	const {
 		data: stopPlaceData,
@@ -166,6 +169,7 @@ export function useStopPlaceTileData(
 		(stopPlaceData?.stopPlace?.estimatedCalls ?? [])
 			.filter((dep) => shouldIncludeByLineDirection(dep, linesWithDirection ?? []))
 			.slice(0, DEFAULT_NUMBER_OF_DEPARTURES),
+		now,
 		isArrivals,
 	)
 
@@ -209,6 +213,7 @@ export function useStopPlaceTileData(
 
 export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
 	const { boardId } = useBoardContext()
+	const now = useServerNow()
 	const arrivalDeparture = isArrivals ? ('arrivals' as const) : undefined
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 
@@ -292,6 +297,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 			const timeB = isArrivals ? b.expectedArrivalTime : b.expectedDepartureTime
 			return new Date(timeA).getTime() - new Date(timeB).getTime()
 		}),
+		now,
 		isArrivals,
 	)
 
