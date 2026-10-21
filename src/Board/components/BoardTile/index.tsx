@@ -1,7 +1,7 @@
 import { TableHeader } from '@board/scenarios/Table/components/TableHeader'
 import { Loader } from '@entur/loader'
 import { Tile, type TileVariants } from '@src/Shared/components/Tile'
-import { useEffect, type ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
@@ -13,10 +13,10 @@ import type {
 	BoardWalkingDistanceDB,
 	TileColumnDB,
 } from '@/Shared/types/db-types/boards'
+import { reportError, reportWarning } from '@/Shared/utils/report'
 import { getUiLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import { DataFetchingFailed } from '../DataFetchingFailed'
-import { reportError } from '@/Shared/utils/report'
 
 interface BaseTileProps {
 	displayName?: string
@@ -89,7 +89,7 @@ export function BoardTile({
 
 	useEffect(() => {
 		if (showingCachedData) {
-			reportError(
+			reportWarning(
 				boardId ?? '',
 				'showing_cached_data',
 				'Fetch failed, showing cached departures/arrivals that have not expired.',
