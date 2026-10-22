@@ -71,9 +71,8 @@ export const isPreviewBoardId = (boardId: string): boolean => boardId.startsWith
 
 /**
  * Custom hook for fetching a board by ID
- * Supports three sources:
+ * Supports two sources:
  * - 'preview-*': Local preview boards
- * - 'demo': Demo board from parent iframe via postMessage
  * - Regular ID: Fetch from API
  *
  * @param boardId - The ID of the board to fetch
