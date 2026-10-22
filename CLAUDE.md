@@ -48,8 +48,6 @@ URL (boardId) → Page.tsx
   → BoardTile         renders header + table + situations
 ```
 
-Board configs also arrive via `postMessage` for embedded iframe displays. Trusted origins: `tavla.entur.no`, `tavla.dev.entur.no`, localhost.
-
 ### Key Display Scenarios (`src/Board/scenarios/`)
 
 - **Board** — responsive grid of tiles; font size scales with tile count
@@ -147,7 +145,7 @@ Always use aliases for cross-module imports — never relative paths:
 - [`src/Page.tsx`](src/Page.tsx) — entry component, routing, theme application, 24h reload
 - [`src/Board/scenarios/Board/index.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
 - [`src/Board/hooks/useTileData.ts`](src/Board/hooks/useTileData.ts) — all tile data fetching logic
-- [`src/Shared/hooks/useGetBoard.ts`](src/Shared/hooks/useGetBoard.ts) — board config with postMessage support
+- [`src/Shared/hooks/useGetBoard.ts`](src/Shared/hooks/useGetBoard.ts) — fetching board config
 - [`src/Shared/hooks/useQuery.ts`](src/Shared/hooks/useQuery.ts) — SWR wrapper for GraphQL
 - [`src/Shared/assets/env.ts`](src/Shared/assets/env.ts) — endpoint URLs
 - [`src/Shared/types/db-types/boards.ts`](src/Shared/types/db-types/boards.ts) — `BoardDB` and `TileDB` types

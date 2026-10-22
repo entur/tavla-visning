@@ -1,5 +1,5 @@
 import { reportError, reportSuccess } from '@shared/utils/report'
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer } from 'react'
 import { BOARD_API_URL } from '../assets/env'
 import { PREVIEW_BOARDS } from '../assets/previewBoards'
 import type { BoardDB } from '../types/db-types/boards'
@@ -66,27 +66,13 @@ function boardReducer(state: BoardState, action: BoardAction): BoardState {
 	}
 }
 
-const TRUSTED_MESSAGE_ORIGINS = ['https://tavla.entur.no', 'https://tavla.dev.entur.no']
-const DEMO_BOARD_TIMEOUT = 5000
-
-const isTrustedOrigin = (origin: string) => {
-	if (TRUSTED_MESSAGE_ORIGINS.includes(origin)) return true
-	try {
-		const { hostname } = new URL(origin)
-		return hostname === 'localhost' || hostname === '127.0.0.1'
-	} catch {
-		return false
-	}
-}
-
 export const isDemoBoardId = (boardId: string): boolean => boardId === 'demo'
 export const isPreviewBoardId = (boardId: string): boolean => boardId.startsWith('preview-')
 
 /**
  * Custom hook for fetching a board by ID
- * Supports three sources:
+ * Supports two sources:
  * - 'preview-*': Local preview boards
- * - 'demo': Demo board from parent iframe via postMessage
  * - Regular ID: Fetch from API
  *
  * @param boardId - The ID of the board to fetch
@@ -94,7 +80,6 @@ export const isPreviewBoardId = (boardId: string): boolean => boardId.startsWith
  */
 export function useGetBoard(boardId: string): UseGetBoardReturn {
 	const [boardState, dispatch] = useReducer(boardReducer, initialState)
-	const demoBoardReceivedRef = useRef(false)
 
 	useEffect(() => {
 		// Handle preview boards
@@ -106,56 +91,6 @@ export function useGetBoard(boardId: string): UseGetBoardReturn {
 				dispatch({ type: 'ERROR', message: 'Preview board not found' })
 			}
 			return
-		}
-
-		// Handle demo board from parent iframe via postMessage
-		if (isDemoBoardId(boardId)) {
-			dispatch({ type: 'LOADING', message: 'demo-loading' })
-			demoBoardReceivedRef.current = false
-			let timeoutId: ReturnType<typeof setTimeout> | undefined
-
-			const handleMessageFromParent = (event: MessageEvent): void => {
-				if (!isTrustedOrigin(event.origin)) {
-					console.warn('useGetBoard: Ignoring message from untrusted origin:', event.origin)
-					return
-				}
-				const messageIsFromParent = event.source === window.parent
-
-				if (!messageIsFromParent) {
-					console.warn('useGetBoard: Ignoring message not from parent window')
-					return
-				}
-
-				if (event.data?.type === 'DEMO_BOARD' && event.data?.board) {
-					demoBoardReceivedRef.current = true
-					dispatch({ type: 'SUCCESS', board: event.data.board })
-
-					if (timeoutId) {
-						clearTimeout(timeoutId)
-						timeoutId = undefined
-					}
-				}
-			}
-
-			window.addEventListener('message', handleMessageFromParent)
-
-			if (window.parent !== window) {
-				window.parent.postMessage({ type: 'READY_FOR_DEMO_BOARD' }, '*')
-
-				timeoutId = setTimeout(() => {
-					if (!demoBoardReceivedRef.current) {
-						console.warn('useGetBoard: Demo board not received from parent within timeout')
-						dispatch({ type: 'ERROR', message: 'Demo board data not received from parent window' })
-					}
-				}, DEMO_BOARD_TIMEOUT)
-			}
-
-			return () => {
-				window.removeEventListener('message', handleMessageFromParent)
-				if (timeoutId) {
-					clearTimeout(timeoutId)
-				}
-			}
 		}
 
 		// Handle regular IDs: fetching board from API

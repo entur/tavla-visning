@@ -42,6 +42,25 @@ export function reportError(
 	send({ boardId, level: 'error', code, message, errorName, online, timestamp: getServerNow() })
 }
 
+export function reportWarning(
+	boardId: string,
+	code: LogCode,
+	message: string,
+	errorName?: string,
+): void {
+	if (!LOG_REPORT_URL) return
+	if (!isReportableBoardId(boardId)) return
+
+	const online = typeof navigator !== 'undefined' ? navigator.onLine : undefined
+
+	fetch(LOG_REPORT_URL, {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ boardId, level: 'warning', code, message, errorName, online }),
+		keepalive: true,
+	}).catch(() => {})
+}
+
 export function reportSuccess(boardId: string, code: LogCode, level?: ReportLevel): void {
 	if (!isReportableBoardId(boardId)) return
 	const levelToReport = level ?? 'info'
