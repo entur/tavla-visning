@@ -53,12 +53,7 @@ export function reportWarning(
 
 	const online = typeof navigator !== 'undefined' ? navigator.onLine : undefined
 
-	fetch(LOG_REPORT_URL, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ boardId, level: 'warning', code, message, errorName, online }),
-		keepalive: true,
-	}).catch(() => {})
+	send({ boardId, level: 'warning', code, message, errorName, online, timestamp: getServerNow() })
 }
 
 export function reportSuccess(boardId: string, code: LogCode, level?: ReportLevel): void {
