@@ -10,7 +10,7 @@ export function applyServerTime(serverTime: number, sentAt: number): void {
 	const receivedAt = Date.now()
 
 	// Midtpunkt sendt/mottatt for å kompensere for tiden det tar for meldingen å reise frem og tilbake
-	offset = serverTime - (sentAt + receivedAt) / 2
+	offset = serverTime - Math.round((sentAt + receivedAt) / 2)
 
 	lastSent = sentAt
 }
