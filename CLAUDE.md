@@ -63,6 +63,7 @@ Board configs also arrive via `postMessage` for embedded iframe displays. Truste
 - **`useRefresh()`** — SSE subscription to backend for board config changes
 - **`useHeartbeat()`** — sends keep-alive every 60s for analytics; the response also carries the backend's current time, used to sync a local clock offset (`src/Shared/utils/serverTime.ts`) so the displayed clock and departure times stay correct even when the display hardware's own system clock is wrong
 - **24h reload** — `Page.tsx` forces full page refresh daily
+- **Offline log queue** — `reportError`/`reportSuccess` (`src/Shared/utils/report.ts`) queue failed log POSTs in `localStorage` (`src/Shared/utils/logQueue.ts`) with a `getServerNow()` timestamp; the queue flushes automatically on the browser's `online` event, and entries older than 15 minutes are discarded silently
 
 ### GraphQL
 
@@ -152,6 +153,7 @@ Always use aliases for cross-module imports — never relative paths:
 - [`src/Shared/types/db-types/boards.ts`](src/Shared/types/db-types/boards.ts) — `BoardDB` and `TileDB` types
 - [`src/Shared/utils/translations.ts`](src/Shared/utils/translations.ts) — board-language (nb/en) string lookup table
 - [`src/Shared/utils/serverTime.ts`](src/Shared/utils/serverTime.ts) — server clock offset, synced via `useHeartbeat()`; use `getServerNow()` instead of `new Date()`/`Date.now()` anywhere "now" needs to be correct regardless of the display's own system clock
+- [`src/Shared/utils/logQueue.ts`](src/Shared/utils/logQueue.ts) — offline retry queue for `report.ts`; persists failed log POSTs to `localStorage` and flushes them on the `online` event
 - [`src/Board/context.ts`](src/Board/context.ts) — `BoardContext`, carries `isArrivals` and `language`
 - [`vite.config.ts`](vite.config.ts) — path aliases, legacy browser targets, CSP headers
 
