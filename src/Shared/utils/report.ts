@@ -54,6 +54,28 @@ export function reportWarning(
 	}).catch(() => {})
 }
 
+const reportedOnceByError = new WeakMap<object, Set<LogCode>>()
+
+/**
+ * Som reportWarning, men rapporterer kun én gang per (error-objekt, code)-kombinasjon.
+ * Søsken-tiles som deler samme SWR-nøkkel observerer samme error-instans for en gitt
+ * mislykket poll, så dette hindrer at ett reelt feilet kall rapporteres én gang per tile.
+ * En ny feil-episode gir en ny Error-instans og rapporterer på nytt.
+ */
+export function reportWarningOnceByError(
+	error: Error | undefined,
+	boardId: string,
+	code: LogCode,
+	message: string,
+): void {
+	if (!error) return
+	const seen = reportedOnceByError.get(error) ?? new Set<LogCode>()
+	if (seen.has(code)) return
+	seen.add(code)
+	reportedOnceByError.set(error, seen)
+	reportWarning(boardId, code, message, error.name)
+}
+
 export function reportSuccess(boardId: string, code: LogCode, level?: ReportLevel): void {
 	if (!LOG_REPORT_URL) return
 	if (!isReportableBoardId(boardId)) return
