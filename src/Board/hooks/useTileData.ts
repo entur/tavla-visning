@@ -154,10 +154,10 @@ export function useStopPlaceTileData(
 	)
 
 	const filteredCalls = filterPastDepartures(
-		(stopPlaceData?.stopPlace?.estimatedCalls ?? []).slice(0, DEFAULT_NUMBER_OF_DEPARTURES),
+		stopPlaceData?.stopPlace?.estimatedCalls ?? [],
 		now,
 		isArrivals,
-	)
+	).slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
 
 	const selectedQuayIds = quays?.map((q) => q.id) ?? []
 	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
