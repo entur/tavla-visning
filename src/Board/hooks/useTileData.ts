@@ -143,7 +143,6 @@ export function useStopPlaceTileData(
 			stopPlaceId: stopPlaceId,
 			whitelistedLines,
 			numberOfDepartures: DEFAULT_NUMBER_OF_DEPARTURES,
-			numberOfDeparturesPerLineAndDestinationDisplay: undefined,
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
 		{
@@ -229,7 +228,6 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 				stopPlaceId: tile.stopPlaceId,
 				whitelistedLines: tile.whitelistedLines,
 				numberOfDepartures: DEFAULT_NUMBER_OF_DEPARTURES,
-				numberOfDeparturesPerLineAndDestinationDisplay: undefined,
 				arrivalDeparture,
 			},
 			options: { offset: (tile.offset ?? 0) + holdTimeOffset, poll: true },

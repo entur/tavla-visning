@@ -272,13 +272,12 @@ fragment situation on PtSituationElement {
   }
 }`) as unknown as TypedDocumentString<Types.TGetQuaysQuery, Types.TGetQuaysQueryVariables>
 export const StopPlaceQuery = new TypedDocumentString(`
-    query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $numberOfDeparturesPerLineAndDestinationDisplay: Int, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
+    query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
   stopPlace(id: $stopPlaceId) {
     name
     transportMode
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
-      numberOfDeparturesPerLineAndDestinationDisplay: $numberOfDeparturesPerLineAndDestinationDisplay
       whiteListedModes: $whitelistedTransportModes
       whiteListed: { lines: $whitelistedLines }
       includeCancelledTrips: true
