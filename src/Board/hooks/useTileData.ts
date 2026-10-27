@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
 import type { LineWithDirectionDB, TileDB } from '@/Shared/types/db-types/boards'
+import { reportError, reportWarningOnceByError } from '@/Shared/utils/report'
 import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import {
@@ -65,6 +67,41 @@ const DEFAULT_NUMBER_OF_DEPARTURES = 20
 const DIRECTION_NUMBER_OF_DEPARTURES = 50
 const DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION = 10
 
+/**
+ * Rapporterer cached-visning og utløpt cache for en tile, basert på den samme
+ * error/hasData/estimatedCalls-tilstanden som brukes til å bygge TileData.
+ * showingCachedData deduperes på tvers av søsken-tiles som deler samme SWR-feil
+ * (se reportWarningOnceByError); error_screen_cache_expired rapporteres per tile,
+ * siden det reflekterer denne tilens egen filtrerte visning, ikke selve kall-feilen.
+ */
+function useReportCacheStatus(
+	boardId: string | undefined,
+	error: Error | undefined,
+	hasData: boolean,
+	estimatedCallsLength: number,
+) {
+	const showingCachedData = !!error && hasData && estimatedCallsLength > 0
+	const isCacheExpired = !!error && hasData && estimatedCallsLength === 0
+
+	useEffect(() => {
+		if (showingCachedData) {
+			reportWarningOnceByError(
+				error,
+				boardId ?? '',
+				'showing_cached_data',
+				'Fetch failed, showing cached departures/arrivals that have not expired.',
+			)
+		}
+		if (isCacheExpired) {
+			reportError(
+				boardId ?? '',
+				'error_screen_cache_expired',
+				'Showing error screen, all cached departures/arrivals have expired.',
+			)
+		}
+	}, [showingCachedData, isCacheExpired, boardId, error])
+}
+
 export function useQuaysTileData(
 	{ quays, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
@@ -119,6 +156,9 @@ export function useQuaysTileData(
 
 	const quaysSituationIndex = useCycler(accumulatedQuaysSituations ?? [], 10000)
 
+	const hasData = quayResults.length > 0
+	useReportCacheStatus(boardId, quaysError, hasData, departures.length)
+
 	return {
 		displayName: (displayName ?? name) || quayResults[0]?.name,
 		estimatedCalls: departures,
@@ -127,7 +167,7 @@ export function useQuaysTileData(
 		currentSituationIndex: quaysSituationIndex,
 		isLoading: quaysLoading,
 		error: quaysError,
-		hasData: quayResults.length > 0,
+		hasData,
 	}
 }
 
@@ -199,6 +239,9 @@ export function useStopPlaceTileData(
 
 	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
 
+	const hasData = !!stopPlaceData?.stopPlace
+	useReportCacheStatus(boardId, stopPlaceError, hasData, filteredCalls.length)
+
 	return {
 		displayName: (displayName ?? name) || stopPlaceData?.stopPlace?.name,
 		estimatedCalls: filteredCalls,
@@ -207,7 +250,7 @@ export function useStopPlaceTileData(
 		currentSituationIndex,
 		isLoading: stopPlaceLoading,
 		error: stopPlaceError,
-		hasData: !!stopPlaceData?.stopPlace,
+		hasData,
 	}
 }
 
@@ -331,6 +374,10 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		.map((tile) => (tile.displayName ? { uuid: tile.uuid, customName: tile.displayName } : null))
 		.filter(isNotNullOrUndefined) as CustomName[]
 
+	const combinedError = stopPlaceError || quaysError
+	const hasData = !!(stopPlaceData?.length || quaysData?.length)
+	useReportCacheStatus(boardId, combinedError, hasData, departures.length)
+
 	return {
 		displayName: undefined,
 		estimatedCalls: departures,
@@ -338,8 +385,8 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		uniqueSituations: uniqueSituations ?? [],
 		currentSituationIndex,
 		isLoading: stopPlaceLoading || quaysLoading,
-		error: stopPlaceError || quaysError,
-		hasData: !!(stopPlaceData?.length || quaysData?.length),
+		error: combinedError,
+		hasData,
 		customNames,
 	}
 }
