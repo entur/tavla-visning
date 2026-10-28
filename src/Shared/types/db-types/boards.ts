@@ -56,6 +56,7 @@ export type TileDB = {
 	quays: QuayDB[]
 	name: string
 	uuid: string
+	/** @deprecated */
 	linesWithDirection?: LineWithDirectionDB[]
 
 	/** @deprecated */

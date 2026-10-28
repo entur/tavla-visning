@@ -332,7 +332,6 @@ export type TStopPlaceQueryVariables = Exact<{
 		| undefined
 	whitelistedLines?: Array<string | number> | string | number | null | undefined
 	numberOfDepartures?: number | null | undefined
-	numberOfDeparturesPerLineAndDestinationDisplay?: number | null | undefined
 	startTime?: DateTime | null | undefined
 	arrivalDeparture?: Types.TArrivalDeparture | null | undefined
 }>

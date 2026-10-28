@@ -2,7 +2,7 @@ import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
-import type { LineWithDirectionDB, TileDB } from '@/Shared/types/db-types/boards'
+import type { TileDB } from '@/Shared/types/db-types/boards'
 import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import {
@@ -32,7 +32,7 @@ interface TileData {
 	customNames?: CustomName[]
 }
 
-export type TileDataSource = 'linesWithDirection' | 'quays' | 'stopPlace'
+export type TileDataSource = 'quays' | 'stopPlace'
 
 function filterPastDepartures(
 	departures: TDepartureFragment[],
@@ -50,20 +50,15 @@ function filterPastDepartures(
  * Bestemmer hvilken datakilde som skal brukes for å hente avganger for en gitt tile.
  *
  * @param tile
- * @returns En av 'linesWithDirection', 'quays' eller 'stopPlace', som indikerer hvilken datakilde som skal brukes for å hente avganger for den gitte tile.
+ * @returns Enten'quays' eller 'stopPlace', som indikerer hvilken datakilde som skal brukes for å hente avganger for den gitte tile.
  */
-export function resolveTileDataSource(
-	tile: Pick<TileDB, 'linesWithDirection' | 'quays'>,
-): TileDataSource {
-	if (tile.linesWithDirection !== undefined) return 'linesWithDirection'
+export function resolveTileDataSource(tile: Pick<TileDB, 'quays'>): TileDataSource {
 	if (tile.quays && tile.quays.length > 0) return 'quays'
 	return 'stopPlace'
 }
 
 const ARRIVAL_HOLD_TIME_MINUTES = -5
 const DEFAULT_NUMBER_OF_DEPARTURES = 20
-const DIRECTION_NUMBER_OF_DEPARTURES = 50
-const DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION = 10
 
 export function useQuaysTileData(
 	{ quays, offset, displayName, name }: TileDB,
@@ -132,10 +127,9 @@ export function useQuaysTileData(
 }
 
 export function useStopPlaceTileData(
-	{ stopPlaceId, whitelistedLines, linesWithDirection, offset, displayName, name, quays }: TileDB,
+	{ stopPlaceId, whitelistedLines, offset, displayName, name, quays }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
-	const usesLinesWithDirection = linesWithDirection !== undefined
 	const { language, boardId } = useBoardContext()
 	const now = useServerNow()
 
@@ -147,15 +141,8 @@ export function useStopPlaceTileData(
 		StopPlaceQuery,
 		{
 			stopPlaceId: stopPlaceId,
-			whitelistedLines: usesLinesWithDirection
-				? whitelistedLinesFromDirection(linesWithDirection)
-				: whitelistedLines,
-			numberOfDepartures: usesLinesWithDirection
-				? DIRECTION_NUMBER_OF_DEPARTURES
-				: DEFAULT_NUMBER_OF_DEPARTURES,
-			numberOfDeparturesPerLineAndDestinationDisplay: usesLinesWithDirection
-				? DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION
-				: undefined,
+			whitelistedLines,
+			numberOfDepartures: DEFAULT_NUMBER_OF_DEPARTURES,
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
 		{
@@ -166,9 +153,7 @@ export function useStopPlaceTileData(
 	)
 
 	const filteredCalls = filterPastDepartures(
-		(stopPlaceData?.stopPlace?.estimatedCalls ?? []).filter((dep) =>
-			shouldIncludeByLineDirection(dep, linesWithDirection ?? []),
-		),
+		stopPlaceData?.stopPlace?.estimatedCalls ?? [],
 		now,
 		isArrivals,
 	).slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
@@ -218,7 +203,6 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	const holdTimeOffset = isArrivals ? ARRIVAL_HOLD_TIME_MINUTES : 0
 
 	const tileDataSource = (tile: TileDB): TileDataSource => resolveTileDataSource(tile)
-	const isLinesWithDirectionTile = (tile: TileDB) => tileDataSource(tile) === 'linesWithDirection'
 	const isQuayTile = (tile: TileDB) => tileDataSource(tile) === 'quays'
 
 	const quayQueryMeta = combinedTile.filter(isQuayTile).flatMap((tile) =>
@@ -242,15 +226,8 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 			query: StopPlaceQuery,
 			variables: {
 				stopPlaceId: tile.stopPlaceId,
-				whitelistedLines: isLinesWithDirectionTile(tile)
-					? whitelistedLinesFromDirection(tile.linesWithDirection)
-					: tile.whitelistedLines,
-				numberOfDepartures: isLinesWithDirectionTile(tile)
-					? DIRECTION_NUMBER_OF_DEPARTURES
-					: DEFAULT_NUMBER_OF_DEPARTURES,
-				numberOfDeparturesPerLineAndDestinationDisplay: isLinesWithDirectionTile(tile)
-					? DIRECTION_DEPARTURES_PER_LINE_AND_DESTINATION
-					: undefined,
+				whitelistedLines: tile.whitelistedLines,
+				numberOfDepartures: DEFAULT_NUMBER_OF_DEPARTURES,
 				arrivalDeparture,
 			},
 			options: { offset: (tile.offset ?? 0) + holdTimeOffset, poll: true },
@@ -275,12 +252,10 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		...(stopPlaceData?.flatMap((data, index) => {
 			const tile = stopPlaceQueryMeta[index]?.tile
 
-			return (data.stopPlace?.estimatedCalls ?? [])
-				.filter((call) => shouldIncludeByLineDirection(call, tile?.linesWithDirection ?? []))
-				.map((call) => ({
-					...call,
-					tileUuid: tile?.uuid,
-				}))
+			return (data.stopPlace?.estimatedCalls ?? []).map((call) => ({
+				...call,
+				tileUuid: tile?.uuid,
+			}))
 		}) ?? []),
 		...(quaysData?.flatMap((data, index) => {
 			const meta = quayQueryMeta[index]
@@ -342,54 +317,6 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		hasData: !!(stopPlaceData?.length || quaysData?.length),
 		customNames,
 	}
-}
-
-export function shouldIncludeByLineDirection(
-	departure: TDepartureFragment,
-	linesWithDirection: LineWithDirectionDB[],
-): boolean {
-	const noLinesSelected = linesWithDirection.length === 0
-
-	if (noLinesSelected) {
-		// No lines selected → show all departures
-		return true
-	}
-
-	const departureLineId = departure.serviceJourney?.line?.id
-	const matchingLine = linesWithDirection.find((line) => line.lineId === departureLineId)
-
-	if (!matchingLine) {
-		//Line not selected → hide the departure
-		return false
-	}
-
-	if (matchingLine.frontTexts.length === 0) {
-		//Line matches, but no front texts are selected → show all directions for this line
-		return true
-	}
-
-	const departureFrontText = departure.destinationDisplay?.frontText
-	if (departureFrontText == null) {
-		//Departure has no front text → show it, we don't want to hide departures that are missing data
-		return true
-	}
-
-	const frontTextMatches = matchingLine.frontTexts.includes(departureFrontText)
-
-	//Line matches, and front text matches → show the departure
-	//Line matches, but front text does not match → hide the departure
-	return frontTextMatches
-}
-
-/**
- * @param linesWithDirection
- * @returns A list of unique lineIds from the linesWithDirection array, or undefined if the array is empty.
- */
-export function whitelistedLinesFromDirection(
-	linesWithDirection: LineWithDirectionDB[] | undefined,
-): string[] | undefined {
-	const lineIds = [...new Set((linesWithDirection ?? []).map((l) => l.lineId))]
-	return lineIds.length > 0 ? lineIds : undefined
 }
 
 function isNotNullOrUndefined<T>(value: T | null | undefined): value is T {
