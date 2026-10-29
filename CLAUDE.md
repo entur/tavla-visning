@@ -25,9 +25,13 @@ Tavla Visning is a real-time public transport departure board display system for
 ```bash
 pnpm dev          # Start Vite dev server (localhost:5173)
 pnpm build        # TypeScript check + production build
+pnpm preview      # Preview the production build locally
 pnpm lint         # Biome lint
 pnpm format       # Biome auto-format (run before committing)
 pnpm codegen      # Regenerate GraphQL types from schema
+pnpm test         # Run the vitest suite once
+pnpm test:watch   # Run vitest in watch mode
+pnpm smoketest    # BrowserStack smoketest against a deployed URL (see README.md)
 ```
 
 Formatting is enforced via husky + lint-staged on pre-commit.
@@ -48,6 +52,10 @@ URL (boardId) → Page.tsx
   → BoardTile         renders header + table + situations
 ```
 
+### Direct Stop Links
+
+`src/main.tsx` routes `/stop/:nsrId` (quay or stop place NSR id) to [`src/StopPage.tsx`](src/StopPage.tsx) instead of `Page.tsx`. It builds a synthetic single-tile `BoardDB` directly from the NSR id in the URL, skips `useGetBoard()`/`useRefresh()` entirely (there's no board config to fetch or subscribe to), but still runs `useHeartbeat()` (flagged as a direct link) and `useReloadDaily()`.
+
 ### Key Display Scenarios (`src/Board/scenarios/`)
 
 - **Board** — responsive grid of tiles; font size scales with tile count
@@ -58,9 +66,9 @@ URL (boardId) → Page.tsx
 ### Real-Time Mechanisms
 
 - **30s polling** via SWR in `useQuery` for departure data
-- **`useRefresh()`** — SSE subscription to backend for board config changes
+- **`useRefresh()`** — long-polling `fetch` loop against the backend's `/subscribe/:boardId` endpoint for board config changes (not SSE/`EventSource`); re-issues the request after each response, with a 10s retry backoff on error
 - **`useHeartbeat()`** — sends keep-alive every 60s for analytics; the response also carries the backend's current time, used to sync a local clock offset (`src/Shared/utils/serverTime.ts`) so the displayed clock and departure times stay correct even when the display hardware's own system clock is wrong
-- **24h reload** — `Page.tsx` forces full page refresh daily
+- **24h reload** — `useReloadDaily()` (`src/Shared/hooks/useReloadDaily.ts`), called from both `Page.tsx` and `StopPage.tsx`, forces a full page refresh daily
 - **Offline log queue** — `reportError`/`reportSuccess` (`src/Shared/utils/report.ts`) queue failed log POSTs in `localStorage` (`src/Shared/utils/logQueue.ts`) with a `getServerNow()` timestamp; the queue flushes automatically on the browser's `online` event, and entries older than 15 minutes are discarded silently
 
 ### GraphQL
@@ -73,8 +81,9 @@ Three endpoints configured in `src/Shared/assets/env.ts`:
 Query using typed document nodes from codegen:
 
 ```typescript
-import { GetQuayQuery, type TDepartureFragment } from '@/Shared/graphql'
+import { GetQuayQuery } from '@/graphql'
 import { useQuery } from '@/Shared/hooks/useQuery'
+import type { TDepartureFragment } from '@/types/graphql-operations'
 
 const { data, isLoading } = useQuery(
   GetQuayQuery,
@@ -83,7 +92,7 @@ const { data, isLoading } = useQuery(
 )
 ```
 
-Fragments in `src/Shared/graphql/fragments/`, queries in `src/Shared/graphql/queries/`. After editing `.graphql` files, run `pnpm codegen` and update `docs/EXPLORER_LINKS.md` with new Explorer link by re-running the same Python script logic used to create it: merge each query with its fragments recursively, URL-encode as `query`+`operationName`+`variables` parameters, and write the updated file.
+Fragments in `src/graphql/fragments/`, queries in `src/graphql/queries/` (note: this is top-level `src/graphql/`, not under `src/Shared/` — reached via the `@/` alias as `@/graphql`). After editing `.graphql` files, run `pnpm codegen` and update `docs/EXPLORER_LINKS.md` with new Explorer link by re-running the same Python script logic used to create it: merge each query with its fragments recursively, URL-encode as `query`+`operationName`+`variables` parameters, and write the updated file.
 
 Codegen writes schema types to `src/types/graphql-schema.ts` and operation/fragment types (e.g. `TDepartureFragment`) to a separate `src/types/graphql-operations.ts` — kept apart to avoid duplicate-identifier clashes between the `typescript` and `typescript-operations` plugins.
 
@@ -117,14 +126,18 @@ Always use aliases for cross-module imports — never relative paths:
 
 ```
 @/          → src/
+@src/       → src/        (duplicate of @/; only one current import uses it)
 @shared/    → src/Shared/
 @board/     → src/Board/
 @components/ → src/Shared/components/
 @hooks/     → src/Shared/hooks/
 @utils/     → src/Shared/utils/
 @types/     → src/Shared/types/
-@graphql/   → src/Shared/graphql/
+@styles/    → src/styles/
+@assets/    → src/Shared/assets/
 ```
+
+There is no dedicated `@graphql` alias for app code — GraphQL fragments/queries live at top-level `src/graphql/` and are imported via `@/graphql` (see **GraphQL** below). `vite.config.ts` does define a `@graphql` → `src/Shared/graphql/` alias, but that directory doesn't exist and nothing imports through it — treat it as stale rather than a real convention.
 
 ## Code Style
 
@@ -142,7 +155,10 @@ Always use aliases for cross-module imports — never relative paths:
 
 ## Key Files
 
-- [`src/Page.tsx`](src/Page.tsx) — entry component, routing, theme application, 24h reload
+- [`src/main.tsx`](src/main.tsx) — app bootstrap; routes `/stop/:nsrId` to `StopPage`, everything else to `Page`
+- [`src/Page.tsx`](src/Page.tsx) — board-by-id entry component, theme application
+- [`src/StopPage.tsx`](src/StopPage.tsx) — direct-link entry component for `/stop/:nsrId`, builds a synthetic board from the NSR id instead of fetching one
+- [`src/Shared/hooks/useReloadDaily.ts`](src/Shared/hooks/useReloadDaily.ts) — 24h full-page reload, used by both `Page.tsx` and `StopPage.tsx`
 - [`src/Board/scenarios/Board/index.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
 - [`src/Board/hooks/useTileData.ts`](src/Board/hooks/useTileData.ts) — all tile data fetching logic
 - [`src/Shared/hooks/useGetBoard.ts`](src/Shared/hooks/useGetBoard.ts) — fetching board config
@@ -177,6 +193,10 @@ PR-beskrivelser skal skrives på **norsk** og følge malen i [`.github/pull_requ
 - [ ] Testet i Chrome, Firefox og Safari
 - [ ] Testet i BrowserStack
 - [ ] Oppdatert dokumentasjon (hvis relevant)
+
+
+### 🧩 Testing
+<fyll inn dersom det forventes testing fra reviewer>
 ```
 
 Fyll ut **Bakgrunn** og **Løsning**. La **Bilder**-tabellen og **Sjekkliste** stå urørt — disse fylles ut av et menneske.
