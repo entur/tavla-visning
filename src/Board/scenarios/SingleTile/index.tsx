@@ -17,7 +17,7 @@ import { useEffect } from 'react'
 
 type Props = TileDB & {
 	size?: TileVariants['size']
-	onCachedDataChange?: (tileId: string, status: CacheStatus) => void
+	onCachedDataChange?: (tileId: string, status: CacheStatus | null) => void
 }
 
 export function SingleTile(props: Props) {
@@ -38,6 +38,9 @@ function QuaysTile(props: Props) {
 			showingCachedData: cacheStatus.showingCachedData,
 			lastUpdated: cacheStatus.lastUpdated,
 		})
+		return () => {
+			props.onCachedDataChange?.(props.uuid, null)
+		}
 	}, [props.onCachedDataChange, props.uuid, cacheStatus.showingCachedData, cacheStatus.lastUpdated])
 
 	return (
@@ -63,6 +66,9 @@ function StopPlaceTile(props: Props) {
 			showingCachedData: cacheStatus.showingCachedData,
 			lastUpdated: cacheStatus.lastUpdated,
 		})
+		return () => {
+			props.onCachedDataChange?.(props.uuid, null)
+		}
 	}, [props.onCachedDataChange, props.uuid, cacheStatus.showingCachedData, cacheStatus.lastUpdated])
 
 	return (

@@ -16,8 +16,14 @@ function Board({ board }: { board: BoardDB }) {
 	const [cacheStatuses, setCacheStatuses] = useState<Record<string, CacheStatus>>({})
 	const now = useServerNow()
 
-	const handleCachedDataChange = useCallback((tileId: string, status: CacheStatus) => {
-		setCacheStatuses((prev) => ({ ...prev, [tileId]: status }))
+	const handleCachedDataChange = useCallback((tileId: string, status: CacheStatus | null) => {
+		setCacheStatuses((prev) => {
+			if (status === null) {
+				const { [tileId]: _removed, ...rest } = prev
+				return rest
+			}
+			return { ...prev, [tileId]: status }
+		})
 	}, [])
 
 	if (!board.tiles?.length)

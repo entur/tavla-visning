@@ -13,7 +13,7 @@ import { useEffect } from 'react'
 type Props = {
 	combinedTile: TileDB[]
 	size?: TileVariants['size']
-	onCachedDataChange?: (tileId: string, status: CacheStatus) => void
+	onCachedDataChange?: (tileId: string, status: CacheStatus | null) => void
 }
 
 export function CombinedTile({ combinedTile, size, onCachedDataChange }: Props) {
@@ -26,6 +26,9 @@ export function CombinedTile({ combinedTile, size, onCachedDataChange }: Props) 
 			showingCachedData: cacheStatus.showingCachedData,
 			lastUpdated: cacheStatus.lastUpdated,
 		})
+		return () => {
+			onCachedDataChange?.('combined', null)
+		}
 	}, [onCachedDataChange, cacheStatus.showingCachedData, cacheStatus.lastUpdated])
 
 	return (
