@@ -12,6 +12,8 @@ import { ValidationInfoFilledIcon } from '@entur/icons'
 import { useCallback, useState } from 'react'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
 
+const CACHE_INFO_MESSAGE_THRESHOLD_MINUTES = 2
+
 function Board({ board }: { board: BoardDB }) {
 	const [cacheStatuses, setCacheStatuses] = useState<Record<string, CacheStatus>>({})
 	const now = useServerNow()
@@ -60,7 +62,7 @@ function Board({ board }: { board: BoardDB }) {
 				language,
 			}}
 		>
-			{tilesShowingCachedData.length > 0 && minutesAgo > 1 && (
+			{tilesShowingCachedData.length > 0 && minutesAgo >= CACHE_INFO_MESSAGE_THRESHOLD_MINUTES && (
 				<div className="flex flex-row items-center gap-2">
 					<ValidationInfoFilledIcon color="var(--shape-information)" />
 					<Paragraph className="m-0">
