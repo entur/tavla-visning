@@ -70,6 +70,7 @@ URL (boardId) → Page.tsx
 - **`useHeartbeat()`** — sends keep-alive every 60s for analytics; the response also carries the backend's current time, used to sync a local clock offset (`src/Shared/utils/serverTime.ts`) so the displayed clock and departure times stay correct even when the display hardware's own system clock is wrong
 - **24h reload** — `useReloadDaily()` (`src/Shared/hooks/useReloadDaily.ts`), called from both `Page.tsx` and `StopPage.tsx`, forces a full page refresh daily
 - **Offline log queue** — `reportError`/`reportSuccess` (`src/Shared/utils/report.ts`) queue failed log POSTs in `localStorage` (`src/Shared/utils/logQueue.ts`) with a `getServerNow()` timestamp; the queue flushes automatically on the browser's `online` event, and entries older than 15 minutes are discarded silently
+- **Cached-data banner** — when a tile's fetch fails but SWR still serves stale departures (`keepPreviousData`), `SingleTile`/`CombinedTile` report a `CacheStatus` (`getCacheStatus()` in `useTileData.ts`) upward to `Board` via an `onCachedDataChange` callback; `Board` aggregates these per board and shows a banner once the oldest stale tile has been cached for at least 2 minutes (`CACHE_INFO_MESSAGE_THRESHOLD_MINUTES` in `Board/index.tsx`)
 
 ### GraphQL
 
