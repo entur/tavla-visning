@@ -14,21 +14,49 @@ export type TArrivalDeparture =
 	/** Only show departures */
 	| 'departures'
 
+/** A collection of selectors for what estimated calls should be included / excluded. At least one of `select` or `not` must be provided. The `select` is always applied first, then `not`. If only `not` is present, the exclude is applied to the existing set of estimated calls. */
+export type TEstimatedCallFilterInput = {
+	/** A list of selectors for what estimated calls should be excluded during the search. If a call matches with at least one selector it will be excluded. */
+	not?: Array<TEstimatedCallSelectInput> | null | undefined
+	/** A list of selectors for what estimated calls should be included. A call is included if it matches at least one selector. Omit the field to include all calls. An empty list is not allowed. */
+	select?: Array<TEstimatedCallSelectInput> | null | undefined
+}
+
+/** A selector for filter allow-list / exclude-list. At least one field must be provided. An estimated call matches a selector if it matches all fields. Within each field, a call matches if it matches any of the listed values. */
+export type TEstimatedCallSelectInput = {
+	/** Set of ids for authorities that should be included in/excluded from search. A call matches if its authority matches any of the given IDs. An empty list is not allowed. Omit the field to match all authorities. */
+	authorities?: Array<string | number> | null | undefined
+	/** Set of ids for lines that should be included in/excluded from search. A call matches if its line matches any of the given IDs. An empty list is not allowed. Omit the field to match all lines. */
+	lines?: Array<string | number> | null | undefined
+	/** The allowed modes for the estimated call. A call matches if its mode matches any of the listed modes. An empty list is not allowed. Omit the field to match all modes. Omitting main mode (transportMode) is also not allowed. */
+	transportModes?: Array<TTransportModes> | null | undefined
+}
+
 export type TTransportMode =
 	| 'air'
 	| 'bus'
 	| 'cableway'
+	| 'carpool'
 	| 'coach'
 	| 'funicular'
 	| 'lift'
 	| 'metro'
 	| 'monorail'
 	| 'rail'
+	| 'snowAndIce'
 	| 'taxi'
 	| 'tram'
 	| 'trolleybus'
+	/** Unknown transport mode. No trip, line or stop has this mode. */
 	| 'unknown'
 	| 'water'
+
+export type TTransportModes = {
+	/** A transportMode that should be allowed for this search. You can furthernarrow it down by specifying a list of transportSubModes */
+	transportMode?: TTransportMode | null | undefined
+	/** The allowed transportSubModes for this search. If this element is notpresent or null, it will default to all transportSubModes for the specifiedTransportMode. Be aware that all transportSubModes have an associated TransportMode, which must match what is specified in the transportMode field. */
+	transportSubModes?: Array<TTransportSubmode | null | undefined> | null | undefined
+}
 
 export type TTransportSubmode =
 	| 'SchengenAreaFlight'
@@ -190,12 +218,11 @@ export type TSituationFragment = {
 
 export type TGetQuayQueryVariables = Exact<{
 	quayId: string
-	whitelistedTransportModes?:
-		| Array<Types.TTransportMode | null | undefined>
-		| Types.TTransportMode
+	filters?:
+		| Array<Types.TEstimatedCallFilterInput>
+		| Types.TEstimatedCallFilterInput
 		| null
 		| undefined
-	whitelistedLines?: Array<string | number> | string | number | null | undefined
 	numberOfDepartures?: number | null | undefined
 	startTime?: DateTime | null | undefined
 	arrivalDeparture?: Types.TArrivalDeparture | null | undefined
@@ -258,12 +285,11 @@ export type TGetQuayQuery = {
 
 export type TGetQuaysQueryVariables = Exact<{
 	quayIds?: Array<string> | string | null | undefined
-	whitelistedTransportModes?:
-		| Array<Types.TTransportMode | null | undefined>
-		| Types.TTransportMode
+	filters?:
+		| Array<Types.TEstimatedCallFilterInput>
+		| Types.TEstimatedCallFilterInput
 		| null
 		| undefined
-	whitelistedLines?: Array<string | number> | string | number | null | undefined
 	numberOfDepartures?: number | null | undefined
 	startTime?: DateTime | null | undefined
 }>
@@ -325,12 +351,11 @@ export type TGetQuaysQuery = {
 
 export type TStopPlaceQueryVariables = Exact<{
 	stopPlaceId: string
-	whitelistedTransportModes?:
-		| Array<Types.TTransportMode | null | undefined>
-		| Types.TTransportMode
+	filters?:
+		| Array<Types.TEstimatedCallFilterInput>
+		| Types.TEstimatedCallFilterInput
 		| null
 		| undefined
-	whitelistedLines?: Array<string | number> | string | number | null | undefined
 	numberOfDepartures?: number | null | undefined
 	startTime?: DateTime | null | undefined
 	arrivalDeparture?: Types.TArrivalDeparture | null | undefined

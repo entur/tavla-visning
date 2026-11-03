@@ -1,3 +1,5 @@
+import type { TTransportMode } from '@/types/graphql-schema'
+
 export type BoardDB = {
 	id?: BoardId
 	meta: BoardMetaDB
@@ -51,16 +53,29 @@ export type LineWithDirectionDB = {
 	frontTexts: string[]
 }
 
+export type QuaysFilterDB = {
+	type: 'quaysFilter'
+	quays: QuayDB[]
+}
+
+export type StopPlaceFilterDB = {
+	type: 'stopPlaceFilter'
+	whitelistedModes: TTransportMode[]
+	whitelistedLines: string[]
+}
+
+export type TileFilterDB = QuaysFilterDB | StopPlaceFilterDB
+
 export type TileDB = {
 	stopPlaceId: string
+	/** @deprecated Bruk filter i stedet. Beholdes som fallback inntil alle boards er migrert. */
 	quays: QuayDB[]
 	name: string
 	uuid: string
-	/** @deprecated */
-	linesWithDirection?: LineWithDirectionDB[]
+	filter?: TileFilterDB
 
 	/** @deprecated */
-	whitelistedLines?: string[]
+	linesWithDirection?: LineWithDirectionDB[]
 
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB

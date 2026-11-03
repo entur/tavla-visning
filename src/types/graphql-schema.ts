@@ -121,6 +121,18 @@ export type TBikePark = TPlaceInterface & {
 	spacesAvailable: Maybe<Scalars['Int']['output']>
 }
 
+/** Bicycle routing preferences. */
+export type TBikePreferencesInput = {
+	/** The set of characteristics that the user wants to optimize for during bicycle routing. */
+	optimisationMethod?: InputMaybe<TVehicleOptimisationMethod>
+	/** A measure of how bad biking is compared to being in transit for equal periods of time. Higher values make routing prefer other modes over biking. */
+	reluctance?: InputMaybe<Scalars['Float']['input']>
+	/** The maximum bike speed along streets, in meters per second. */
+	speed?: InputMaybe<Scalars['Float']['input']>
+	/** When using optimisationMethod 'triangle', these values tell the routing engine how important each factor is compared to the others. All values should add up to 1. */
+	triangleFactors?: InputMaybe<TTriangleFactors>
+}
+
 export type TBikeRentalStation = TPlaceInterface & {
 	__typename?: 'BikeRentalStation'
 	allowDropoff: Maybe<Scalars['Boolean']['output']>
@@ -166,7 +178,7 @@ export type TBranding = {
 	__typename?: 'Branding'
 	/** Description of branding. */
 	description: Maybe<Scalars['String']['output']>
-	id: Maybe<Scalars['ID']['output']>
+	id: Scalars['ID']['output']
 	/** URL to an image be used for branding */
 	image: Maybe<Scalars['String']['output']>
 	/** Full name to be used for branding. */
@@ -195,7 +207,9 @@ export type TContact = {
 export type TDatedServiceJourney = {
 	__typename?: 'DatedServiceJourney'
 	/** Returns scheduled passingTimes for this dated service journey, updated with real-time-updates (if available).  */
-	estimatedCalls: Maybe<Array<Maybe<TEstimatedCall>>>
+	estimatedCalls: Array<TEstimatedCall>
+	/** Whether this is an extra journey, either from planned data or added in realtime */
+	extraJourney: Scalars['Boolean']['output']
 	id: Scalars['ID']['output']
 	/** JourneyPattern for the dated service journey. */
 	journeyPattern: Maybe<TJourneyPattern>
@@ -203,18 +217,52 @@ export type TDatedServiceJourney = {
 	operatingDay: Maybe<Scalars['Date']['output']>
 	/** Quays visited by the dated service journey. */
 	quays: Array<TQuay>
-	/** List of the dated service journeys this dated service journeys replaces */
+	/** The real-time state of this dated service journey. */
+	realTimeJourneyState: Maybe<TRealTimeJourneyState>
+	/** Dated service journeys this dated service journey is replaced by */
+	replacedByRelation: Array<TReplacedByRelation>
+	/**
+	 * List of the dated service journeys this dated service journeys replaces
+	 * @deprecated Use replacementForRelation
+	 */
 	replacementFor: Array<TDatedServiceJourney>
+	/** Dated service journeys this dated service journey replaces with full replacement information */
+	replacementForRelation: Array<TReplacementForRelation>
 	/** The service journey this Dated Service Journey is based on */
 	serviceJourney: TServiceJourney
-	/** Alterations specified on the Trip in the planned data */
+	/** Alterations specified on the Trip in the planned data. Note: realtime alterations are not included */
 	tripAlteration: Maybe<TServiceAlteration>
+	/**
+	 * The aimed and expected vehicle assignment for this dated service journey.
+	 * The aimed references fall back to the service journey's when the dated service journey has none of its own.
+	 *
+	 */
+	vehicleAssignment: Maybe<TDatedServiceJourneyVehicleAssignment>
 }
 
 /** A planned journey on a specific day */
 export type TDatedServiceJourneyQuaysArgs = {
 	first?: InputMaybe<Scalars['Int']['input']>
 	last?: InputMaybe<Scalars['Int']['input']>
+}
+
+/** Identifies a specific service journey on a specific service date. Exactly one of the fields must be set. */
+export type TDatedServiceJourneyReference = {
+	/** Identifies the service journey by a dated service journey ID (e.g. from NeTEx data where a service journey on a date has a unique ID). */
+	datedServiceJourneyId?: InputMaybe<Scalars['String']['input']>
+	/** Identifies the service journey by service journey ID and service date. */
+	serviceJourneyOnServiceDate?: InputMaybe<TServiceJourneyOnServiceDate>
+}
+
+/** The vehicle and vehicle type aimed to operate a dated service journey, and the vehicle expected to operate it based on real-time data. */
+export type TDatedServiceJourneyVehicleAssignment = {
+	__typename?: 'DatedServiceJourneyVehicleAssignment'
+	/** Id of the vehicle aimed to operate the dated service journey. */
+	aimedVehicleId: Maybe<Scalars['String']['output']>
+	/** Id of the type of vehicle aimed to operate the dated service journey. */
+	aimedVehicleTypeId: Maybe<Scalars['String']['output']>
+	/** Id of the vehicle expected to operate the dated service journey. Updated with real-time information if available. */
+	expectedVehicleId: Maybe<Scalars['String']['output']>
 }
 
 /** An advertised destination of a specific journey pattern, usually displayed on a head sign or at other on-board locations. */
@@ -241,7 +289,30 @@ export type TElevationProfileStep = {
 	elevation: Maybe<Scalars['Float']['output']>
 }
 
-/** List of visits to quays as part of vehicle journeys. Updated with real time information where available */
+/**
+ * Emission information for a trip-pattern or legs.
+ *
+ * For more information, go to https://data.entur.no/public/datasets/energy_emissions
+ */
+export type TEmission = {
+	__typename?: 'Emission'
+	/** The average CO₂ emission per passenger in grams. */
+	co2: Maybe<Scalars['Float']['output']>
+}
+
+/**
+ * The empirical delay indicates how late a service journey is based on historic data.
+ *
+ */
+export type TEmpiricalDelay = {
+	__typename?: 'EmpiricalDelay'
+	/** The median/50% percentile. This value is in the middle of the distribution. */
+	p50: Maybe<Scalars['Duration']['output']>
+	/** The 90% percentile. 90% of the values in the distribution is better and 10% is more delayed. */
+	p90: Maybe<Scalars['Duration']['output']>
+}
+
+/** List of calls on quays as part of vehicle journeys. Updated with real time information where available */
 export type TEstimatedCall = {
 	__typename?: 'EstimatedCall'
 	/** Actual time of arrival at quay. Updated from real time information if available. */
@@ -252,6 +323,8 @@ export type TEstimatedCall = {
 	aimedArrivalTime: Scalars['DateTime']['output']
 	/** Scheduled time of departure from quay. Not affected by read time updated */
 	aimedDepartureTime: Scalars['DateTime']['output']
+	/** Information about any trips replacing the current trip at the arrival of this call. */
+	arrivalReplacedBy: Array<TReplacedByRelation>
 	/** Booking arrangements for this EstimatedCall. */
 	bookingArrangements: Maybe<TBookingArrangement>
 	/** Whether stop is cancelled. This means that either the ServiceJourney has a planned cancellation, the ServiceJourney has been cancelled by real-time data, or this particular StopPoint has been cancelled. This also means that both boarding and alighting has been cancelled. */
@@ -259,11 +332,17 @@ export type TEstimatedCall = {
 	/** The date the estimated call is valid for. */
 	date: Scalars['Date']['output']
 	datedServiceJourney: Maybe<TDatedServiceJourney>
+	/** Information about any trips replacing the current trip at the departure of this call. */
+	departureReplacedBy: Array<TReplacedByRelation>
 	destinationDisplay: Maybe<TDestinationDisplay>
-	/** Expected time of arrival at quay. Updated with real time information if available. Will be null if an actualArrivalTime exists */
+	/** The typical delay for this trip on this day for this stop based on historical data. */
+	empiricalDelay: Maybe<TEmpiricalDelay>
+	/** Expected time of arrival at quay. Updated with real time information if available. */
 	expectedArrivalTime: Scalars['DateTime']['output']
-	/** Expected time of departure from quay. Updated with real time information if available. Will be null if an actualDepartureTime exists */
+	/** Expected time of departure from quay. Updated with real time information if available. */
 	expectedDepartureTime: Scalars['DateTime']['output']
+	/** Whether this call is an extra call introduced by real-time data */
+	extraCall: Scalars['Boolean']['output']
 	/** Whether vehicle may be alighted at quay. */
 	forAlighting: Scalars['Boolean']['output']
 	/** Whether vehicle may be boarded at quay. */
@@ -273,17 +352,42 @@ export type TEstimatedCall = {
 	/** Whether the updated estimates are expected to be inaccurate. */
 	predictionInaccurate: Scalars['Boolean']['output']
 	quay: TQuay
+	/** The real-time state of the dated service journey this call belongs to. */
+	realTimeJourneyState: TRealTimeJourneyState
 	/** Whether this call has been updated with real time information. */
 	realtime: Scalars['Boolean']['output']
+	/** @deprecated Use realTimeJourneyState for the journey's real-time state, or the individual boolean fields (cancellation, predictionInaccurate, extraCall) for the quay's state. */
 	realtimeState: TRealtimeState
 	/** Whether vehicle will only stop on request. */
 	requestStop: Scalars['Boolean']['output']
+	/** The scheduled quay for this call. Equal to 'quay' unless the quay has been changed by a real time update */
+	scheduledQuay: TQuay
 	serviceJourney: TServiceJourney
+	/** Estimated calls for the ServiceJourney on this date. */
+	serviceJourneyEstimatedCalls: TSjEstimatedCalls
 	/** Get all relevant situations for this EstimatedCall. */
 	situations: Array<TPtSituationElement>
 	stopPositionInPattern: Scalars['Int']['output']
 	/** Whether this is a timing point or not. Boarding and alighting is not allowed at timing points. */
 	timingPoint: Scalars['Boolean']['output']
+}
+
+/** A collection of selectors for what estimated calls should be included / excluded. At least one of `select` or `not` must be provided. The `select` is always applied first, then `not`. If only `not` is present, the exclude is applied to the existing set of estimated calls. */
+export type TEstimatedCallFilterInput = {
+	/** A list of selectors for what estimated calls should be excluded during the search. If a call matches with at least one selector it will be excluded. */
+	not?: InputMaybe<Array<TEstimatedCallSelectInput>>
+	/** A list of selectors for what estimated calls should be included. A call is included if it matches at least one selector. Omit the field to include all calls. An empty list is not allowed. */
+	select?: InputMaybe<Array<TEstimatedCallSelectInput>>
+}
+
+/** A selector for filter allow-list / exclude-list. At least one field must be provided. An estimated call matches a selector if it matches all fields. Within each field, a call matches if it matches any of the listed values. */
+export type TEstimatedCallSelectInput = {
+	/** Set of ids for authorities that should be included in/excluded from search. A call matches if its authority matches any of the given IDs. An empty list is not allowed. Omit the field to match all authorities. */
+	authorities?: InputMaybe<Array<Scalars['ID']['input']>>
+	/** Set of ids for lines that should be included in/excluded from search. A call matches if its line matches any of the given IDs. An empty list is not allowed. Omit the field to match all lines. */
+	lines?: InputMaybe<Array<Scalars['ID']['input']>>
+	/** The allowed modes for the estimated call. A call matches if its mode matches any of the listed modes. An empty list is not allowed. Omit the field to match all modes. Omitting main mode (transportMode) is also not allowed. */
+	transportModes?: InputMaybe<Array<TTransportModes>>
 }
 
 export type TFilterPlaceType =
@@ -385,6 +489,7 @@ export type TInterchange = {
 
 export type TInterchangePriority = 'allowed' | 'notAllowed' | 'preferred' | 'recommended'
 
+/** Deprecated. Use STOP_INTERCHANGE_PRIORITY */
 export type TInterchangeWeighting =
 	/** Third highest priority interchange. */
 	| 'interchangeAllowed'
@@ -431,7 +536,7 @@ export type TItineraryFilters = {
 	groupSimilarityKeepThree?: InputMaybe<Scalars['Float']['input']>
 	/** Of the itineraries grouped to maximum of three itineraries, how much worse can the non-grouped legs be compared to the lowest cost. 2.0 means that they can be double the cost, and any itineraries having a higher cost will be filtered. Default value is 2.0, use a value lower than 1.0 to turn off */
 	groupedOtherThanSameLegsMaxCostMultiplier?: InputMaybe<Scalars['Float']['input']>
-	/** Set a relative limit for all transit itineraries. The limit is calculated based on the transit itinerary generalized-cost and the time between itineraries Itineraries without transit legs are excluded from this filter. Example: costLimitFunction(x) = 3600 + 2.0 x and intervalRelaxFactor = 0.5. If the lowest cost returned is 10 000, then the limit is set to: 3 600 + 2 * 10 000 = 26 600 plus half of the time between either departure or arrival times of the itinerary. Default: {"costLimitFunction": 15m + 1.50 t, "intervalRelaxFactor": 0.75} */
+	/** Set a relative limit for all transit itineraries. The limit is calculated based on the transit itinerary generalized-cost and the time between itineraries Itineraries without transit legs are excluded from this filter. Example: costLimitFunction(x) = 3600 + 2.0 x and intervalRelaxFactor = 0.5. If the lowest cost returned is 10 000, then the limit is set to: 3 600 + 2 * 10 000 = 26 600 plus half of the time between either departure or arrival times of the itinerary. Default: {"costLimitFunction": 15m + 1.5 t, "intervalRelaxFactor": 0.75} */
 	transitGeneralizedCostLimit?: InputMaybe<TTransitGeneralizedCostFilterParams>
 }
 
@@ -484,6 +589,8 @@ export type TLeg = {
 	 *
 	 */
 	elevationProfile: Array<Maybe<TElevationProfileStep>>
+	/** The emission per person */
+	emission: Maybe<TEmission>
 	/** The expected, real-time adjusted date and time this leg ends. */
 	expectedEndTime: Scalars['DateTime']['output']
 	/** The expected, real-time adjusted date and time this leg starts. */
@@ -494,7 +601,12 @@ export type TLeg = {
 	fromPlace: TPlace
 	/** Generalized cost or weight of the leg. Used for debugging. */
 	generalizedCost: Maybe<Scalars['Int']['output']>
-	/** An identifier for the leg, which can be used to re-fetch the information. */
+	/**
+	 * An identifier for the leg, which can be used to re-fetch transit leg information. The
+	 * identifier is valid for a maximum of 2 years, but sometimes it will fail after a few hours.
+	 * We do not recommend storing IDs for a long time.
+	 *
+	 */
 	id: Maybe<Scalars['ID']['output']>
 	interchangeFrom: Maybe<TInterchange>
 	interchangeTo: Maybe<TInterchange>
@@ -569,6 +681,13 @@ export type TLine = {
 	/** Groups of lines that line is a part of. */
 	groupOfLines: Array<Maybe<TGroupOfLines>>
 	id: Scalars['ID']['output']
+	/**
+	 * Is this a replacement Line? In NeTEx/SIRI-sourced data this can be set by either
+	 * a replacement submode, or a replacement link in a DatedServiceJourney. Only true
+	 * for GTFS-sourced data if set by the extended GTFS type.
+	 *
+	 */
+	isReplacement: Scalars['Boolean']['output']
 	journeyPatterns: Maybe<Array<Maybe<TJourneyPattern>>>
 	name: Maybe<Scalars['String']['output']>
 	notices: Array<TNotice>
@@ -577,6 +696,8 @@ export type TLine = {
 	/** Publicly announced code for line, differentiating it from other lines for the same operator. */
 	publicCode: Maybe<Scalars['String']['output']>
 	quays: Array<Maybe<TQuay>>
+	/** Are there replacement DatedServiceJourneys for this Line? */
+	replacementsExist: Scalars['Boolean']['output']
 	serviceJourneys: Array<Maybe<TServiceJourney>>
 	/** Get all situations active for the line. */
 	situations: Array<TPtSituationElement>
@@ -587,7 +708,7 @@ export type TLine = {
 
 export type TLocale = 'no' | 'us'
 
-/** Input format for specifying a location through either a place reference (id), coordinates or both. If both place and coordinates are provided the place ref will be used if found, coordinates will only be used if place is not known. */
+/** Input format for specifying a location through either a place reference (id), coordinates or both. If both place and coordinates are provided the place ref will be used if found, coordinates will only be used if place is not known. Alternatively, a serviceJourneyLocation can be used to start the search on-board a vehicle,or pinpoint a boarding on a specific dated service journey to start routing. */
 export type TLocation = {
 	/** Coordinates for the location. This can be used alone or as fallback if the place id is not found. */
 	coordinates?: InputMaybe<TInputCoordinates>
@@ -595,6 +716,8 @@ export type TLocation = {
 	name?: InputMaybe<Scalars['String']['input']>
 	/** The id of an element in the OTP model. Currently supports Quay, StopPlace, multimodal StopPlace, and GroupOfStopPlaces. */
 	place?: InputMaybe<Scalars['String']['input']>
+	/** Identifies a location on a specific transit trip. When set, the search starts from the specified vehicle,considered either to be starting on-board or boarding at the provided stop. In this case, the dateTime parameter of the request is ignored, as the time is resolved based on timetable data instead. */
+	serviceJourneyLocation?: InputMaybe<TServiceJourneyLocationInput>
 }
 
 export type TMode =
@@ -603,6 +726,7 @@ export type TMode =
 	| 'bus'
 	| 'cableway'
 	| 'car'
+	| 'carpool'
 	| 'coach'
 	| 'foot'
 	| 'funicular'
@@ -611,6 +735,7 @@ export type TMode =
 	| 'monorail'
 	| 'rail'
 	| 'scooter'
+	| 'snowAndIce'
 	| 'taxi'
 	| 'tram'
 	| 'trolleybus'
@@ -618,11 +743,11 @@ export type TMode =
 
 /** Input format for specifying which modes will be allowed for this search. If this element is not present, it will default to accessMode/egressMode/directMode of foot and all transport modes will be allowed. */
 export type TModes = {
-	/** The mode used to get from the origin to the access stops in the transit network the transit network (first-mile). If the element is not present or null,only transit that can be immediately boarded from the origin will be used. */
+	/** The mode used to get from the origin to the access stops in the transit network (first-mile). If the element is not present or null,only transit that can be immediately boarded from the origin will be used. */
 	accessMode?: InputMaybe<TStreetMode>
 	/** The mode used to get from the origin to the destination directly, without using the transit network. If the element is not present or null,direct travel without using transit will be disallowed. */
 	directMode?: InputMaybe<TStreetMode>
-	/** The mode used to get from the egress stops in the transit network tothe destination (last-mile). If the element is not present or null,only transit that can immediately arrive at the origin will be used. */
+	/** The mode used to get from the egress stops in the transit network to the destination (last-mile). If the element is not present or null, only transit that can immediately arrive at the destination will be used. */
 	egressMode?: InputMaybe<TStreetMode>
 	/** The allowed modes for the transit part of the trip. Use an empty list to disallow transit for this search. If the element is not present or null, it will default to all transport modes. */
 	transportModes?: InputMaybe<Array<InputMaybe<TTransportModes>>>
@@ -812,6 +937,8 @@ export type TPlace = {
 	rentalVehicle: Maybe<TRentalVehicle>
 	/** Type of vertex. (Normal, Bike sharing station, Bike P+R, Transit quay) Mostly used for better localization of bike sharing and P+R station names */
 	vertexType: Maybe<TVertexType>
+	/** This defines if the place is a requested via location, and what kind it is. If the value is `null`, this place is not a via location. */
+	viaLocationType: Maybe<TViaLocationType>
 }
 
 export type TPlaceAtDistance = {
@@ -829,9 +956,19 @@ export type TPlaceInterface = {
 	longitude: Maybe<Scalars['Float']['output']>
 }
 
+/** Identifies a point in a journey pattern by stop location ID, optionally with an aimed departure time for disambiguation. */
+export type TPointInJourneyPatternReference = {
+	/** The exact aimed departure time at this stop, corresponding to the aimedDepartureTime on EstimatedCall. Must match exactly. Used for disambiguation when the stop location is visited more than once in the journey pattern (e.g. ring lines). If provided, it is always validated against the timetable. */
+	aimedDepartureTime?: InputMaybe<Scalars['DateTime']['input']>
+	/** The stop location ID (quay or stop place). Must not be the last stop in the journey pattern, as boarding there would not allow further travel. */
+	stopLocationId: Scalars['String']['input']
+}
+
 /** A list of coordinates encoded as a polyline string (see http://code.google.com/apis/maps/documentation/polylinealgorithm.html) */
 export type TPointsOnLink = {
 	__typename?: 'PointsOnLink'
+	/** The distance in meters. */
+	distance: Maybe<Scalars['Int']['output']>
 	/** The number of points in the string */
 	length: Maybe<Scalars['Int']['output']>
 	/** The encoded points of the polyline. Be aware that the string could contain escape characters that need to be accounted for. (https://www.freeformatter.com/javascript-escape.html) */
@@ -889,8 +1026,13 @@ export type TPtSituationElement = {
 	stopPlaces: Array<TStopPlace>
 	/** Summary of situation in all different translations available */
 	summary: Array<TMultilingualString>
-	/** Period this situation is in effect */
+	/**
+	 * Period this situation is in effect
+	 * @deprecated Use validityPeriods instead
+	 */
 	validityPeriod: Maybe<TValidityPeriod>
+	/** The periods in which this situation is valid, sorted in chronological order. There is always at least one period. */
+	validityPeriods: Array<TValidityPeriod>
 	/** Operator's version number for the situation element. */
 	version: Maybe<Scalars['Int']['output']>
 	/** Timestamp when the situation element was updated. */
@@ -938,13 +1080,12 @@ export type TQuay = TPlaceInterface & {
 /** A place such as platform, stance, or quayside where passengers have access to PT vehicles. */
 export type TQuayEstimatedCallsArgs = {
 	arrivalDeparture?: InputMaybe<TArrivalDeparture>
+	filters?: InputMaybe<Array<TEstimatedCallFilterInput>>
 	includeCancelledTrips?: InputMaybe<Scalars['Boolean']['input']>
 	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
 	numberOfDeparturesPerLineAndDestinationDisplay?: InputMaybe<Scalars['Int']['input']>
 	startTime?: InputMaybe<Scalars['DateTime']['input']>
 	timeRange?: InputMaybe<Scalars['Int']['input']>
-	whiteListed?: InputMaybe<TInputWhiteListed>
-	whiteListedModes?: InputMaybe<Array<InputMaybe<TTransportMode>>>
 }
 
 /** A place such as platform, stance, or quayside where passengers have access to PT vehicles. */
@@ -984,11 +1125,11 @@ export type TQueryType = {
 	groupOfLines: Maybe<TGroupOfLines>
 	/** Get all groups of lines */
 	groupsOfLines: Array<TGroupOfLines>
-	/** Refetch a single leg based on its id */
+	/** Refetch a single transit leg based on its id */
 	leg: Maybe<TLeg>
 	/** Get a single line based on its id */
 	line: Maybe<TLine>
-	/** Get all lines */
+	/** Get all _lines_ */
 	lines: Array<Maybe<TLine>>
 	/** Get all places (quays, stop places, car parks etc. with coordinates) within the specified radius from a location. The returned type has two fields place and distance. The search is done by walking so the distance is according to the network of walkables. */
 	nearest: Maybe<TPlaceAtDistanceConnection>
@@ -1004,13 +1145,18 @@ export type TQueryType = {
 	quaysByBbox: Array<Maybe<TQuay>>
 	/** Get all quays within the specified walking radius from a location. There are no maximum limits for the input parameters, but the query will timeout and return if the parameters are too high. */
 	quaysByRadius: Maybe<TQuayAtDistanceConnection>
+	/**
+	 * Get an updated version of a trip pattern with realtime changes applied.
+	 * @deprecated This query is experimental and might change in the future.
+	 */
+	refetchTripPattern: TRefetchTripPatternResult
 	/** Get default routing parameters. */
 	routingParameters: Maybe<TRoutingParameters>
-	/** Get OTP server information */
+	/** Get OTP deployment information. This is only useful for developers of OTP itself not regular API users. */
 	serverInfo: TServerInfo
 	/** Get a single service journey based on its id */
 	serviceJourney: Maybe<TServiceJourney>
-	/** Get all service journeys */
+	/** Get all _service journeys_ */
 	serviceJourneys: Array<Maybe<TServiceJourney>>
 	/** Get a single situation based on its situationNumber */
 	situation: Maybe<TPtSituationElement>
@@ -1022,9 +1168,14 @@ export type TQueryType = {
 	stopPlaces: Array<Maybe<TStopPlace>>
 	/** Get all stop places within the specified bounding box */
 	stopPlacesByBbox: Array<Maybe<TStopPlace>>
+	/** Get information about the transit data available in the system. */
+	transitInfo: TTransitInfo
 	/** Input type for executing a travel search for a trip between two locations. Returns trip patterns describing suggested alternatives for the trip. */
 	trip: TTrip
-	/** Via trip search. Find trip patterns traveling via one or more intermediate (via) locations. */
+	/**
+	 * Via trip search. Find trip patterns traveling via one or more intermediate (via) locations.
+	 * @deprecated Use the regular trip query with via stop instead.
+	 */
 	viaTrip: TViaTrip
 }
 
@@ -1117,7 +1268,6 @@ export type TQueryTypeQuaysArgs = {
 }
 
 export type TQueryTypeQuaysByBboxArgs = {
-	authority?: InputMaybe<Scalars['String']['input']>
 	filterByInUse?: InputMaybe<Scalars['Boolean']['input']>
 	maximumLatitude: Scalars['Float']['input']
 	maximumLongitude: Scalars['Float']['input']
@@ -1134,6 +1284,21 @@ export type TQueryTypeQuaysByRadiusArgs = {
 	latitude: Scalars['Float']['input']
 	longitude: Scalars['Float']['input']
 	radius: Scalars['Float']['input']
+}
+
+export type TQueryTypeRefetchTripPatternArgs = {
+	alightSlackDefault?: InputMaybe<Scalars['Int']['input']>
+	alightSlackList?: InputMaybe<Array<InputMaybe<TTransportModeSlack>>>
+	boardSlackDefault?: InputMaybe<Scalars['Int']['input']>
+	boardSlackList?: InputMaybe<Array<InputMaybe<TTransportModeSlack>>>
+	from?: InputMaybe<TLocation>
+	legs: Array<Scalars['ID']['input']>
+	maxAccessEgressDurationForMode?: InputMaybe<Array<TStreetModeDurationInput>>
+	modes?: InputMaybe<TModes>
+	to?: InputMaybe<TLocation>
+	walkReluctance?: InputMaybe<Scalars['Float']['input']>
+	walkSpeed?: InputMaybe<Scalars['Float']['input']>
+	wheelchairAccessible?: InputMaybe<Scalars['Boolean']['input']>
 }
 
 export type TQueryTypeServiceJourneyArgs = {
@@ -1180,13 +1345,11 @@ export type TQueryTypeTripArgs = {
 	alightSlackList?: InputMaybe<Array<InputMaybe<TTransportModeSlack>>>
 	arriveBy?: InputMaybe<Scalars['Boolean']['input']>
 	banned?: InputMaybe<TInputBanned>
-	bicycleOptimisationMethod?: InputMaybe<TBicycleOptimisationMethod>
-	bikeSpeed?: InputMaybe<Scalars['Float']['input']>
+	bikePreferences?: InputMaybe<TBikePreferencesInput>
 	boardSlackDefault?: InputMaybe<Scalars['Int']['input']>
 	boardSlackList?: InputMaybe<Array<InputMaybe<TTransportModeSlack>>>
 	bookingTime?: InputMaybe<Scalars['DateTime']['input']>
 	dateTime?: InputMaybe<Scalars['DateTime']['input']>
-	extraSearchCoachReluctance?: InputMaybe<Scalars['Float']['input']>
 	filters?: InputMaybe<Array<TTripFilterInput>>
 	from: TLocation
 	ignoreRealtimeUpdates?: InputMaybe<Scalars['Boolean']['input']>
@@ -1201,15 +1364,15 @@ export type TQueryTypeTripArgs = {
 	modes?: InputMaybe<TModes>
 	numTripPatterns?: InputMaybe<Scalars['Int']['input']>
 	pageCursor?: InputMaybe<Scalars['String']['input']>
-	passThroughPoints?: InputMaybe<Array<TPassThroughPoint>>
 	relaxTransitGroupPriority?: InputMaybe<TRelaxCostInput>
+	scooterPreferences?: InputMaybe<TScooterPreferencesInput>
 	searchWindow?: InputMaybe<Scalars['Int']['input']>
 	timetableView?: InputMaybe<Scalars['Boolean']['input']>
 	to: TLocation
 	transferPenalty?: InputMaybe<Scalars['Int']['input']>
 	transferSlack?: InputMaybe<Scalars['Int']['input']>
-	triangleFactors?: InputMaybe<TTriangleFactors>
 	useBikeRentalAvailabilityInformation?: InputMaybe<Scalars['Boolean']['input']>
+	via?: InputMaybe<Array<TTripViaLocationInput>>
 	waitReluctance?: InputMaybe<Scalars['Float']['input']>
 	walkReluctance?: InputMaybe<Scalars['Float']['input']>
 	walkSpeed?: InputMaybe<Scalars['Float']['input']>
@@ -1230,6 +1393,21 @@ export type TQueryTypeViaTripArgs = {
 	wheelchairAccessible?: InputMaybe<Scalars['Boolean']['input']>
 }
 
+/** The real-time state of a service journey. */
+export type TRealTimeJourneyState = {
+	__typename?: 'RealTimeJourneyState'
+	/** Has this journey been cancelled? */
+	cancellation: Scalars['Boolean']['output']
+	/** Has this journey been added via real-time updates? (extra journey not in the planned data) */
+	extraJourney: Scalars['Boolean']['output']
+	/** Has the quay sequence changed from the planned journey pattern? True if quays were added, removed, reordered, or reassigned to a different quay's location. False if the journey was cancelled */
+	journeyPatternModified: Scalars['Boolean']['output']
+	/** Have any quay's arrival or departure times been modified from the scheduled times? */
+	timesModified: Scalars['Boolean']['output']
+	/** Have there been any real-time updates on this journey? */
+	updated: Scalars['Boolean']['output']
+}
+
 export type TRealtimeState =
 	/** The service journey has been added using a real-time update, i.e. the service journey was not present in the regular time table. */
 	| 'Added'
@@ -1242,12 +1420,22 @@ export type TRealtimeState =
 	/** The service journey information has been updated, but the journey pattern stayed the same as the journey pattern of the scheduled service journey. */
 	| 'updated'
 
+/** Refetched data for a trip pattern */
+export type TRefetchTripPatternResult = {
+	__typename?: 'RefetchTripPatternResult'
+	/** The refetched trip pattern */
+	tripPattern: Maybe<TTripPattern>
+}
+
 export type TRelativeDirection =
 	| 'circleClockwise'
 	| 'circleCounterclockwise'
 	| 'continue'
 	| 'depart'
 	| 'elevator'
+	| 'enterStation'
+	| 'exitStation'
+	| 'followSigns'
 	| 'hardLeft'
 	| 'hardRight'
 	| 'left'
@@ -1259,7 +1447,7 @@ export type TRelativeDirection =
 
 /**
  * A relax-cost is used to increase the limit when comparing one cost to another cost.
- * This is used to include more results into the result. A `ratio=2.0` means a path(itinerary)
+ * This is used to include more results into the result. A `ratio=2.0` means a path (itinerary)
  * with twice as high cost as another one, is accepted. A `constant=$300` means a "fixed"
  * constant is added to the limit. A `{ratio=1.0, constant=0}` is said to be the NORMAL relaxed
  * cost - the limit is the same as the cost used to calculate the limit. The NORMAL is usually
@@ -1293,6 +1481,26 @@ export type TRentalVehicleType = {
 	vehicleTypeId: Scalars['String']['output']
 }
 
+/**
+ * Relation for indicating the DatedServiceJourney which is replacing an older one. Exists as a
+ * place to put additional information on the replacement when we get SIRI 2.1 support.
+ */
+export type TReplacedByRelation = {
+	__typename?: 'ReplacedByRelation'
+	/** The replacing DatedServiceJourney. */
+	datedServiceJourney: Maybe<TDatedServiceJourney>
+}
+
+/**
+ * Relation for indicating the DatedServiceJourney which is replaced by a newer one. Exists as a
+ * place to put additional information on the replacement when we get SIRI 2.1 support.
+ */
+export type TReplacementForRelation = {
+	__typename?: 'ReplacementForRelation'
+	/** The replaced DatedServiceJourney. */
+	datedServiceJourney: Maybe<TDatedServiceJourney>
+}
+
 export type TReportType =
 	/** Indicates a general info-message that should not affect trip. */
 	| 'general'
@@ -1313,6 +1521,8 @@ export type TRoutingError = {
 export type TRoutingErrorCode =
 	/** The specified location is not close to any streets or transit stops */
 	| 'locationNotFound'
+	/** No usable itineraries were found for the requested direct mode and no transit was included in the search */
+	| 'noDirectModeConnection'
 	/** No stops are reachable from the location specified. You can try searching using a different access or egress mode */
 	| 'noStopsInRange'
 	/** No transit connection was found between the origin and destination withing the operating day or the next day */
@@ -1323,6 +1533,8 @@ export type TRoutingErrorCode =
 	| 'outsideBounds'
 	/** The date specified is outside the range of data currently loaded into the system */
 	| 'outsideServicePeriod'
+	/** The service journey location is ambiguous because the stop is visited more than once by the service journey. An aimedDepartureTime is necessary to disambiguate. */
+	| 'serviceJourneyLocationMissingAimedDepartureTime'
 	/** The origin and destination are so close to each other, that walking is always better, but no direct mode was specified for the search */
 	| 'walkingBetterThanTransit'
 
@@ -1379,12 +1591,17 @@ export type TRoutingParameters = {
 	disableRemainingWeightHeuristic: Maybe<Scalars['Boolean']['output']>
 	/** What is the cost of boarding a elevator? */
 	elevatorBoardCost: Maybe<Scalars['Int']['output']>
-	/** How long does it take to get on an elevator, on average. */
+	/** How long it takes to get on an elevator, on average. */
 	elevatorBoardTime: Maybe<Scalars['Int']['output']>
-	/** What is the cost of travelling one floor on an elevator? */
+	/**
+	 * What is the cost of travelling one floor on an elevator?
+	 * @deprecated Use elevatorReluctance to set cost instead.
+	 */
 	elevatorHopCost: Maybe<Scalars['Int']['output']>
-	/** How long does it take to advance one floor on an elevator? */
+	/** How long it takes to advance one floor on an elevator, on average. */
 	elevatorHopTime: Maybe<Scalars['Int']['output']>
+	/** A multiplier to specify how bad using an elevator is. */
+	elevatorReluctance: Maybe<Scalars['Float']['output']>
 	/** Whether to apply the ellipsoid->geoid offset to all elevations in the response. */
 	geoIdElevation: Maybe<Scalars['Boolean']['output']>
 	/** When true, real-time updates are ignored during this search. */
@@ -1419,7 +1636,7 @@ export type TRoutingParameters = {
 	 * @deprecated This parameter is always enabled
 	 */
 	showIntermediateStops: Maybe<Scalars['Boolean']['output']>
-	/** Used instead of walkReluctance for stairs. */
+	/** A multiplier to specify how bad walking on stairs is, compared to walking on flat ground, on top of the walk reluctance. */
 	stairsReluctance: Maybe<Scalars['Float']['output']>
 	/** An extra penalty added on transfers (i.e. all boardings except the first one). */
 	transferPenalty: Maybe<Scalars['Int']['output']>
@@ -1439,6 +1656,47 @@ export type TRoutingParameters = {
 	wheelChairAccessible: Maybe<Scalars['Boolean']['output']>
 }
 
+/** List of visits to quays as part of a vehicle journey, relative to the current quay and for a given date. Includes real-time updates */
+export type TSjEstimatedCalls = {
+	__typename?: 'SJEstimatedCalls'
+	/** The first call in this service journey */
+	first: TEstimatedCall
+	/** The last call in this service journey */
+	last: TEstimatedCall
+	/** The list of subsequent calls in this service journey after the current call */
+	next: Array<TEstimatedCall>
+	/** The list of previous calls in this service journey before the current call */
+	previous: Array<TEstimatedCall>
+}
+
+/** List of visits to quays as part of a vehicle journey, relative to the current quay and for a given date. Includes real-time updates */
+export type TSjEstimatedCallsNextArgs = {
+	count?: InputMaybe<Scalars['Int']['input']>
+}
+
+/** List of visits to quays as part of a vehicle journey, relative to the current quay and for a given date. Includes real-time updates */
+export type TSjEstimatedCallsPreviousArgs = {
+	count?: InputMaybe<Scalars['Int']['input']>
+}
+
+/** Scooter routing preferences. */
+export type TScooterPreferencesInput = {
+	/** The set of characteristics that the user wants to optimize for during scooter routing. */
+	optimisationMethod?: InputMaybe<TVehicleOptimisationMethod>
+	/** A measure of how bad scooter travel is compared to being in transit for equal periods of time. Higher values make routing prefer other modes over scooter. */
+	reluctance?: InputMaybe<Scalars['Float']['input']>
+	/** The maximum scooter speed along streets, in meters per second. */
+	speed?: InputMaybe<Scalars['Float']['input']>
+	/** When using optimisationMethod 'triangle', these values tell the routing engine how important each factor is compared to the others. All values should add up to 1. */
+	triangleFactors?: InputMaybe<TTriangleFactors>
+}
+
+/**
+ * Information about the deployment. This is only useful to developers of OTP itself.
+ * It is not recommended for regular API consumers to use this type as it has no
+ * stability guarantees.
+ *
+ */
 export type TServerInfo = {
 	__typename?: 'ServerInfo'
 	/** The 'configVersion' of the build-config.json file. */
@@ -1448,6 +1706,15 @@ export type TServerInfo = {
 	gitBranch: Maybe<Scalars['String']['output']>
 	gitCommit: Maybe<Scalars['String']['output']>
 	gitCommitTime: Maybe<Scalars['String']['output']>
+	/**
+	 *   The internal time zone of the transit data.
+	 *
+	 *   Note: The input data can be in several time zones, but OTP internally operates on a single one.
+	 *
+	 */
+	internalTransitModelTimeZone: Maybe<Scalars['String']['output']>
+	/** Number of CPU cores on the OTP server */
+	numberOfCores: Maybe<Scalars['Int']['output']>
 	/** The 'configVersion' of the otp-config.json file. */
 	otpConfigVersion: Maybe<Scalars['String']['output']>
 	/** The otp-serialization-version-id used to check graphs for compatibility with current version of OTP. */
@@ -1472,10 +1739,26 @@ export type TServiceJourney = {
 	 */
 	bookingArrangements: Maybe<TBookingArrangement>
 	directionType: Maybe<TDirectionType>
-	/** Returns scheduled passingTimes for this ServiceJourney for a given date, updated with real-time-updates (if available). NB! This takes a date as argument (default=today) and returns estimatedCalls for that date and should only be used if the date is known when creating the request. For fetching estimatedCalls for a given trip.leg, use leg.serviceJourneyEstimatedCalls instead. */
-	estimatedCalls: Maybe<Array<Maybe<TEstimatedCall>>>
+	/**
+	 * Returns scheduled passingTimes for this ServiceJourney for a given date, updated with real-time-updates (if available).
+	 * NB! This takes a date as argument (default=today) and returns estimatedCalls for that date and should only be used if the date is
+	 * known when creating the request. For fetching estimatedCalls for a given trip.leg, use leg.serviceJourneyEstimatedCalls instead.
+	 *
+	 */
+	estimatedCalls: Array<TEstimatedCall>
 	id: Scalars['ID']['output']
-	/** JourneyPattern for the service journey, according to scheduled data. If the ServiceJourney is not included in the scheduled data, null is returned. */
+	/**
+	 * Is this a replacement ServiceJourney? In NeTEx/SIRI-sourced data this can be set by
+	 * either a replacement submode, or a replacement link in a DatedServiceJourney. Only
+	 * true for GTFS-sourced data if set by the extended GTFS type.
+	 *
+	 */
+	isReplacement: Scalars['Boolean']['output']
+	/**
+	 * JourneyPattern for the service journey, according to scheduled data. If the
+	 * ServiceJourney is not included in the scheduled data, null is returned.
+	 *
+	 */
 	journeyPattern: Maybe<TJourneyPattern>
 	line: TLine
 	notices: Array<TNotice>
@@ -1488,14 +1771,22 @@ export type TServiceJourney = {
 	privateCode: Maybe<Scalars['String']['output']>
 	/** Publicly announced code for service journey, differentiating it from other service journeys for the same line. */
 	publicCode: Maybe<Scalars['String']['output']>
-	/** Quays visited by service journey, according to scheduled data. If the ServiceJourney is not included in the scheduled data, an empty list is returned. */
+	/**
+	 * Quays visited by service journey, according to scheduled data. If the
+	 * ServiceJourney is not included in the scheduled data, an empty list is returned.
+	 *
+	 */
 	quays: Array<TQuay>
+	/** Are there replacement DatedServiceJourneys for this ServiceJourney? */
+	replacementsExist: Scalars['Boolean']['output']
 	/** @deprecated The service journey alteration will be moved out of SJ and grouped together with the SJ and date. In Netex this new type is called DatedServiceJourney. We will create artificial DSJs for the old SJs. */
 	serviceAlteration: Maybe<TServiceAlteration>
 	/** Get all situations active for the service journey. */
 	situations: Array<TPtSituationElement>
 	transportMode: Maybe<TTransportMode>
 	transportSubmode: Maybe<TTransportSubmode>
+	/** The vehicle and vehicle type aimed to operate the service journey. */
+	vehicleAssignment: Maybe<TServiceJourneyVehicleAssignment>
 	/** Whether service journey is accessible with wheelchair. */
 	wheelchairAccessible: Maybe<TWheelchairBoarding>
 }
@@ -1511,10 +1802,35 @@ export type TServiceJourneyQuaysArgs = {
 	last?: InputMaybe<Scalars['Int']['input']>
 }
 
+/** Identifies a specific dated service journey and a specific point within it. */
+export type TServiceJourneyLocationInput = {
+	/** Identifies the service journey and service date, either by service journey ID and service date, or by a dated service journey ID. */
+	datedServiceJourneyReference: TDatedServiceJourneyReference
+	/** Identifies a specific point in the journey pattern. Note that cancelled stops are not allowed unless includePlannedCancellations/includeRealtimeCancellations are set accordingly. */
+	pointInJourneyPatternReference: TPointInJourneyPatternReference
+}
+
+/** Identifies a service journey by service journey ID and service date. */
+export type TServiceJourneyOnServiceDate = {
+	/** The service date of the trip, in ISO 8601 format (YYYY-MM-DD). */
+	serviceDate: Scalars['Date']['input']
+	/** The service journey ID. */
+	serviceJourneyId: Scalars['String']['input']
+}
+
+/** The vehicle and vehicle type aimed to operate a service journey. */
+export type TServiceJourneyVehicleAssignment = {
+	__typename?: 'ServiceJourneyVehicleAssignment'
+	/** Id of the vehicle aimed to operate the service journey. */
+	aimedVehicleId: Maybe<Scalars['String']['output']>
+	/** Id of the type of vehicle aimed to operate the service journey. */
+	aimedVehicleTypeId: Maybe<Scalars['String']['output']>
+}
+
 export type TSeverity =
 	/** Situation has no impact on trips. */
 	| 'noImpact'
-	/** Situation has an impact on trips (default). */
+	/** Situation has an impact on trips (default). Used for SIRI severities `normal` and `undefined`. */
 	| 'normal'
 	/** Situation has a severe impact on trips. */
 	| 'severe'
@@ -1541,6 +1857,16 @@ export type TStopCondition =
 	/** Situation applies when stop is the startpoint of the leg. */
 	| 'startPoint'
 
+export type TStopInterchangePriority =
+	/** Allow transfers from/to this stop. This is the default. NeTEx equivalent is INTERCHANGE_ALLOWED. */
+	| 'allowed'
+	/** Block transfers from/to this stop. In OTP this is not a definitive block, just a huge penalty is added to the cost function. NeTEx equivalent is NO_INTERCHANGE. */
+	| 'discouraged'
+	/** Preferred place to transfer, strongly recommended. NeTEx equivalent is PREFERRED_INTERCHANGE. */
+	| 'preferred'
+	/** Recommended stop place. NeTEx equivalent is RECOMMENDED_INTERCHANGE. */
+	| 'recommended'
+
 /** Named place where public transport may be accessed. May be a building complex (e.g. a station) or an on-street location. */
 export type TStopPlace = TPlaceInterface & {
 	__typename?: 'StopPlace'
@@ -1557,26 +1883,30 @@ export type TStopPlace = TPlaceInterface & {
 	quays: Maybe<Array<Maybe<TQuay>>>
 	/** Get all situations active for the stop place. Situations affecting individual quays are not returned, and should be fetched directly from the quay. */
 	situations: Array<TPtSituationElement>
+	/** Specify the priority of interchanges at this stop */
+	stopInterchangePriority: Maybe<TStopInterchangePriority>
 	tariffZones: Array<Maybe<TTariffZone>>
 	timeZone: Maybe<Scalars['String']['output']>
 	/** The transport modes of quays under this stop place. */
 	transportMode: Maybe<Array<Maybe<TTransportMode>>>
 	/** The transport submode serviced by this stop place. */
 	transportSubmode: Maybe<Array<Maybe<TTransportSubmode>>>
-	/** Relative weighting of this stop with regards to interchanges. NOT IMPLEMENTED */
+	/**
+	 * Relative weighting of this stop with regards to interchanges. NOT IMPLEMENTED
+	 * @deprecated Not implemented. Use stopInterchangePriority
+	 */
 	weighting: Maybe<TInterchangeWeighting>
 }
 
 /** Named place where public transport may be accessed. May be a building complex (e.g. a station) or an on-street location. */
 export type TStopPlaceEstimatedCallsArgs = {
 	arrivalDeparture?: InputMaybe<TArrivalDeparture>
+	filters?: InputMaybe<Array<TEstimatedCallFilterInput>>
 	includeCancelledTrips?: InputMaybe<Scalars['Boolean']['input']>
 	numberOfDepartures?: InputMaybe<Scalars['Int']['input']>
 	numberOfDeparturesPerLineAndDestinationDisplay?: InputMaybe<Scalars['Int']['input']>
 	startTime?: InputMaybe<Scalars['DateTime']['input']>
 	timeRange?: InputMaybe<Scalars['Int']['input']>
-	whiteListed?: InputMaybe<TInputWhiteListed>
-	whiteListedModes?: InputMaybe<Array<InputMaybe<TTransportMode>>>
 }
 
 /** Named place where public transport may be accessed. May be a building complex (e.g. a station) or an on-street location. */
@@ -1613,12 +1943,18 @@ export type TStreetMode =
 	| 'car_park'
 	/** Walk to a pickup point along the road, drive to a drop-off point along the road, and walk the rest of the way. This can include various taxi-services or kiss & ride. */
 	| 'car_pickup'
+	/** Walk to a car rental point along the road, drive to a drop-off point along the road, and walk the rest of the way. This can include car rentals at fixed locations or free-floating services. */
+	| 'car_rental'
+	/** Share a car ride with a driver and other passengers going in the same direction. */
+	| 'carpool'
 	/** Walk to an eligible pickup area for flexible transportation, ride to an eligible drop-off area and then walk the rest of the way. */
 	| 'flexible'
 	/** Walk only */
 	| 'foot'
 	/** Walk to a scooter rental point, ride a scooter to a scooter rental drop-off point, and walk the rest of the way. This can include scooter rental at fixed locations or free-floating services. */
 	| 'scooter_rental'
+	/** Traveling by taxi. This can include walking before being picked up and/or after being dropped off. */
+	| 'taxi'
 
 /** A combination of street mode and corresponding duration */
 export type TStreetModeDurationInput = {
@@ -1632,7 +1968,7 @@ export type TStreetModes = {
 	accessMode?: InputMaybe<TStreetMode>
 	/** The mode used to get from the origin to the destination directly, without using the transit network. If the element is not present or null,direct travel without using transit will be disallowed. */
 	directMode?: InputMaybe<TStreetMode>
-	/** The mode used to get from the egress stops in the transit network tothe destination (last-mile). If the element is not present or null,only transit that can immediately arrive at the origin will be used. */
+	/** The mode used to get from the egress stops in the transit network to the destination (last-mile). If the element is not present or null, only transit that can immediately arrive at the destination will be used. */
 	egressMode?: InputMaybe<TStreetMode>
 }
 
@@ -1653,6 +1989,7 @@ export type TSystemNotice = {
 	text: Maybe<Scalars['String']['output']>
 }
 
+/** A **zone** used to define a zonal fare structure in a zone-counting or zone-matrix system. This includes TariffZone, as well as the specialised FareZone elements. TariffZones are deprecated, please use FareZones. **TariffZone data will not be maintained from 1. MAY 2025 (Entur).** */
 export type TTariffZone = {
 	__typename?: 'TariffZone'
 	id: Scalars['ID']['output']
@@ -1674,28 +2011,28 @@ export type TTimeAndDayOffset = {
  * Note! This is for debugging only. This type can change without notice.
  *
  */
-export type TTimePenalty = {
-	__typename?: 'TimePenalty'
+export type TTimePenaltyWithCost = {
+	__typename?: 'TimePenaltyWithCost'
 	/**
 	 * The time-penalty is applied to either the access-legs and/or egress-legs. Both access
 	 * and egress may contain more than one leg; Hence, the penalty is not a field on leg. The
-	 * `appliedTo` describe witch part of the itinerary that this instance applies to.
+	 * `appliedTo` describe which part of the itinerary that this instance applies to.
 	 *
 	 */
 	appliedTo: Maybe<Scalars['String']['output']>
 	/**
-	 * The time-penalty does also propagate to the `generalizedCost` But, while the
-	 * arrival-/departure-times listed is not affected, the generalized-cost is. In some cases
-	 * the time-penalty-cost is excluded when comparing itineraries - that happens if one of
-	 * the itineraries is a "direct/street-only" itinerary. Time-penalty can not be set for
-	 * direct searches, so it needs to be excluded from such comparison to be fair. The unit
-	 * is transit-seconds.
+	 * The time-penalty does also propagate to the `generalizedCost`. As a result of the given
+	 * time-penalty, the generalized-cost also increased by the given amount. This delta is
+	 * included in the itinerary generalized-cost. In some cases the generalized-cost-delta is
+	 * excluded when comparing itineraries - that happens if one of the itineraries is a
+	 * "direct/street-only" itinerary. Time-penalty can not be set for direct searches, so it
+	 * needs to be excluded from such comparison to be fair. The unit is transit-seconds.
 	 *
 	 */
-	generalizedCostPenalty: Maybe<Scalars['Int']['output']>
+	generalizedCostDelta: Maybe<Scalars['Int']['output']>
 	/**
 	 * The time-penalty added to the actual time/duration when comparing the itinerary with
-	 * other itineraries. This is used to decide witch is the best option, but is not visible
+	 * other itineraries. This is used to decide which is the best option, but is not visible
 	 * - the actual departure and arrival-times are not modified.
 	 *
 	 */
@@ -1734,19 +2071,29 @@ export type TTransitGeneralizedCostFilterParams = {
 	intervalRelaxFactor: Scalars['Float']['input']
 }
 
+/** Information about the transit data available in the system. */
+export type TTransitInfo = {
+	__typename?: 'TransitInfo'
+	/** The validity period for the transit data currently loaded in the system. */
+	validityPeriod: Maybe<TValidityPeriod>
+}
+
 export type TTransportMode =
 	| 'air'
 	| 'bus'
 	| 'cableway'
+	| 'carpool'
 	| 'coach'
 	| 'funicular'
 	| 'lift'
 	| 'metro'
 	| 'monorail'
 	| 'rail'
+	| 'snowAndIce'
 	| 'taxi'
 	| 'tram'
 	| 'trolleybus'
+	/** Unknown transport mode. No trip, line or stop has this mode. */
 	| 'unknown'
 	| 'water'
 
@@ -1956,10 +2303,26 @@ export type TTripFilterSelectInput = {
 	groupOfLines?: InputMaybe<Array<Scalars['ID']['input']>>
 	/** Set of ids for lines that should be included in/excluded from search */
 	lines?: InputMaybe<Array<Scalars['ID']['input']>>
-	/** Set of ids for service journeys that should be included in/excluded from search */
-	serviceJourneys?: InputMaybe<Array<Scalars['ID']['input']>>
 	/** The allowed modes for the transit part of the trip. Use an empty list to disallow transit for this search. If the element is not present or null, it will default to all transport modes. */
 	transportModes?: InputMaybe<Array<TTransportModes>>
+}
+
+/**
+ * One of the listed stop locations must be visited on-board a transit vehicle or the journey must
+ * alight or board at the location.
+ *
+ */
+export type TTripPassThroughViaLocationInput = {
+	/** The label/name of the location. This is pass-through information and is not used in routing. */
+	label?: InputMaybe<Scalars['String']['input']>
+	/**
+	 * A list of stop locations. A stop location can be a quay, a stop place, a multimodal
+	 * stop place or a group of stop places. It is enough to visit ONE of the locations
+	 * listed.
+	 * The list must contain at least one stop location.
+	 *
+	 */
+	stopLocationIds: Array<Scalars['String']['input']>
 }
 
 /** List of legs constituting a suggested sequence of rides and links for a specific trip. */
@@ -1975,6 +2338,13 @@ export type TTripPattern = {
 	distance: Maybe<Scalars['Float']['output']>
 	/** Duration of the trip, in seconds. */
 	duration: Maybe<Scalars['Long']['output']>
+	/**
+	 * The total emission per person. The total emission is only available if all transit
+	 * and car leg emissions can be calculated. If only a partial result is obtained, this
+	 * will be null.
+	 *
+	 */
+	emission: Maybe<TEmission>
 	/**
 	 * Time that the trip arrives.
 	 * @deprecated Replaced with expectedEndTime
@@ -1995,7 +2365,7 @@ export type TTripPattern = {
 	 * @deprecated Replaced with expectedStartTime
 	 */
 	startTime: Maybe<Scalars['DateTime']['output']>
-	/** How far the user has to walk, bike and/or drive in meters. It includes all street(none transit) modes. */
+	/** How far the user has to walk, bike and/or drive in meters. It includes all street (none transit) modes. */
 	streetDistance: Maybe<Scalars['Float']['output']>
 	/** Get all system notices. */
 	systemNotices: Array<TSystemNotice>
@@ -2007,7 +2377,7 @@ export type TTripPattern = {
 	 * in the future.
 	 *
 	 */
-	timePenalty: Array<TTimePenalty>
+	timePenalty: Array<TTimePenaltyWithCost>
 	/** A cost calculated to favor transfer with higher priority. This field is meant for debugging only. */
 	transferPriorityCost: Maybe<Scalars['Int']['output']>
 	/** A cost calculated to distribute wait-time and avoid very short transfers. This field is meant for debugging only. */
@@ -2024,26 +2394,108 @@ export type TTripPattern = {
 export type TTripSearchData = {
 	__typename?: 'TripSearchData'
 	/**
-	 * This is the suggested search time for the "next page" or time window. Insert it together with the 'searchWindowUsed' in the request to get a new set of trips following in the time-window AFTER the current search.
+	 * This will not be available after March 2026!
 	 * @deprecated Use pageCursor instead
 	 */
 	nextDateTime: Maybe<Scalars['DateTime']['output']>
+	/** The end-time of the search-window/page for trip departure times. See `pageDepartureTimeStart` */
+	pageDepartureTimeEnd: Maybe<Scalars['DateTime']['output']>
 	/**
-	 * This is the suggested search time for the "previous page" or time-window. Insert it together with the 'searchWindowUsed' in the request to get a new set of trips preceding in the time-window BEFORE the current search.
+	 * The start-time of the search-window/page for trip departure times.
+	 *
+	 * The search-window/page start and end time describe the time-window the search is
+	 * performed in. All results in the window is expected to be inside the given window. When
+	 * navigating to the next/previous window the new window might overlap.
+	 *
+	 * **Merging results from multiple searches**
+	 *
+	 * Trips from separate searches (multiple OTP calls or other search engines) can be merged
+	 * into the current page/result set if the following conditions are met:
+	 * - The page is empty and the candidate trip departure time is between
+	 *   `pageDepartureTimeStart` and `pageDepartureTimeEnd`, or
+	 * - The candidate trip sorts before the last trip in the current page(if trips exists).
+	 *
+	 * If the trip sorts after the last trip, it should be merged into the next page instead.
+	 * Note that the sort order is diffrent for arrive-by and depart-after search. The sort
+	 * vector is:
+	 * - Depart-after: _departure-time_ → _generalized-cost_ → _number-of-transfers_ → _arrival-time_
+	 * - Arrive-by: _arrival-time_ → _generalized-cost_ → _number-of-transfers_ → _departure-time_
+	 *
+	 * **Special case for arrive-by searches:** For the first request (no paging cursor used)
+	 * with `arriveBy=true`, the `pageDepartureTimeEnd` can be ignored - trips departing after
+	 * this time can still be merged into the current page.
+	 *
+	 */
+	pageDepartureTimeStart: Maybe<Scalars['DateTime']['output']>
+	/**
+	 * This will not be available after March 2026!
 	 * @deprecated Use pageCursor instead
 	 */
 	prevDateTime: Maybe<Scalars['DateTime']['output']>
-	/** This is the time window used by the raptor search. The input searchWindow is an optional parameter and is dynamically assigned if not set. OTP might override the value if it is too small or too large. When paging OTP adjusts it to the appropriate size, depending on the number of itineraries found in the current search window. The scaling of the search window ensures faster paging and limits resource usage. The unit is seconds. */
+	/**
+	 * This is the time window used by the raptor search. The input searchWindow is an optional parameter and is dynamically assigned if not set. OTP might override the value if it is too small or too large. When paging OTP adjusts it to the appropriate size, depending on the number of itineraries found in the current search window. The scaling of the search window ensures faster paging and limits resource usage. The unit is minutes.
+	 * @deprecated This not needed for debugging, and is misleading if the window is cropped.
+	 */
 	searchWindowUsed: Scalars['Int']['output']
+}
+
+/**
+ * A via-location is used to specifying a location as an intermediate place the router must
+ * route through. The via-location is either a pass-through-location or a visit-via-location.
+ *
+ */
+export type TTripViaLocationInput = {
+	/** Board, alight or pass-through (on-board) at the stop location. */
+	passThrough?: InputMaybe<TTripPassThroughViaLocationInput>
+	/** Board or alight at a stop location or visit a coordinate. */
+	visit?: InputMaybe<TTripVisitViaLocationInput>
+}
+
+/**
+ * A visit-via-location is a physical visit to one of the stop locations or coordinates listed. An
+ * on-board visit does not count, the traveler must alight or board at the given stop for it to to
+ * be accepted. To visit a coordinate, the traveler must walk (bike or drive) to the closest point
+ * in the street network from a stop and back to another stop to join the transit network.
+ *
+ */
+export type TTripVisitViaLocationInput = {
+	/** A coordinate to route through. */
+	coordinate?: InputMaybe<TInputCoordinates>
+	/** The label/name of the location. This is pass-through information and is not used in routing. */
+	label?: InputMaybe<Scalars['String']['input']>
+	/**
+	 * The minimum wait time is used to force the trip to stay the given duration at the
+	 * via-location before the trip is continued.
+	 *
+	 */
+	minimumWaitTime?: InputMaybe<Scalars['Duration']['input']>
+	/**
+	 * A list of stop locations. A stop location can be a quay, a stop place, a multimodal
+	 * stop place or a group of stop places. It is enough to visit ONE of the locations
+	 * listed.
+	 *
+	 */
+	stopLocationIds?: InputMaybe<Array<Scalars['String']['input']>>
 }
 
 export type TValidityPeriod = {
 	__typename?: 'ValidityPeriod'
-	/** End of validity period. Will return 'null' if validity is open-ended. */
+	/** The exclusive end of the validity period. Will return 'null' if the validity has an unbounded end. */
 	endTime: Maybe<Scalars['DateTime']['output']>
-	/** Start of validity period */
+	/** The inclusive start of the validity period. Will return 'null' if the validity has an unbounded start. */
 	startTime: Maybe<Scalars['DateTime']['output']>
 }
+
+/** Optimization methods for vehicle routing (bicycle, scooter, etc.). */
+export type TVehicleOptimisationMethod =
+	/** Prefer flat terrain */
+	| 'flat'
+	/** Prefer faster routes */
+	| 'quick'
+	/** Prefer safer routes */
+	| 'safe'
+	/** Custom optimization using triangle factors */
+	| 'triangle'
 
 export type TVertexType = 'bikePark' | 'bikeShare' | 'normal' | 'transit'
 
@@ -2069,6 +2521,13 @@ export type TViaLocationInput = {
 	/** The id of an element in the OTP model. Currently supports Quay, StopPlace, multimodal StopPlace, and GroupOfStopPlaces. */
 	place?: InputMaybe<Scalars['String']['input']>
 }
+
+/** Categorization for via locations. */
+export type TViaLocationType =
+	/** The via stop location must be visited as part of a transit trip as at the boarding stop, the intermediate stop, or the alighting stop. */
+	| 'passThrough'
+	/** The location is visited physically by boarding or alighting a transit trip at a given stop, or by traveling via requested coordinate location as part of a access, transfer, egress or direct segment. Intermediate stops visited on-board do not count. */
+	| 'visit'
 
 export type TViaSegmentInput = {
 	/** A list of filters for which trips should be included. A trip will be included if it matches with at least one filter. An empty list of filters means that all trips should be included. */

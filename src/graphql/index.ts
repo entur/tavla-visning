@@ -105,7 +105,7 @@ export const LinesFragment = new TypedDocumentString(
 	{ fragmentName: 'lines' },
 ) as unknown as TypedDocumentString<Types.TLinesFragment, unknown>
 export const GetQuayQuery = new TypedDocumentString(`
-    query getQuay($quayId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
+    query getQuay($quayId: String!, $filters: [EstimatedCallFilterInput!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
   quay(id: $quayId) {
     name
     description
@@ -113,8 +113,7 @@ export const GetQuayQuery = new TypedDocumentString(`
     ...lines
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
-      whiteListedModes: $whitelistedTransportModes
-      whiteListed: { lines: $whitelistedLines }
+      filters: $filters
       includeCancelledTrips: true
       startTime: $startTime
       arrivalDeparture: $arrivalDeparture
@@ -189,7 +188,7 @@ fragment situation on PtSituationElement {
   }
 }`) as unknown as TypedDocumentString<Types.TGetQuayQuery, Types.TGetQuayQueryVariables>
 export const GetQuaysQuery = new TypedDocumentString(`
-    query getQuays($quayIds: [String!], $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
+    query getQuays($quayIds: [String!], $filters: [EstimatedCallFilterInput!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
   quays(ids: $quayIds) {
     name
     description
@@ -197,8 +196,7 @@ export const GetQuaysQuery = new TypedDocumentString(`
     ...lines
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
-      whiteListedModes: $whitelistedTransportModes
-      whiteListed: { lines: $whitelistedLines }
+      filters: $filters
       includeCancelledTrips: true
       startTime: $startTime
     ) {
@@ -272,14 +270,13 @@ fragment situation on PtSituationElement {
   }
 }`) as unknown as TypedDocumentString<Types.TGetQuaysQuery, Types.TGetQuaysQueryVariables>
 export const StopPlaceQuery = new TypedDocumentString(`
-    query StopPlace($stopPlaceId: String!, $whitelistedTransportModes: [TransportMode], $whitelistedLines: [ID!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
+    query StopPlace($stopPlaceId: String!, $filters: [EstimatedCallFilterInput!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
   stopPlace(id: $stopPlaceId) {
     name
     transportMode
     estimatedCalls(
       numberOfDepartures: $numberOfDepartures
-      whiteListedModes: $whitelistedTransportModes
-      whiteListed: { lines: $whitelistedLines }
+      filters: $filters
       includeCancelledTrips: true
       startTime: $startTime
       arrivalDeparture: $arrivalDeparture
