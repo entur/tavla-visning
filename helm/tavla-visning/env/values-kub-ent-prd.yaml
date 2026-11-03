@@ -2,3 +2,6 @@ common:
   env: prd
   ingress:
     host: vis-tavla.entur.no
+  deployment:
+    labels:
+      customLogRetention: enabled
