@@ -55,7 +55,7 @@ function filterPastDepartures(
  */
 export function resolveTileDataSource(tile: Pick<TileDB, 'quays' | 'filter'>): TileDataSource {
 	if (tile.filter?.type === 'quaysFilter') {
-		// Hvis det er 0 valgte quays, er det å betrakte som et helt stoppested
+		// Hvis det er 0 valgte quays, er filteret å betrakte som et helt stoppested
 		return tile.filter.quays.length > 0 ? 'quays' : 'stopPlace'
 	}
 	if (tile.filter?.type === 'stopPlaceFilter') return 'stopPlace'
@@ -201,7 +201,8 @@ export function useStopPlaceTileData(
 		isArrivals,
 	).slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
 
-	const selectedQuayIds = quays?.map((q) => q.id) ?? []
+	// tile.quays er kun relevant som legacy-fallback når filter mangler helt
+	const selectedQuayIds = filter ? [] : (quays?.map((q) => q.id) ?? [])
 	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
 		.filter(isNotNullOrUndefined)
 		.filter((quay) => selectedQuayIds.length === 0 || selectedQuayIds.includes(quay.id))

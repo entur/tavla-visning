@@ -11,15 +11,15 @@ import type { QuayDB } from '@/Shared/types/db-types/boards'
 const quay = (id: string): QuayDB => ({ id, whitelistedLines: [] })
 
 describe('resolveTileDataSource', () => {
-	it('returnerer quays når quays er ikke-tom (fallback uten filter)', () => {
+	it('velger quays når tile har valgte quays og ingen filter', () => {
 		expect(resolveTileDataSource({ quays: [quay('Q1')] })).toBe('quays')
 	})
 
-	it('returnerer stopPlace når quays er [] (fallback uten filter)', () => {
+	it('velger stopPlace når tile ikke har valgte quays og ingen filter', () => {
 		expect(resolveTileDataSource({ quays: [] })).toBe('stopPlace')
 	})
 
-	it('returnerer quays når filter er quaysFilter, uavhengig av tile.quays', () => {
+	it('lar quaysFilter overstyre quays-feltet på tile', () => {
 		expect(
 			resolveTileDataSource({
 				quays: [],
@@ -28,7 +28,7 @@ describe('resolveTileDataSource', () => {
 		).toBe('quays')
 	})
 
-	it('returnerer stopPlace når filter er stopPlaceFilter, uavhengig av tile.quays', () => {
+	it('lar stopPlaceFilter overstyre quays-feltet på tile', () => {
 		expect(
 			resolveTileDataSource({
 				quays: [quay('Q1')],
@@ -37,7 +37,7 @@ describe('resolveTileDataSource', () => {
 		).toBe('stopPlace')
 	})
 
-	it('returnerer stopPlace når filter er quaysFilter med tom quays-liste ("alle platformer")', () => {
+	it('tolker quaysFilter uten quays som alle platformer, og velger stopPlace', () => {
 		expect(
 			resolveTileDataSource({
 				quays: [],
@@ -48,7 +48,7 @@ describe('resolveTileDataSource', () => {
 })
 
 describe('getQuaysToQuery', () => {
-	it('returnerer filter.quays når filter er quaysFilter, selv om tile.quays er noe annet', () => {
+	it('bruker quays fra filter når quaysFilter er satt, ikke tile.quays', () => {
 		const filterQuays = [quay('F1')]
 		expect(
 			getQuaysToQuery({ quays: [quay('Q1')], filter: { type: 'quaysFilter', quays: filterQuays } }),
@@ -60,13 +60,13 @@ describe('getQuaysToQuery', () => {
 		expect(getQuaysToQuery({ quays: tileQuays })).toBe(tileQuays)
 	})
 
-	it('returnerer [] når tile.quays er undefined og filter mangler', () => {
+	it('returnerer tom liste når verken quays eller filter finnes', () => {
 		expect(getQuaysToQuery({ quays: undefined as unknown as QuayDB[] })).toEqual([])
 	})
 })
 
 describe('getStopPlaceFilterValues', () => {
-	it('henter whitelistedLines og whitelistedModes fra en stopPlaceFilter', () => {
+	it('henter whitelistedLines og whitelistedModes fra stopPlaceFilter', () => {
 		expect(
 			getStopPlaceFilterValues({
 				filter: {
@@ -78,7 +78,7 @@ describe('getStopPlaceFilterValues', () => {
 		).toEqual({ whitelistedLines: ['RUT:Line:1'], whitelistedModes: ['bus'] })
 	})
 
-	it('returnerer tomt objekt når filter er quaysFilter', () => {
+	it('returnerer tomt objekt for quaysFilter', () => {
 		expect(
 			getStopPlaceFilterValues({ filter: { type: 'quaysFilter', quays: [quay('Q1')] } }),
 		).toEqual({})
@@ -90,33 +90,33 @@ describe('getStopPlaceFilterValues', () => {
 })
 
 describe('buildEstimatedCallFilters', () => {
-	it('returnerer undefined når hverken lines eller modes er satt', () => {
+	it('returnerer undefined uten lines eller modes', () => {
 		expect(buildEstimatedCallFilters()).toBeUndefined()
 	})
 
-	it('returnerer undefined når lines og modes begge er tomme lister', () => {
+	it('returnerer undefined når lines og modes er tomme lister', () => {
 		expect(buildEstimatedCallFilters([], [])).toBeUndefined()
 	})
 
-	it('inkluderer kun lines når bare whitelistedLines er satt', () => {
+	it('filtrerer på lines når bare linjer er satt', () => {
 		expect(buildEstimatedCallFilters(['RUT:Line:1', 'RUT:Line:2'])).toEqual([
 			{ select: [{ lines: ['RUT:Line:1', 'RUT:Line:2'] }] },
 		])
 	})
 
-	it('inkluderer kun transportModes når bare whitelistedModes er satt', () => {
+	it('filtrerer på transportModes når bare moduser er satt', () => {
 		expect(buildEstimatedCallFilters(undefined, ['bus', 'rail'])).toEqual([
 			{ select: [{ transportModes: [{ transportMode: 'bus' }, { transportMode: 'rail' }] }] },
 		])
 	})
 
-	it('legger lines og transportModes i hver sin selector når begge er satt, slik at de ORes', () => {
+	it('kombinerer line og modes i to ulike select, for å støtte OR-logikk', () => {
 		expect(buildEstimatedCallFilters(['RUT:Line:1'], ['bus'])).toEqual([
 			{ select: [{ lines: ['RUT:Line:1'] }, { transportModes: [{ transportMode: 'bus' }] }] },
 		])
 	})
 
-	it('utelater lines fra select når whitelistedLines er en tom liste, men modes er satt', () => {
+	it('hopper over lines i select når listen er tom, selv om modes er satt', () => {
 		expect(buildEstimatedCallFilters([], ['bus'])).toEqual([
 			{ select: [{ transportModes: [{ transportMode: 'bus' }] }] },
 		])
