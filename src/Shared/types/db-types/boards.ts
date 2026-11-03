@@ -48,11 +48,6 @@ export type QuayDB = {
 	whitelistedLines: string[]
 }
 
-export type LineWithDirectionDB = {
-	lineId: string
-	frontTexts: string[]
-}
-
 export type QuaysFilterDB = {
 	type: 'quaysFilter'
 	quays: QuayDB[]
@@ -73,9 +68,6 @@ export type TileDB = {
 	name: string
 	uuid: string
 	filter?: TileFilterDB
-
-	/** @deprecated */
-	linesWithDirection?: LineWithDirectionDB[]
 
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB

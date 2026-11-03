@@ -54,17 +54,21 @@ function filterPastDepartures(
  * @returns Enten'quays' eller 'stopPlace', som indikerer hvilken datakilde som skal brukes for å hente avganger for den gitte tile.
  */
 export function resolveTileDataSource(tile: Pick<TileDB, 'quays' | 'filter'>): TileDataSource {
-	if (tile.filter) return tile.filter.type === 'quaysFilter' ? 'quays' : 'stopPlace'
+	if (tile.filter?.type === 'quaysFilter') {
+		// Hvis det er 0 valgte quays, er det å betrakte som et helt stoppested
+		return tile.filter.quays.length > 0 ? 'quays' : 'stopPlace'
+	}
+	if (tile.filter?.type === 'stopPlaceFilter') return 'stopPlace'
 	if (tile.quays && tile.quays.length > 0) return 'quays'
 	return 'stopPlace'
 }
 
-function getQuaysToQuery(tile: Pick<TileDB, 'filter' | 'quays'>): QuayDB[] {
+export function getQuaysToQuery(tile: Pick<TileDB, 'filter' | 'quays'>): QuayDB[] {
 	if (tile.filter?.type === 'quaysFilter') return tile.filter.quays
 	return tile.quays ?? []
 }
 
-function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
+export function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
 	whitelistedLines?: string[]
 	whitelistedModes?: TTransportMode[]
 } {
@@ -77,26 +81,21 @@ function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
 	return {}
 }
 
-function buildEstimatedCallFilters(
+// Hvert objekt i `select` er AND internt, men OR seg imellom. Linjer og transportmoduser må derfor
+// stå i hver sin selector, slik at en avgang vises om den matcher ÉN av dem
+export function buildEstimatedCallFilters(
 	whitelistedLines?: string[],
 	whitelistedModes?: TTransportMode[],
 ): TEstimatedCallFilterInput[] | undefined {
-	const hasLines = !!whitelistedLines?.length
-	const hasModes = !!whitelistedModes?.length
-	if (!hasLines && !hasModes) return undefined
+	const lineFilter = whitelistedLines?.length ? { lines: whitelistedLines } : undefined
 
-	return [
-		{
-			select: [
-				{
-					...(hasLines ? { lines: whitelistedLines } : {}),
-					...(hasModes
-						? { transportModes: whitelistedModes.map((transportMode) => ({ transportMode })) }
-						: {}),
-				},
-			],
-		},
-	]
+	const modeFilter = whitelistedModes?.length
+		? { transportModes: whitelistedModes.map((transportMode) => ({ transportMode })) }
+		: undefined
+
+	const select = [lineFilter, modeFilter].filter(isNotNullOrUndefined)
+
+	return select.length > 0 ? [{ select }] : undefined
 }
 
 const ARRIVAL_HOLD_TIME_MINUTES = -5
