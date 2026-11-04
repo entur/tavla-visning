@@ -19,7 +19,7 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 				},
 				filter: {
 					type: 'stopPlaceFilter',
-					whitelistedModes: [],
+					whitelistedModes: ['rail'],
 					whitelistedLines: [],
 				},
 			},
