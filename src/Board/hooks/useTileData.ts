@@ -81,8 +81,8 @@ export function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
 	return {}
 }
 
-// Hvert objekt i `select` er AND internt, men OR seg imellom. Linjer og transportmoduser må derfor
-// stå i hver sin selector, slik at en avgang vises om den matcher ÉN av dem
+// Selectorer i `select` ORes, men ulike felt (lines/transportModes) i samme selector ANDes. Linjer og
+// moduser legges derfor i hver sin selector – ellers ville f.eks. "buss AND trikk AND Linje 1" være umulig å matche.
 export function buildEstimatedCallFilters(
 	whitelistedLines?: string[],
 	whitelistedModes?: TTransportMode[],
@@ -201,7 +201,7 @@ export function useStopPlaceTileData(
 		isArrivals,
 	).slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
 
-	// tile.quays er kun relevant som legacy-fallback når filter mangler helt
+	// tile.quays er kun relevant som fallback når filter mangler
 	const selectedQuayIds = filter ? [] : (quays?.map((q) => q.id) ?? [])
 	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
 		.filter(isNotNullOrUndefined)
