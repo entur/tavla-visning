@@ -47,6 +47,10 @@ const uiLabels = {
 		en: "You haven't added any stop places yet.",
 	},
 	boardLogoAlt: { nb: 'Logo til tavlen', en: 'Board logo' },
+	offlineShowingCachedData: {
+		nb: 'Tavla er uten nett. Avgangene ble sist oppdatert for {x} minutter siden.',
+		en: 'The display is offline. Departures were last updated {x} minutes ago.',
+	},
 } as const
 
 function getUiLabel(key: keyof typeof uiLabels, language: BoardLanguage): string {
@@ -86,4 +90,4 @@ function getPlatformLabel(transportModes: TTransportMode[], language: BoardLangu
 	return transportModeToPlatformMapping.unknown[language]
 }
 
-export { getColumnLabel, getUiLabel, getPlatformLabel }
+export { getColumnLabel, getPlatformLabel, getUiLabel }

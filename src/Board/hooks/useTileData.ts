@@ -11,6 +11,8 @@ import {
 	type TileSituation,
 } from '../scenarios/Board/utils'
 import { useCycler } from '../scenarios/Table/useCycler'
+import { useEffect, useState } from 'react'
+import { getServerNow } from '@/Shared/utils/serverTime'
 
 export type TDepartureWithTileUuid = TDepartureFragment & { tileUuid?: string }
 export type TSituationWithOrigin = TSituationFragment & { origin?: string }
@@ -30,6 +32,33 @@ interface TileData {
 	error?: Error
 	hasData: boolean
 	customNames?: CustomName[]
+	lastUpdated: number | null
+}
+
+export type CacheStatus = {
+	showingCachedData: boolean
+	lastUpdated: number | null
+}
+
+export function getCacheStatus(tileData: TileData): CacheStatus {
+	return {
+		showingCachedData: !!tileData.error && tileData.hasData && tileData.estimatedCalls.length > 0,
+		lastUpdated: tileData.lastUpdated ?? null,
+	}
+}
+
+function useLastSuccessfulUpdate(
+	hasError: boolean,
+	hasData: boolean,
+	...dataRefs: unknown[]
+): number | null {
+	const [lastUpdated, setLastUpdated] = useState<number | null>(null)
+	useEffect(() => {
+		if (!hasError && hasData) {
+			setLastUpdated(getServerNow())
+		}
+	}, [hasError, hasData, ...dataRefs])
+	return lastUpdated
 }
 
 export type TileDataSource = 'quays' | 'stopPlace'
@@ -113,6 +142,7 @@ export function useQuaysTileData(
 	const accumulatedQuaysSituations = getAccumulatedTileSituations(departures, quaysSituations)
 
 	const quaysSituationIndex = useCycler(accumulatedQuaysSituations ?? [], 10000)
+	const lastUpdated = useLastSuccessfulUpdate(!!quaysError, quayResults.length > 0, quaysData)
 
 	return {
 		displayName: (displayName ?? name) || quayResults[0]?.name,
@@ -123,6 +153,7 @@ export function useQuaysTileData(
 		isLoading: quaysLoading,
 		error: quaysError,
 		hasData: quayResults.length > 0,
+		lastUpdated,
 	}
 }
 
@@ -184,6 +215,12 @@ export function useStopPlaceTileData(
 
 	const currentSituationIndex = useCycler(stopPlaceSituations ?? [], 10000)
 
+	const lastUpdated = useLastSuccessfulUpdate(
+		!!stopPlaceError,
+		!!stopPlaceData?.stopPlace,
+		stopPlaceData,
+	)
+
 	return {
 		displayName: (displayName ?? name) || stopPlaceData?.stopPlace?.name,
 		estimatedCalls: filteredCalls,
@@ -193,6 +230,7 @@ export function useStopPlaceTileData(
 		isLoading: stopPlaceLoading,
 		error: stopPlaceError,
 		hasData: !!stopPlaceData?.stopPlace,
+		lastUpdated,
 	}
 }
 
@@ -306,6 +344,13 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		.map((tile) => (tile.displayName ? { uuid: tile.uuid, customName: tile.displayName } : null))
 		.filter(isNotNullOrUndefined) as CustomName[]
 
+	const lastUpdated = useLastSuccessfulUpdate(
+		!!(stopPlaceError || quaysError),
+		!!(stopPlaceData?.length || quaysData?.length),
+		stopPlaceData,
+		quaysData,
+	)
+
 	return {
 		displayName: undefined,
 		estimatedCalls: departures,
@@ -316,6 +361,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		error: stopPlaceError || quaysError,
 		hasData: !!(stopPlaceData?.length || quaysData?.length),
 		customNames,
+		lastUpdated,
 	}
 }
 
