@@ -7,7 +7,7 @@ import type { BoardDB } from '@/Shared/types/db-types/boards'
 import { getUiLabel } from '@/Shared/utils/translations'
 import { CombinedTile } from '../CombinedTile'
 import { getFontScale } from './utils'
-import { Paragraph } from '@entur/typography'
+import { LeadParagraph } from '@entur/typography'
 import { ValidationInfoFilledIcon } from '@entur/icons'
 import { useCallback, useState } from 'react'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
@@ -64,10 +64,10 @@ function Board({ board }: { board: BoardDB }) {
 		>
 			{tilesShowingCachedData.length > 0 && minutesAgo >= CACHE_INFO_MESSAGE_THRESHOLD_MINUTES && (
 				<div className="flex flex-row items-center gap-2">
-					<ValidationInfoFilledIcon color="var(--shape-information)" />
-					<Paragraph className="m-0">
+					<ValidationInfoFilledIcon color="var(--info-color)" size={24} />
+					<LeadParagraph className="m-0">
 						{getUiLabel('offlineShowingCachedData', language).replace('{x}', String(minutesAgo))}
-					</Paragraph>
+					</LeadParagraph>
 				</div>
 			)}
 			<TileGrid
