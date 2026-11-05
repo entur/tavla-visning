@@ -2,7 +2,7 @@ import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
-import type { QuayDB, TileDB } from '@/Shared/types/db-types/boards'
+import type { FilterQuayDB, QuayDB, TileDB } from '@/Shared/types/db-types/boards'
 import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import type { TEstimatedCallFilterInput, TTransportMode } from '@/types/graphql-schema'
@@ -63,19 +63,23 @@ export function resolveTileDataSource(tile: Pick<TileDB, 'quays' | 'filter'>): T
 	return 'stopPlace'
 }
 
-export function getQuaysToQuery(tile: Pick<TileDB, 'filter' | 'quays'>): QuayDB[] {
+export function getQuaysToQuery(tile: Pick<TileDB, 'filter' | 'quays'>): QuayDB[] | FilterQuayDB[] {
 	if (tile.filter?.type === 'quaysFilter') return tile.filter.quays
 	return tile.quays ?? []
 }
 
+function getQuaySelectedLines(quay: QuayDB | FilterQuayDB): string[] {
+	return 'selectedLines' in quay ? quay.selectedLines : quay.whitelistedLines
+}
+
 export function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
-	whitelistedLines?: string[]
-	whitelistedModes?: TTransportMode[]
+	selectedLines?: string[]
+	selectedTransportModes?: TTransportMode[]
 } {
 	if (tile.filter?.type === 'stopPlaceFilter') {
 		return {
-			whitelistedLines: tile.filter.whitelistedLines,
-			whitelistedModes: tile.filter.whitelistedModes,
+			selectedLines: tile.filter.selectedLines,
+			selectedTransportModes: tile.filter.selectedTransportModes,
 		}
 	}
 	return {}
@@ -115,7 +119,7 @@ export function useQuaysTileData(
 				query: GetQuayQuery,
 				variables: {
 					quayId: q.id,
-					filters: buildEstimatedCallFilters(q.whitelistedLines),
+					filters: buildEstimatedCallFilters(getQuaySelectedLines(q)),
 					arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 				},
 				options: {
@@ -174,7 +178,7 @@ export function useStopPlaceTileData(
 ): TileData {
 	const { language, boardId } = useBoardContext()
 	const now = useServerNow()
-	const { whitelistedLines, whitelistedModes } = getStopPlaceFilterValues({ filter })
+	const { selectedLines, selectedTransportModes } = getStopPlaceFilterValues({ filter })
 
 	const {
 		data: stopPlaceData,
@@ -184,7 +188,7 @@ export function useStopPlaceTileData(
 		StopPlaceQuery,
 		{
 			stopPlaceId: stopPlaceId,
-			filters: buildEstimatedCallFilters(whitelistedLines, whitelistedModes),
+			filters: buildEstimatedCallFilters(selectedLines, selectedTransportModes),
 			numberOfDepartures: DEFAULT_NUMBER_OF_DEPARTURES,
 			arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 		},
@@ -254,7 +258,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 			query: GetQuayQuery,
 			variables: {
 				quayId: q.id,
-				filters: buildEstimatedCallFilters(q.whitelistedLines),
+				filters: buildEstimatedCallFilters(getQuaySelectedLines(q)),
 				arrivalDeparture,
 			},
 			options: { poll: true, offset: (tile.offset ?? 0) + holdTimeOffset },
@@ -267,12 +271,12 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	const stopPlaceQueryMeta = combinedTile
 		.filter((tile) => !isQuayTile(tile))
 		.map((tile) => {
-			const { whitelistedLines, whitelistedModes } = getStopPlaceFilterValues(tile)
+			const { selectedLines, selectedTransportModes } = getStopPlaceFilterValues(tile)
 			return {
 				query: StopPlaceQuery,
 				variables: {
 					stopPlaceId: tile.stopPlaceId,
-					filters: buildEstimatedCallFilters(whitelistedLines, whitelistedModes),
+					filters: buildEstimatedCallFilters(selectedLines, selectedTransportModes),
 					numberOfDepartures: DEFAULT_NUMBER_OF_DEPARTURES,
 					arrivalDeparture,
 				},

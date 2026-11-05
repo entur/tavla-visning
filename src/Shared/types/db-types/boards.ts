@@ -48,15 +48,20 @@ export type QuayDB = {
 	whitelistedLines: string[]
 }
 
+export type FilterQuayDB = {
+	id: string
+	selectedLines: string[]
+}
+
 export type QuaysFilterDB = {
 	type: 'quaysFilter'
-	quays: QuayDB[]
+	quays: FilterQuayDB[]
 }
 
 export type StopPlaceFilterDB = {
 	type: 'stopPlaceFilter'
-	whitelistedModes: TTransportMode[]
-	whitelistedLines: string[]
+	selectedTransportModes: TTransportMode[]
+	selectedLines: string[]
 }
 
 export type TileFilterDB = QuaysFilterDB | StopPlaceFilterDB

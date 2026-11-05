@@ -5,10 +5,13 @@ import {
 	getStopPlaceFilterValues,
 	resolveTileDataSource,
 } from '@/Board/hooks/useTileData'
-import type { QuayDB } from '@/Shared/types/db-types/boards'
+import type { FilterQuayDB, QuayDB } from '@/Shared/types/db-types/boards'
 
-/* Minimal fixture for QuayDB — filteret bruker kun id og whitelistedLines. */
+/* Minimal fixture for QuayDB — tile.quays bruker fortsatt whitelistedLines. */
 const quay = (id: string): QuayDB => ({ id, whitelistedLines: [] })
+
+/* Minimal fixture for FilterQuayDB — quaysFilter.quays bruker selectedLines. */
+const filterQuay = (id: string): FilterQuayDB => ({ id, selectedLines: [] })
 
 describe('resolveTileDataSource', () => {
 	it('velger quays når tile har valgte quays og ingen filter', () => {
@@ -23,7 +26,7 @@ describe('resolveTileDataSource', () => {
 		expect(
 			resolveTileDataSource({
 				quays: [],
-				filter: { type: 'quaysFilter', quays: [quay('Q1')] },
+				filter: { type: 'quaysFilter', quays: [filterQuay('Q1')] },
 			}),
 		).toBe('quays')
 	})
@@ -32,7 +35,7 @@ describe('resolveTileDataSource', () => {
 		expect(
 			resolveTileDataSource({
 				quays: [quay('Q1')],
-				filter: { type: 'stopPlaceFilter', whitelistedLines: [], whitelistedModes: [] },
+				filter: { type: 'stopPlaceFilter', selectedLines: [], selectedTransportModes: [] },
 			}),
 		).toBe('stopPlace')
 	})
@@ -49,7 +52,7 @@ describe('resolveTileDataSource', () => {
 
 describe('getQuaysToQuery', () => {
 	it('bruker quays fra filter når quaysFilter er satt, ikke tile.quays', () => {
-		const filterQuays = [quay('F1')]
+		const filterQuays = [filterQuay('F1')]
 		expect(
 			getQuaysToQuery({ quays: [quay('Q1')], filter: { type: 'quaysFilter', quays: filterQuays } }),
 		).toBe(filterQuays)
@@ -66,21 +69,21 @@ describe('getQuaysToQuery', () => {
 })
 
 describe('getStopPlaceFilterValues', () => {
-	it('henter whitelistedLines og whitelistedModes fra stopPlaceFilter', () => {
+	it('henter selectedLines og selectedTransportModes fra stopPlaceFilter', () => {
 		expect(
 			getStopPlaceFilterValues({
 				filter: {
 					type: 'stopPlaceFilter',
-					whitelistedLines: ['RUT:Line:1'],
-					whitelistedModes: ['bus'],
+					selectedLines: ['RUT:Line:1'],
+					selectedTransportModes: ['bus'],
 				},
 			}),
-		).toEqual({ whitelistedLines: ['RUT:Line:1'], whitelistedModes: ['bus'] })
+		).toEqual({ selectedLines: ['RUT:Line:1'], selectedTransportModes: ['bus'] })
 	})
 
 	it('returnerer tomt objekt for quaysFilter', () => {
 		expect(
-			getStopPlaceFilterValues({ filter: { type: 'quaysFilter', quays: [quay('Q1')] } }),
+			getStopPlaceFilterValues({ filter: { type: 'quaysFilter', quays: [filterQuay('Q1')] } }),
 		).toEqual({})
 	})
 
