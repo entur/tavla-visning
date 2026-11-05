@@ -3,6 +3,7 @@ import {
 	DEFAULT_COLUMNS_ARRIVALS,
 	DEFAULT_COLUMNS_DEPARTURES,
 } from '@board/components/BoardTile'
+import { useEffect } from 'react'
 import { useBoardContext } from '@/Board/context'
 import {
 	type CacheStatus,
@@ -13,7 +14,6 @@ import {
 } from '@/Board/hooks/useTileData'
 import type { TileVariants } from '@/Shared/components/Tile'
 import type { TileDB } from '@/Shared/types/db-types/boards'
-import { useEffect } from 'react'
 
 type Props = TileDB & {
 	size?: TileVariants['size']
