@@ -45,12 +45,8 @@ function ExpandedNextDeparture({
 	const time = isArrivals ? departure.expectedArrivalTime : departure.expectedDepartureTime
 
 	return (
-		<div className="mb-24 mt-24 lg:mb-16 lg:mt-16 flex flex-col justify-start gap-em-1 text-em-xl2">
-			<div className="self-start flex items-center gap-8">
-				{deviationType !== 'no-deviation' && (
-					<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
-				)}
-
+		<div className="mb-32 mt-24 flex flex-col justify-start gap-em-1 text-em-xl2">
+			<div className="self-start">
 				<TravelTag
 					transportMode={transportMode}
 					transportSubmode={transportSubmode}
@@ -58,12 +54,15 @@ function ExpandedNextDeparture({
 					cancelled={departure.cancellation}
 				/>
 			</div>
-			<div className="flex justify-between items-center gap-em-1">
-				<div className="line-clamp-1 grow overflow-hidden hyphens-auto leading-em-base text-em-xl3 lg:text-em-xl4">
-					{via ? `${destination} via ${via}` : destination}
-				</div>
-				<div className="shrink-0 text-right leading-em-base text-em-xl3 lg:text-em-xl4 ">
-					{getRelativeTimeString(time, language, false)}
+			<div className="flex justify-between items-center gap-4 lg:gap-8">
+				<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
+				<div className="flex grow justify-between items-center gap-24">
+					<div className="grow overflow-hidden hyphens-auto leading-em-base text-em-xl3 lg:text-em-xl4">
+						{via ? `${destination} via ${via}` : destination}
+					</div>
+					<div className="shrink-0 text-right leading-em-base text-em-xl3 lg:text-em-xl4 ">
+						{getRelativeTimeString(time, language, false)}
+					</div>
 				</div>
 			</div>
 		</div>
