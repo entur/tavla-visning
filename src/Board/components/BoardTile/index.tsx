@@ -6,12 +6,14 @@ import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
 import { Table } from '@/Board/scenarios/Table'
+import { ExpandedNextDeparture } from '@/Board/scenarios/Table/components/ExpandedNextDeparture'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
 import type {
 	BoardDrivingDistanceDB,
 	BoardWalkingDistanceDB,
 	TileColumnDB,
+	TileViewMode,
 } from '@/Shared/types/db-types/boards'
 import { reportError, reportWarning } from '@/Shared/utils/report'
 import { getUiLabel } from '@/Shared/utils/translations'
@@ -32,6 +34,7 @@ interface BaseTileProps {
 	columns: TileColumnDB[]
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB
+	viewMode?: TileViewMode
 
 	customHeader?: ReactNode
 	customDeviation?: ReactNode
@@ -77,6 +80,7 @@ export function BoardTile({
 	columns,
 	walkingDistance,
 	drivingDistance,
+	viewMode,
 	customHeader,
 	customDeviation,
 	customNames,
@@ -144,6 +148,11 @@ export function BoardTile({
 		)
 	}
 
+	const isDev = true
+	const [nextDeparture, ...remainingDepartures] = estimatedCalls
+	const showExpandedNextDeparture = viewMode === 'expandNextDeparture' || isDev
+	const tableDepartures = showExpandedNextDeparture || isDev ? remainingDepartures : estimatedCalls
+
 	return (
 		<Tile state="data" size={size}>
 			<div className="overflow-hidden grow">
@@ -158,15 +167,26 @@ export function BoardTile({
 
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 
-				<Table
-					columns={columns}
-					departures={estimatedCalls}
-					stopPlaceSituations={situations}
-					currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
-					numberOfVisibleSituations={uniqueSituations?.length}
-					customNames={customNames}
-					hasFetchError={!!error}
-				/>
+				{showExpandedNextDeparture && (
+					<ExpandedNextDeparture
+						departure={nextDeparture}
+						stopPlaceSituations={situations}
+						currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
+						numberOfVisibleSituations={uniqueSituations?.length}
+					/>
+				)}
+
+				{(!showExpandedNextDeparture || tableDepartures.length > 0) && (
+					<Table
+						columns={columns}
+						departures={tableDepartures}
+						stopPlaceSituations={situations}
+						currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
+						numberOfVisibleSituations={uniqueSituations?.length}
+						customNames={customNames}
+						hasFetchError={!!error}
+					/>
+				)}
 			</div>
 
 			{uniqueSituations && uniqueSituations.length > 0 && (

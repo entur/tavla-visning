@@ -51,6 +51,7 @@ function QuaysTile(props: Props) {
 			}
 			walkingDistance={props.walkingDistance}
 			drivingDistance={props.drivingDistance}
+			viewMode={props.viewMode}
 			size={props.size}
 		/>
 	)
@@ -79,6 +80,7 @@ function StopPlaceTile(props: Props) {
 			}
 			walkingDistance={props.walkingDistance}
 			drivingDistance={props.drivingDistance}
+			viewMode={props.viewMode}
 			size={props.size}
 		/>
 	)

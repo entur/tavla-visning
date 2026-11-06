@@ -51,6 +51,9 @@ export type LineWithDirectionDB = {
 	frontTexts: string[]
 }
 
+/** Alternative display layouts for a tile. Add new modes to this union as they're implemented. */
+export type TileViewMode = 'expandNextDeparture'
+
 export type TileDB = {
 	stopPlaceId: string
 	quays: QuayDB[]
@@ -68,6 +71,8 @@ export type TileDB = {
 	displayName?: string
 	columns?: TileColumnDB[]
 	county?: string
+	/** Unset falls back to the default table layout. */
+	viewMode?: TileViewMode
 }
 
 export type TileColumnDB =
