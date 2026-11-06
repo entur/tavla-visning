@@ -70,6 +70,8 @@ const transportModeToPlatformMapping = {
 	taxi: { nb: 'Plattform', en: 'Platform' },
 	tram: { nb: 'Plattform', en: 'Platform' },
 	trolleybus: { nb: 'Plattform', en: 'Platform' },
+	carpool: { nb: 'Plattform', en: 'Platform' },
+	snowAndIce: { nb: 'Plattform', en: 'Platform' },
 	unknown: { nb: 'Plattform', en: 'Platform' },
 	water: { nb: 'Kai', en: 'Quay' },
 } as const satisfies Readonly<Record<TTransportMode, { nb: string; en: string }>>
