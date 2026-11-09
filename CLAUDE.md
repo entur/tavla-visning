@@ -91,16 +91,19 @@ Three endpoints configured in `src/Shared/assets/env.ts`:
 Query using typed document nodes from codegen:
 
 ```typescript
+import { buildEstimatedCallFilters } from '@/Board/hooks/useTileData'
 import { GetQuayQuery } from '@/graphql'
 import { useQuery } from '@/Shared/hooks/useQuery'
 import type { TDepartureFragment } from '@/types/graphql-operations'
 
 const { data, isLoading } = useQuery(
   GetQuayQuery,
-  { quayId: 'NSR:Quay:123', whitelistedLines: [] },
+  { quayId: 'NSR:Quay:123', filters: buildEstimatedCallFilters(['RUT:Line:1']) },
   { poll: true, endpoint: 'journey-planner' }
 )
 ```
+
+Line/mode filtering uses Entur's `filters: [EstimatedCallFilterInput!]` argument on `estimatedCalls` (the older `whiteListed`/`whiteListedModes` args are deprecated server-side). `buildEstimatedCallFilters()` in `useTileData.ts` builds this from `whitelistedLines`/`whitelistedModes` — lines and modes go in separate `select` entries so they're OR'd, not AND'd.
 
 Fragments in `src/graphql/fragments/`, queries in `src/graphql/queries/` (note: this is top-level `src/graphql/`, not under `src/Shared/` — reached via the `@/` alias as `@/graphql`). After editing `.graphql` files, run `pnpm codegen` and update `docs/EXPLORER_LINKS.md` with new Explorer link by re-running the same Python script logic used to create it: merge each query with its fragments recursively, URL-encode as `query`+`operationName`+`variables` parameters, and write the updated file.
 

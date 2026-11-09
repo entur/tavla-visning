@@ -1,7 +1,6 @@
 query getQuays(
 	$quayIds: [String!]
-	$whitelistedTransportModes: [TransportMode]
-	$whitelistedLines: [ID!]
+	$filters: [EstimatedCallFilterInput!]
 	$numberOfDepartures: Int = 20
 	$startTime: DateTime
 ) {
@@ -12,8 +11,7 @@ query getQuays(
 		...lines
 		estimatedCalls(
 			numberOfDepartures: $numberOfDepartures
-			whiteListedModes: $whitelistedTransportModes
-			whiteListed: { lines: $whitelistedLines }
+			filters: $filters
 			includeCancelledTrips: true
 			startTime: $startTime
 		) {
