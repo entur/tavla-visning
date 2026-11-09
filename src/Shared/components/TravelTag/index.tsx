@@ -17,6 +17,8 @@ const transportModeNames: Record<TTransportMode, string> = {
 	monorail: 'Énskinnebane',
 	coach: 'Langdistansebuss',
 	taxi: 'Taxi',
+	carpool: 'Samkjøring',
+	snowAndIce: 'Beltekjøretøy',
 	unknown: 'Ukjent',
 }
 
