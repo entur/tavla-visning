@@ -9,6 +9,7 @@ import { Table } from '@/Board/scenarios/Table'
 import { ExpandedNextDeparture } from '@/Board/scenarios/Table/components/ExpandedNextDeparture'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
+import { HasFetchErrorContext } from '@/Board/scenarios/Table/contexts'
 import type {
 	BoardDrivingDistanceDB,
 	BoardWalkingDistanceDB,
@@ -166,26 +167,27 @@ export function BoardTile({
 
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 
-				{showExpandedNextDeparture && (
-					<ExpandedNextDeparture
-						departure={nextDeparture}
-						stopPlaceSituations={situations}
-						currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
-						numberOfVisibleSituations={uniqueSituations?.length}
-					/>
-				)}
+				<HasFetchErrorContext.Provider value={hasFetchError}>
+					{!showExpandedNextDeparture && (
+						<ExpandedNextDeparture
+							departure={nextDeparture}
+							stopPlaceSituations={situations}
+							currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
+							numberOfVisibleSituations={uniqueSituations?.length}
+						/>
+					)}
 
-				{(!showExpandedNextDeparture || tableDepartures.length > 0) && (
-					<Table
-						columns={columns}
-						departures={tableDepartures}
-						stopPlaceSituations={situations}
-						currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
-						numberOfVisibleSituations={uniqueSituations?.length}
-						customNames={customNames}
-						hasFetchError={!!error}
-					/>
-				)}
+					{(!showExpandedNextDeparture || tableDepartures.length > 0) && (
+						<Table
+							columns={columns}
+							departures={tableDepartures}
+							stopPlaceSituations={situations}
+							currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
+							numberOfVisibleSituations={uniqueSituations?.length}
+							customNames={customNames}
+						/>
+					)}
+				</HasFetchErrorContext.Provider>
 			</div>
 
 			{uniqueSituations && uniqueSituations.length > 0 && (

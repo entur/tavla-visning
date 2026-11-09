@@ -1,8 +1,8 @@
 import { useBoardContext } from '@/Board/context'
 import { removeStopPlaceSituations } from '@/Board/scenarios/Board/utils'
+import { Time } from '@/Board/scenarios/Table/components/Time/Time'
 import { TravelTag } from '@/Shared/components/TravelTag'
 import { getAirPublicCode } from '@/Shared/utils/publicCode'
-import { getRelativeTimeString } from '@/Shared/utils/time'
 import { isNotNullOrUndefined } from '@/Shared/utils/typeguards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import { DeviationIcon } from '../DeviationIcon'
@@ -42,7 +42,8 @@ function ExpandedNextDeparture({
 	const destination = departure.destinationDisplay?.frontText ?? ''
 	const via = departure.destinationDisplay?.via?.filter(isNotNullOrUndefined).join(', ') ?? ''
 
-	const time = isArrivals ? departure.expectedArrivalTime : departure.expectedDepartureTime
+	const expectedTime = isArrivals ? departure.expectedArrivalTime : departure.expectedDepartureTime
+	const aimedTime = isArrivals ? departure.aimedArrivalTime : departure.aimedDepartureTime
 
 	return (
 		<div className="mb-32 mt-24 flex flex-col justify-start gap-em-1 text-em-xl2">
@@ -60,8 +61,15 @@ function ExpandedNextDeparture({
 					<div className="grow overflow-hidden hyphens-auto leading-em-base text-em-xl3 lg:text-em-xl4">
 						{via ? `${destination} via ${via}` : destination}
 					</div>
-					<div className="shrink-0 text-right leading-em-base text-em-xl3 lg:text-em-xl4 ">
-						{getRelativeTimeString(time, language, false)}
+					<div className="shrink-0 text-right">
+						<Time
+							expectedTime={expectedTime}
+							aimedTime={aimedTime}
+							cancelled={departure.cancellation}
+							isArrivalBoard={isArrivals}
+							language={language}
+							size="large"
+						/>
 					</div>
 				</div>
 			</div>
