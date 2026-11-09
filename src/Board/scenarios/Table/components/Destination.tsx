@@ -48,7 +48,7 @@ function Name({ customNames }: { customNames?: CustomName[] }) {
 					return (
 						<TableCell key={nanoid()}>
 							<div className="line-clamp-2 justify-items-end overflow-ellipsis hyphens-auto text-em-base/em-base">
-								{customName ?? departure.quay.name}
+								{customName ?? departure.quay?.name}
 							</div>
 						</TableCell>
 					)
