@@ -35,6 +35,20 @@ interface TileData {
 
 export type TileDataSource = 'quays' | 'stopPlace'
 
+const ARRIVAL_HOLD_TIME_MINUTES = -5
+const DEFAULT_NUMBER_OF_DEPARTURES = 20
+
+/**
+ * Filtrerer bort avganger som allerede har passert gjeldende tidspunkt.
+ *
+ * For ankomster holdes avgangen synlig i noen minutter etter forventet ankomsttidspunkt,
+ * se `ARRIVAL_HOLD_TIME_MINUTES`.
+ *
+ * @param departures Avganger som skal filtreres
+ * @param now Gjeldende tidspunkt (ms) avgangene filtreres mot
+ * @param isArrivals Om det er ankomsttid (true) eller avgangstid (false) som skal vurderes
+ * @returns Avgangene som skal vises på Tavla
+ */
 function filterPastDepartures(
 	departures: TDepartureFragment[],
 	now: number,
@@ -50,8 +64,10 @@ function filterPastDepartures(
 /**
  * Bestemmer hvilken datakilde som skal brukes for å hente avganger for en gitt tile.
  *
- * @param tile
- * @returns Enten'quays' eller 'stopPlace', som indikerer hvilken datakilde som skal brukes for å hente avganger for den gitte tile.
+ * Et quaysFilter med 0 valgte quays betraktes som et helt stoppested (stopPlace), ikke quays.
+ *
+ * @param tile Tile (eller utdrag av felter) datakilden skal bestemmes for
+ * @returns 'quays' hvis det finnes konkrete quays å spørre mot, ellers 'stopPlace'
  */
 export function resolveTileDataSource(tile: Pick<TileDB, 'quays' | 'filter'>): TileDataSource {
 	if (tile.filter?.type === 'quaysFilter') {
@@ -63,15 +79,39 @@ export function resolveTileDataSource(tile: Pick<TileDB, 'quays' | 'filter'>): T
 	return 'stopPlace'
 }
 
+/**
+ * Henter listen med quays en tile skal spørres mot.
+ *
+ * Et quaysFilter overstyrer tile.quays. Er filter satt, er det filter.quays som brukes,
+ * uavhengig av hva som ellers ligger på tilen.
+ *
+ * @param tile Tile (eller utdrag av felter) quays skal hentes for
+ * @returns Quays fra filter.quays hvis satt, ellers tile.quays (eller tomt array hvis ingen)
+ */
 export function getQuaysToQuery(tile: Pick<TileDB, 'filter' | 'quays'>): QuayDB[] | FilterQuayDB[] {
 	if (tile.filter?.type === 'quaysFilter') return tile.filter.quays
 	return tile.quays ?? []
 }
 
+/**
+ * Henter valgte linjer for et quay, uavhengig av om det er et vanlig QuayDB eller et FilterQuayDB.
+ *
+ * De to typene bruker ulike feltnavn for samme konsept (selectedLines vs. whitelistedLines),
+ * så funksjonen normaliserer dette til ett felles resultat.
+ *
+ * @param quay Quay (QuayDB eller FilterQuayDB) linjer skal hentes for
+ * @returns Liste med linje-IDer valgt for quayet
+ */
 function getQuaySelectedLines(quay: QuayDB | FilterQuayDB): string[] {
 	return 'selectedLines' in quay ? quay.selectedLines : quay.whitelistedLines
 }
 
+/**
+ * Henter linje- og transportmodusfilter for en tile med stopPlace-filter.
+ *
+ * @param tile Tile (eller utdrag av felter) filteret skal hentes fra
+ * @returns Valgte linjer og transportmoduser hvis tile har et stopPlaceFilter, ellers et tomt objekt
+ */
 export function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
 	selectedLines?: string[]
 	selectedTransportModes?: TTransportMode[]
@@ -85,16 +125,34 @@ export function getStopPlaceFilterValues(tile: Pick<TileDB, 'filter'>): {
 	return {}
 }
 
-// Selectorer i `select` ORes, men ulike felt (lines/transportModes) i samme selector ANDes. Linjer og
-// moduser legges derfor i hver sin selector – ellers ville f.eks. "buss AND trikk AND Linje 1" være umulig å matche.
+/**
+ * Bygger filter for avganger som skal hentes basert på valgte linjer og transportmoduser.
+ *
+ * Oppretter et array med et filterobjekt som inneholder et array med valgte linjer og et array med valgte transportmoduser.
+ * Det benyttes OR-logikk mellom linjer og transportmoduser siden de er i samme select-array.
+ *
+ * Struktur på filterobjektet som returneres:
+ * [
+ *   {
+ *     select: [
+ *       { lines: string[] },
+ *       { transportModes: { transportMode: TTransportMode }[] }
+ *     ]
+ *   }
+ * ]
+ *
+ * @param selectedLines Spesifikke linjer som skal inkluderes i filteret
+ * @param selectedTransportModes Transportmoduser som skal inkluderes i filteret
+ * @returns undefined hvis ingen filter er satt, ellers et array med filterobjekter
+ */
 export function buildEstimatedCallFilters(
-	whitelistedLines?: string[],
-	whitelistedModes?: TTransportMode[],
+	selectedLines?: string[],
+	selectedTransportModes?: TTransportMode[],
 ): TEstimatedCallFilterInput[] | undefined {
-	const lineFilter = whitelistedLines?.length ? { lines: whitelistedLines } : undefined
+	const lineFilter = selectedLines?.length ? { lines: selectedLines } : undefined
 
-	const modeFilter = whitelistedModes?.length
-		? { transportModes: whitelistedModes.map((transportMode) => ({ transportMode })) }
+	const modeFilter = selectedTransportModes?.length
+		? { transportModes: selectedTransportModes.map((transportMode) => ({ transportMode })) }
 		: undefined
 
 	const select = [lineFilter, modeFilter].filter(isNotNullOrUndefined)
@@ -102,9 +160,16 @@ export function buildEstimatedCallFilters(
 	return select.length > 0 ? [{ select }] : undefined
 }
 
-const ARRIVAL_HOLD_TIME_MINUTES = -5
-const DEFAULT_NUMBER_OF_DEPARTURES = 20
-
+/**
+ * Henter avgangsdata for en tile som peker på én eller flere konkrete quays.
+ *
+ * Spør opp hvert quay individuelt via `getQuay`-spørringen, slår sammen avganger og situasjoner
+ * på tvers av quayene, filtrerer bort passerte avganger og sorterer resterende etter tid.
+ *
+ * @param tile Tile-konfigurasjonen (filter, quays, offset, navn) avgangsdata skal hentes for
+ * @param isArrivals Om visningen gjelder ankomster (true) eller avganger (false/undefined)
+ * @returns Samlet avgangs- og situasjonsdata for tilen, inkludert lasting-/feiltilstand
+ */
 export function useQuaysTileData(
 	{ filter, quays, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
@@ -172,6 +237,16 @@ export function useQuaysTileData(
 	}
 }
 
+/**
+ * Henter avgangsdata for en tile som viser et helt stoppested.
+ *
+ * Spør opp stoppestedet via `StopPlace`-spørringen, filtrerer bort passerte avganger, og kombinerer
+ * situasjoner fra stoppestedet med situasjoner fra eventuelt valgte quays.
+ *
+ * @param tile Tile-data som avgangsdata skal hentes for
+ * @param isArrivals Om visningen gjelder ankomster (true) eller avganger (false)
+ * @returns Samlet avgangs- og situasjonsdata for tilen, inkludert lasting-/feiltilstand
+ */
 export function useStopPlaceTileData(
 	{ stopPlaceId, filter, offset, displayName, name, quays }: TileDB,
 	isArrivals?: boolean,
@@ -244,6 +319,16 @@ export function useStopPlaceTileData(
 	}
 }
 
+/**
+ * Henter og slår sammen avgangsdata for flere tiles til én kombinert visning (CombinedTile).
+ *
+ * Resultatene fra alle tilene slås sammen, sorteres på tid og filtreres for passerte avganger,
+ * mens situasjoner kombineres og dedupliseres på tvers av tilene.
+ *
+ * @param combinedTile Listen med tiles som skal kombineres i én visning
+ * @param isArrivals Om visningen gjelder ankomster (true) eller avganger (false)
+ * @returns Samlet avgangs- og situasjonsdata for den kombinerte tilen
+ */
 export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean): TileData {
 	const { boardId } = useBoardContext()
 	const now = useServerNow()
@@ -370,6 +455,12 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 	}
 }
 
+/**
+ * Typesikkert filter-predikat som fjerner null og undefined fra et array.
+ *
+ * @param value Verdien som sjekkes
+ * @returns true hvis verdien verken er null eller undefined
+ */
 function isNotNullOrUndefined<T>(value: T | null | undefined): value is T {
 	return value !== null && value !== undefined
 }
