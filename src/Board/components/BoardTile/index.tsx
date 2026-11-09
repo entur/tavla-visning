@@ -168,7 +168,7 @@ export function BoardTile({
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 
 				<HasFetchErrorContext.Provider value={hasFetchError}>
-					{!showExpandedNextDeparture && (
+					{showExpandedNextDeparture && (
 						<ExpandedNextDeparture
 							departure={nextDeparture}
 							stopPlaceSituations={situations}
