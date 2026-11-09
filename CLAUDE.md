@@ -64,7 +64,7 @@ URL (boardId) → Page.tsx
 - **Table** — column-based departure list using `DeparturesContext`
 
 `TileDB.viewMode` (`src/Shared/types/db-types/boards.ts`) selects an alternate layout for a
-`SingleTile`; unset falls back to the default table. Currently supported:
+`SingleTile`; unset or `'default'` falls back to the default table. Currently supported:
 
 - **`expandNextDeparture`** — renders the soonest departure as a large hero row
   (`ExpandedNextDeparture`, `src/Board/scenarios/Table/components/ExpandedNextDeparture/`) above the

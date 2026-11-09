@@ -53,8 +53,8 @@ export type FilterQuayDB = {
 	selectedLines: string[]
 }
 
-/** Alternative display layouts for a tile. Add new modes to this union as they're implemented. */
-export type TileViewMode = 'expandNextDeparture'
+export type TileViewMode = 'expandNextDeparture' | 'default'
+
 export type QuaysFilterDB = {
 	type: 'quaysFilter'
 	quays: FilterQuayDB[]
@@ -82,7 +82,6 @@ export type TileDB = {
 	displayName?: string
 	columns?: TileColumnDB[]
 	county?: string
-	/** Unset falls back to the default table layout. */
 	viewMode?: TileViewMode
 }
 
