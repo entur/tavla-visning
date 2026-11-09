@@ -148,10 +148,9 @@ export function BoardTile({
 		)
 	}
 
-	const isDev = true
 	const [nextDeparture, ...remainingDepartures] = estimatedCalls
-	const showExpandedNextDeparture = viewMode === 'expandNextDeparture' || isDev
-	const tableDepartures = showExpandedNextDeparture || isDev ? remainingDepartures : estimatedCalls
+	const showExpandedNextDeparture = viewMode === 'expandNextDeparture'
+	const tableDepartures = showExpandedNextDeparture ? remainingDepartures : estimatedCalls
 
 	return (
 		<Tile state="data" size={size}>
