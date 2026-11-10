@@ -1,11 +1,11 @@
 import { useBoardContext } from '@/Board/context'
 import { removeStopPlaceSituations } from '@/Board/scenarios/Board/utils'
+import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import { Time } from '@/Board/scenarios/Table/components/Time/Time'
 import { TravelTag } from '@/Shared/components/TravelTag'
 import { getAirPublicCode } from '@/Shared/utils/publicCode'
 import { isNotNullOrUndefined } from '@/Shared/utils/typeguards'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
-import { DeviationIcon } from '../DeviationIcon'
 
 function ExpandedNextDeparture({
 	departure,

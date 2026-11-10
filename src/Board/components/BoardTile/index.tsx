@@ -152,6 +152,7 @@ export function BoardTile({
 	const [nextDeparture, ...remainingDepartures] = estimatedCalls
 	const showExpandedNextDeparture = viewMode === 'expandNextDeparture'
 	const tableDepartures = showExpandedNextDeparture ? remainingDepartures : estimatedCalls
+	const currentVisibleSituationId = uniqueSituations?.[currentSituationIndex]?.situation.id
 
 	return (
 		<Tile state="data" size={size}>
@@ -168,11 +169,11 @@ export function BoardTile({
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 
 				<HasFetchErrorContext.Provider value={hasFetchError}>
-					{showExpandedNextDeparture && (
+					{!showExpandedNextDeparture && (
 						<ExpandedNextDeparture
 							departure={nextDeparture}
 							stopPlaceSituations={situations}
-							currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
+							currentVisibleSituationId={currentVisibleSituationId}
 							numberOfVisibleSituations={uniqueSituations?.length}
 						/>
 					)}
@@ -182,7 +183,7 @@ export function BoardTile({
 							columns={columns}
 							departures={tableDepartures}
 							stopPlaceSituations={situations}
-							currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
+							currentVisibleSituationId={currentVisibleSituationId}
 							numberOfVisibleSituations={uniqueSituations?.length}
 							customNames={customNames}
 						/>
