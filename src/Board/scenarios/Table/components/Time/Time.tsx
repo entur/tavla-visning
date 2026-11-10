@@ -39,7 +39,9 @@ function Time({
 				>
 					{getUiLabel('cancelled', language)}
 				</div>
-				<div className={`lineThrough text-right ${isLarge ? 'text-em-lg' : 'text-em-sm/em-sm'}`}>
+				<div
+					className={`lineThrough text-right ${isLarge ? 'text-em-lg mt-2 md:mt-4 lg:mt-8' : 'text-em-sm/em-sm'}`}
+				>
 					{formatDateString(aimedTime)}
 				</div>
 			</>
@@ -77,7 +79,7 @@ function Time({
 		return (
 			<>
 				<FormattedTime time={expectedTime} size={size} />
-				<div className={`lineThrough ${secondaryClass}`}>{formatDateString(aimedTime)}</div>
+				<div className={`lineThrough${secondaryClass}`}>{formatDateString(aimedTime)}</div>
 			</>
 		)
 
