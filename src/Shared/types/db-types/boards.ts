@@ -68,8 +68,6 @@ export type TileFilterDB = QuaysFilterDB | StopPlaceFilterDB
 
 export type TileDB = {
 	stopPlaceId: string
-	/** @deprecated Bruk filter i stedet. Beholdes som fallback inntil alle boards er migrert. */
-	quays: QuayDB[]
 	name: string
 	uuid: string
 	filter?: TileFilterDB
@@ -80,6 +78,9 @@ export type TileDB = {
 	displayName?: string
 	columns?: TileColumnDB[]
 	county?: string
+
+	/** @deprecated Bruk filter i stedet. Beholdes som fallback inntil alle boards er migrert. */
+	quays?: QuayDB[]
 }
 
 export type TileColumnDB =
