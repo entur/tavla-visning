@@ -61,7 +61,7 @@ function ExpandedNextDeparture({
 				>
 					<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
 				</div>
-				<div className="flex w-full justify-between items-center mt-4 lg:mt-8">
+				<div className="flex w-full justify-between items-center mt-4 lg:mt-8 2xl:mt-12">
 					<div className="text-em-xl3 hyphens-auto lg:text-em-xl4 leading-tight">
 						{via ? `${destination} via ${via}` : destination}
 					</div>
