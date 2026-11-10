@@ -156,7 +156,7 @@ export function BoardTile({
 
 	return (
 		<Tile state="data" size={size}>
-			<div className="overflow-hidden grow">
+			<div className="relative overflow-hidden grow">
 				{customHeader ??
 					(displayName && (
 						<TableHeader
@@ -169,7 +169,7 @@ export function BoardTile({
 				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 
 				<HasFetchErrorContext.Provider value={hasFetchError}>
-					{showExpandedNextDeparture && (
+					{!showExpandedNextDeparture && (
 						<ExpandedNextDeparture
 							departure={nextDeparture}
 							stopPlaceSituations={situations}
@@ -189,18 +189,18 @@ export function BoardTile({
 						/>
 					)}
 				</HasFetchErrorContext.Provider>
-			</div>
 
-			{uniqueSituations && uniqueSituations.length > 0 && (
-				<TileSituations
-					situation={uniqueSituations[currentSituationIndex]?.situation}
-					currentSituationNumber={currentSituationIndex}
-					numberOfSituations={uniqueSituations.length}
-					cancelledDeparture={uniqueSituations[currentSituationIndex]?.cancellation ?? false}
-					transportModeList={uniqueSituations[currentSituationIndex]?.transportModeList}
-					publicCodeList={uniqueSituations[currentSituationIndex]?.publicCodeList}
-				/>
-			)}
+				{uniqueSituations && uniqueSituations.length > 0 && (
+					<TileSituations
+						situation={uniqueSituations[currentSituationIndex]?.situation}
+						currentSituationNumber={currentSituationIndex}
+						numberOfSituations={uniqueSituations.length}
+						cancelledDeparture={uniqueSituations[currentSituationIndex]?.cancellation ?? false}
+						transportModeList={uniqueSituations[currentSituationIndex]?.transportModeList}
+						publicCodeList={uniqueSituations[currentSituationIndex]?.publicCodeList}
+					/>
+				)}
+			</div>
 		</Tile>
 	)
 }
