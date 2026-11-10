@@ -5,3 +5,5 @@ dist/
 **/charts/*.tgz
 **/.claude/settings.local.json
 .idea/
+.vscode/*
+!.vscode/settings.json
