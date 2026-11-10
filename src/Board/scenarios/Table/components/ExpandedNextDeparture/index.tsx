@@ -58,7 +58,7 @@ function ExpandedNextDeparture({
 			<div className="flex justify-between items-center gap-4 lg:gap-8">
 				<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
 				<div className="flex grow justify-between items-center gap-24">
-					<div className="grow overflow-hidden hyphens-auto leading-em-base text-em-xl3 lg:text-em-xl4">
+					<div className="grow hyphens-auto text-em-xl3 lg:text-em-xl4">
 						{via ? `${destination} via ${via}` : destination}
 					</div>
 					<div className="shrink-0 text-right">
