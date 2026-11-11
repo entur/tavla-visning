@@ -37,14 +37,14 @@ function Table({
 
 	if (departures.length === 0)
 		return (
-			<div className="flex min-h-0 w-full flex-1 flex-col items-center justify-center pb-4 text-center text-em-sm">
+			<div className="flex h-full w-full flex-col items-center justify-center pb-4 text-center text-em-sm">
 				<Paragraph className="!text-primary sm:pb-8">
 					{getUiLabel(isArrivals ? 'noArrivalsNext24Hours' : 'noDeparturesNext24Hours', language)}
 				</Paragraph>
 			</div>
 		)
 	return (
-		<div className="flex flex-1 flex-col overflow-hidden">
+		<div className="flex flex-col">
 			<div className="flex shrink-0">
 				<DeparturesContext.Provider value={departures}>
 					<Deviation
