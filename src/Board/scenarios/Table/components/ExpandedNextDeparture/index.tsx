@@ -55,13 +55,13 @@ function ExpandedNextDeparture({
 					cancelled={departure.cancellation}
 				/>
 			</div>
-			<div className="flex justify-between items-center">
+			<div className="flex justify-between items-center mt-4">
 				<div
 					className={`mt-4 mr-4 lg:mt-8 ${deviationType !== 'no-deviation' ? 'block' : 'hidden'}`}
 				>
 					<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
 				</div>
-				<div className="flex w-full justify-between items-center mt-4 lg:mt-6 xl:mt-8 2xl:mt-10 3xl:mt-12">
+				<div className="flex w-full justify-between items-center mt-4">
 					<div className="text-em-xl3 hyphens-auto lg:text-em-xl4 leading-tight">
 						{via ? `${destination} via ${via}` : destination}
 					</div>
