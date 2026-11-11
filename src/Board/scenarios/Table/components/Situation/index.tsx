@@ -61,7 +61,7 @@ function TitleSituation({
 			<div className="flex self-start pt-[0.05em] text-[1.8em]">
 				<PageNavigationIcon aria-hidden="true" size="0.5em" />
 			</div>
-			<p className="font-normal">
+			<p className="font-normal line-clamp-2">
 				{origin && <b>{`${shortOrigin}: `}</b>}
 				{situationText}
 			</p>
