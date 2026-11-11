@@ -31,7 +31,7 @@ function Time({
 	const primaryClass = `text-right leading-em-base ${isLarge ? 'text-em-xl3 lg:text-em-xl4' : 'text-em-xl'}`
 	const secondaryClass = `text-right ${isLarge ? 'text-em-lg' : 'text-em-sm/em-xs'}`
 
-	if (!cancelled)
+	if (cancelled)
 		return (
 			<>
 				<div
