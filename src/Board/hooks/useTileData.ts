@@ -1,8 +1,10 @@
+import { useEffect, useState } from 'react'
 import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
 import type { FilterQuayDB, QuayDB, TileDB } from '@/Shared/types/db-types/boards'
+import { getServerNow } from '@/Shared/utils/serverTime'
 import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
 import type { TEstimatedCallFilterInput, TTransportMode } from '@/types/graphql-schema'
@@ -12,8 +14,6 @@ import {
 	type TileSituation,
 } from '../scenarios/Board/utils'
 import { useCycler } from '../scenarios/Table/useCycler'
-import { useEffect, useState } from 'react'
-import { getServerNow } from '@/Shared/utils/serverTime'
 
 export type TDepartureWithTileUuid = TDepartureFragment & { tileUuid?: string }
 export type TSituationWithOrigin = TSituationFragment & { origin?: string }
@@ -229,7 +229,7 @@ export function useQuaysTileData(
 		error: quaysError,
 	} = useQueries(quayQueries, boardId)
 
-	const quayResults = quaysData?.map((d) => d.quay).filter(isNotNullOrUndefined) ?? []
+	const quayResults = quaysData?.map((d) => d?.quay).filter(isNotNullOrUndefined) ?? []
 
 	const quaysSituations = quayResults.flatMap((quay) => {
 		const spSituations = quay.stopPlace?.situations ?? []

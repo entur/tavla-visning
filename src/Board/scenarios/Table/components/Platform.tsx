@@ -1,13 +1,11 @@
-import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import { nanoid } from 'nanoid'
 import { useBoardContext } from '@/Board/context'
-
+import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
+import { getPlatformLabel } from '@/Shared/utils/translations'
+import type { TTransportMode } from '@/types/graphql-schema'
 import { DeparturesContext } from '../contexts'
 import { TableCell } from './TableCell'
 import { TableColumn } from './TableColumn'
-
-import { getPlatformLabel } from '@/Shared/utils/translations'
-import type { TTransportMode } from '@/types/graphql-schema'
 
 function Platform() {
 	const departures = useNonNullContext(DeparturesContext)
@@ -19,7 +17,7 @@ function Platform() {
 		const subMode = departure.serviceJourney.transportSubmode
 
 		return {
-			publicCode: departure.quay.publicCode,
+			publicCode: departure.quay?.publicCode,
 			key: nanoid(),
 			transportMode:
 				transportMode === 'bus' && subMode === 'railReplacementBus'
