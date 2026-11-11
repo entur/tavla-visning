@@ -46,7 +46,7 @@ function ExpandedNextDeparture({
 	const aimedTime = isArrivals ? departure.aimedArrivalTime : departure.aimedDepartureTime
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col justify-center text-em-xl2 ">
+		<div className="flex min-h-0 flex-1 flex-col justify-center h-1/2 text-em-xl2 ">
 			<div className="self-start">
 				<TravelTag
 					transportMode={transportMode}
