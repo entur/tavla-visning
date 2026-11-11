@@ -46,7 +46,7 @@ function ExpandedNextDeparture({
 	const aimedTime = isArrivals ? departure.aimedArrivalTime : departure.aimedDepartureTime
 
 	return (
-		<div className="h-1/2 flex flex-col justify-center text-em-xl2 ">
+		<div className="flex min-h-0 flex-1 flex-col justify-center text-em-xl2 ">
 			<div className="self-start">
 				<TravelTag
 					transportMode={transportMode}
@@ -61,7 +61,7 @@ function ExpandedNextDeparture({
 				>
 					<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
 				</div>
-				<div className="flex w-full justify-between items-center mt-4 lg:mt-8 2xl:mt-12">
+				<div className="flex w-full justify-between items-center mt-4 lg:mt-6 xl:mt-8 2xl:mt-10 3xl:mt-12">
 					<div className="text-em-xl3 hyphens-auto lg:text-em-xl4 leading-tight">
 						{via ? `${destination} via ${via}` : destination}
 					</div>

@@ -31,7 +31,7 @@ function Time({
 	const primaryClass = `text-right leading-em-base ${isLarge ? 'text-em-xl3 lg:text-em-xl4' : 'text-em-xl'}`
 	const secondaryClass = `text-right ${isLarge ? 'text-em-lg' : 'text-em-sm/em-xs'}`
 
-	if (cancelled)
+	if (!cancelled)
 		return (
 			<>
 				<div
@@ -40,7 +40,7 @@ function Time({
 					{getUiLabel('cancelled', language)}
 				</div>
 				<div
-					className={`lineThrough text-right ${isLarge ? 'text-em-lg mt-2 md:mt-4 lg:mt-8' : 'text-em-sm/em-sm'}`}
+					className={`lineThrough text-right ${isLarge ? 'text-em-lg mt-2 md:mt-4 lg:mt-8 xl:mt-10 2xl:mt-12 3xl:mt-24' : 'text-em-sm/em-sm'}`}
 				>
 					{formatDateString(aimedTime)}
 				</div>
