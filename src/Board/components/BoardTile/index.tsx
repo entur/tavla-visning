@@ -166,7 +166,7 @@ export function BoardTile({
 						/>
 					))}
 
-				<div className={`${showExpandedNextDeparture ? 'min-h-12 md:min-h-24' : 'mb-4'}`}>
+				<div className={`${showExpandedNextDeparture ? 'min-h-12 md:min-h-24' : 'mb-4'} -mt-5`}>
 					{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 				</div>
 
