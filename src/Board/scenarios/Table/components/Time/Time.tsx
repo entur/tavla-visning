@@ -35,12 +35,12 @@ function Time({
 		return (
 			<>
 				<div
-					className={`text-right font-semibold text-cancelled-time ${isLarge ? 'text-em-xl2' : 'text-em-lg/em-lg'}`}
+					className={`text-right font-semibold text-cancelled-time leading-tight ${isLarge ? 'text-em-xl2' : 'text-em-lg/em-lg'}`}
 				>
 					{getUiLabel('cancelled', language)}
 				</div>
 				<div
-					className={`lineThrough text-right ${isLarge ? 'text-em-lg mt-2 md:mt-4 lg:mt-8 xl:mt-10 2xl:mt-12 3xl:mt-24' : 'text-em-sm/em-sm'}`}
+					className={`lineThrough text-right ${isLarge ? 'text-em-lg leading-tight' : 'text-em-sm/em-sm'}`}
 				>
 					{formatDateString(aimedTime)}
 				</div>
