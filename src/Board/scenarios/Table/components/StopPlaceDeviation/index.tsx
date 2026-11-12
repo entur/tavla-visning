@@ -20,11 +20,7 @@ function StopPlaceQuayDeviation({ situations }: { situations?: TSituationFragmen
 	const numberOfSituations = validSituations.length
 
 	if (numberOfSituations === 0) return null
-	return (
-		<div className="mt-[-.5em] min-h-[1.5em]">
-			<TitleSituation situation={validSituations[index % numberOfSituations]} />
-		</div>
-	)
+	return <TitleSituation situation={validSituations[index % numberOfSituations]} />
 }
 
 function CombinedTileDeviation({ situations }: { situations?: TSituationFragment[] }) {

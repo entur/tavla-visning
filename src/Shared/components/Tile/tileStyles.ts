@@ -1,7 +1,7 @@
 import { cva } from 'class-variance-authority'
 
 export const tileStyles = cva(
-	'w-full overflow-hidden rounded-lg bg-secondary px-[1em] pt-[0.25em] text-primary',
+	'w-full h-full overflow-hidden rounded-lg bg-secondary px-[1em] pt-[0.25em] text-primary',
 	{
 		variants: {
 			state: {

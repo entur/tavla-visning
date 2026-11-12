@@ -63,6 +63,15 @@ URL (boardId) → Page.tsx
 - **CombinedTile** — multiple stops merged into one display
 - **Table** — column-based departure list using `DeparturesContext`
 
+`TileDB.viewMode` (`src/Shared/types/db-types/boards.ts`) selects an alternate layout for a
+`SingleTile`; unset or `'default'` falls back to the default table. Currently supported:
+
+- **`expandNextDeparture`** — renders the soonest departure as a large hero row
+  (`ExpandedNextDeparture`, `src/Board/scenarios/Table/components/ExpandedNextDeparture/`) above the
+  normal `Table`, which then only lists the remaining departures. `BoardTile`
+  (`src/Board/components/BoardTile/index.tsx`) owns the split between hero and table. Not wired up
+  for `CombinedTile`. Add new modes to the `TileViewMode` union and branch on them in `BoardTile`.
+
 ### Real-Time Mechanisms
 
 - **30s polling** via SWR in `useQuery` for departure data

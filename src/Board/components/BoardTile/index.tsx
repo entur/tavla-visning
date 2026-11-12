@@ -6,12 +6,15 @@ import { useBoardContext } from '@/Board/context'
 import type { CustomName } from '@/Board/hooks/useTileData'
 import type { TileSituation } from '@/Board/scenarios/Board/utils'
 import { Table } from '@/Board/scenarios/Table'
+import { ExpandedNextDeparture } from '@/Board/scenarios/Table/components/ExpandedNextDeparture'
 import { StopPlaceQuayDeviation } from '@/Board/scenarios/Table/components/StopPlaceDeviation'
 import { TileSituations } from '@/Board/scenarios/Table/components/TileSituations'
+import { HasFetchErrorContext } from '@/Board/scenarios/Table/contexts'
 import type {
 	BoardDrivingDistanceDB,
 	BoardWalkingDistanceDB,
 	TileColumnDB,
+	TileViewMode,
 } from '@/Shared/types/db-types/boards'
 import { reportError, reportWarning } from '@/Shared/utils/report'
 import { getUiLabel } from '@/Shared/utils/translations'
@@ -32,6 +35,7 @@ interface BaseTileProps {
 	columns: TileColumnDB[]
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB
+	viewMode?: TileViewMode
 
 	customHeader?: ReactNode
 	customDeviation?: ReactNode
@@ -77,6 +81,7 @@ export function BoardTile({
 	columns,
 	walkingDistance,
 	drivingDistance,
+	viewMode,
 	customHeader,
 	customDeviation,
 	customNames,
@@ -144,9 +149,14 @@ export function BoardTile({
 		)
 	}
 
+	const [nextDeparture, ...remainingDepartures] = estimatedCalls
+	const showExpandedNextDeparture = viewMode === 'expandNextDeparture'
+	const tableDepartures = showExpandedNextDeparture ? remainingDepartures : estimatedCalls
+	const currentVisibleSituationId = uniqueSituations?.[currentSituationIndex]?.situation.id
+
 	return (
 		<Tile state="data" size={size}>
-			<div className="overflow-hidden grow">
+			<div className="relative overflow-hidden h-full">
 				{customHeader ??
 					(displayName && (
 						<TableHeader
@@ -156,29 +166,43 @@ export function BoardTile({
 						/>
 					))}
 
-				{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
+				<div className={`${showExpandedNextDeparture ? 'min-h-12 md:min-h-24' : 'mb-4'}`}>
+					{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
+				</div>
 
-				<Table
-					columns={columns}
-					departures={estimatedCalls}
-					stopPlaceSituations={situations}
-					currentVisibleSituationId={uniqueSituations?.[currentSituationIndex]?.situation.id}
-					numberOfVisibleSituations={uniqueSituations?.length}
-					customNames={customNames}
-					hasFetchError={!!error}
-				/>
+				<HasFetchErrorContext.Provider value={hasFetchError}>
+					{showExpandedNextDeparture && (
+						<ExpandedNextDeparture
+							departure={nextDeparture}
+							stopPlaceSituations={situations}
+							currentVisibleSituationId={currentVisibleSituationId}
+							numberOfVisibleSituations={uniqueSituations?.length}
+						/>
+					)}
+
+					{(!showExpandedNextDeparture || tableDepartures.length > 0) && (
+						<Table
+							columns={columns}
+							departures={tableDepartures}
+							stopPlaceSituations={situations}
+							currentVisibleSituationId={currentVisibleSituationId}
+							numberOfVisibleSituations={uniqueSituations?.length}
+							customNames={customNames}
+						/>
+					)}
+				</HasFetchErrorContext.Provider>
+
+				{uniqueSituations && uniqueSituations.length > 0 && (
+					<TileSituations
+						situation={uniqueSituations[currentSituationIndex]?.situation}
+						currentSituationNumber={currentSituationIndex}
+						numberOfSituations={uniqueSituations.length}
+						cancelledDeparture={uniqueSituations[currentSituationIndex]?.cancellation ?? false}
+						transportModeList={uniqueSituations[currentSituationIndex]?.transportModeList}
+						publicCodeList={uniqueSituations[currentSituationIndex]?.publicCodeList}
+					/>
+				)}
 			</div>
-
-			{uniqueSituations && uniqueSituations.length > 0 && (
-				<TileSituations
-					situation={uniqueSituations[currentSituationIndex]?.situation}
-					currentSituationNumber={currentSituationIndex}
-					numberOfSituations={uniqueSituations.length}
-					cancelledDeparture={uniqueSituations[currentSituationIndex]?.cancellation ?? false}
-					transportModeList={uniqueSituations[currentSituationIndex]?.transportModeList}
-					publicCodeList={uniqueSituations[currentSituationIndex]?.publicCodeList}
-				/>
-			)}
 		</Tile>
 	)
 }

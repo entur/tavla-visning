@@ -53,6 +53,8 @@ export type FilterQuayDB = {
 	selectedLines: string[]
 }
 
+export type TileViewMode = 'expandNextDeparture' | 'default'
+
 export type QuaysFilterDB = {
 	type: 'quaysFilter'
 	quays: FilterQuayDB[]
@@ -80,6 +82,7 @@ export type TileDB = {
 	displayName?: string
 	columns?: TileColumnDB[]
 	county?: string
+	viewMode?: TileViewMode
 }
 
 export type TileColumnDB =
