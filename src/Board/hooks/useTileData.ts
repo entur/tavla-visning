@@ -98,28 +98,24 @@ function filterPastDepartures(
  * @param tile Tile (eller utdrag av felter) datakilden skal bestemmes for
  * @returns 'quays' hvis det finnes konkrete quays å spørre mot, ellers 'stopPlace'
  */
-export function resolveTileDataSource(tile: Pick<TileDB, 'quays' | 'filter'>): TileDataSource {
+export function resolveTileDataSource(tile: Pick<TileDB, 'filter'>): TileDataSource {
 	if (tile.filter?.type === 'quaysFilter') {
 		// Hvis det er 0 valgte quays, er filteret å betrakte som et helt stoppested
 		return tile.filter.quays.length > 0 ? 'quays' : 'stopPlace'
 	}
 	if (tile.filter?.type === 'stopPlaceFilter') return 'stopPlace'
-	if (tile.quays && tile.quays.length > 0) return 'quays'
 	return 'stopPlace'
 }
 
 /**
  * Henter listen med quays en tile skal spørres mot.
  *
- * Et quaysFilter overstyrer tile.quays. Er filter satt, er det filter.quays som brukes,
- * uavhengig av hva som ellers ligger på tilen.
- *
  * @param tile Tile (eller utdrag av felter) quays skal hentes for
- * @returns Quays fra filter.quays hvis satt, ellers tile.quays (eller tomt array hvis ingen)
+ * @returns Quays fra filter.quays hvis satt, ellers tomt array
  */
-export function getQuaysToQuery(tile: Pick<TileDB, 'filter' | 'quays'>): QuayDB[] | FilterQuayDB[] {
+export function getQuaysToQuery(tile: Pick<TileDB, 'filter'>): QuayDB[] | FilterQuayDB[] {
 	if (tile.filter?.type === 'quaysFilter') return tile.filter.quays
-	return tile.quays ?? []
+	return []
 }
 
 /**
@@ -200,12 +196,12 @@ export function buildEstimatedCallFilters(
  * @returns Samlet avgangs- og situasjonsdata for tilen, inkludert lasting-/feiltilstand
  */
 export function useQuaysTileData(
-	{ filter, quays, offset, displayName, name }: TileDB,
+	{ filter, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
 	const { boardId } = useBoardContext()
 	const now = useServerNow()
-	const quaysToQuery = getQuaysToQuery({ filter, quays })
+	const quaysToQuery = getQuaysToQuery({ filter })
 	const hasSelectedQuays = quaysToQuery.length > 0
 
 	const quayQueries = hasSelectedQuays
@@ -279,7 +275,7 @@ export function useQuaysTileData(
  * @returns Samlet avgangs- og situasjonsdata for tilen, inkludert lasting-/feiltilstand
  */
 export function useStopPlaceTileData(
-	{ stopPlaceId, filter, offset, displayName, name, quays }: TileDB,
+	{ stopPlaceId, filter, offset, displayName, name }: TileDB,
 	isArrivals?: boolean,
 ): TileData {
 	const { language, boardId } = useBoardContext()
@@ -311,11 +307,7 @@ export function useStopPlaceTileData(
 		isArrivals,
 	).slice(0, DEFAULT_NUMBER_OF_DEPARTURES)
 
-	// tile.quays er kun relevant som fallback når filter mangler
-	const selectedQuayIds = filter ? [] : (quays?.map((q) => q.id) ?? [])
-	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? [])
-		.filter(isNotNullOrUndefined)
-		.filter((quay) => selectedQuayIds.length === 0 || selectedQuayIds.includes(quay.id))
+	const relevantQuays = (stopPlaceData?.stopPlace?.quays ?? []).filter(isNotNullOrUndefined)
 
 	const platformLabel = getPlatformLabel(
 		(stopPlaceData?.stopPlace?.transportMode ?? []).filter(isNotNullOrUndefined),

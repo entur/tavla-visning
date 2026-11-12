@@ -5,66 +5,53 @@ import {
 	getStopPlaceFilterValues,
 	resolveTileDataSource,
 } from '@/Board/hooks/useTileData'
-import type { FilterQuayDB, QuayDB } from '@/Shared/types/db-types/boards'
-
-/* Minimal fixture for QuayDB — tile.quays bruker fortsatt whitelistedLines. */
-const quay = (id: string): QuayDB => ({ id, whitelistedLines: [] })
+import type { FilterQuayDB } from '@/Shared/types/db-types/boards'
 
 /* Minimal fixture for FilterQuayDB — quaysFilter.quays bruker selectedLines. */
 const filterQuay = (id: string): FilterQuayDB => ({ id, selectedLines: [] })
 
 describe('resolveTileDataSource', () => {
-	it('velger quays når tile har valgte quays og ingen filter', () => {
-		expect(resolveTileDataSource({ quays: [quay('Q1')] })).toBe('quays')
+	it('velger stopPlace når tile ikke har filter', () => {
+		expect(resolveTileDataSource({})).toBe('stopPlace')
 	})
 
-	it('velger stopPlace når tile ikke har valgte quays og ingen filter', () => {
-		expect(resolveTileDataSource({ quays: [] })).toBe('stopPlace')
-	})
-
-	it('lar quaysFilter overstyre quays-feltet på tile', () => {
+	it('velger quays når quaysFilter har valgte quays', () => {
 		expect(
-			resolveTileDataSource({
-				quays: [],
-				filter: { type: 'quaysFilter', quays: [filterQuay('Q1')] },
-			}),
+			resolveTileDataSource({ filter: { type: 'quaysFilter', quays: [filterQuay('Q1')] } }),
 		).toBe('quays')
 	})
 
-	it('lar stopPlaceFilter overstyre quays-feltet på tile', () => {
+	it('velger stopPlace for stopPlaceFilter', () => {
 		expect(
 			resolveTileDataSource({
-				quays: [quay('Q1')],
 				filter: { type: 'stopPlaceFilter', selectedLines: [], selectedTransportModes: [] },
 			}),
 		).toBe('stopPlace')
 	})
 
 	it('tolker quaysFilter uten quays som alle platformer, og velger stopPlace', () => {
-		expect(
-			resolveTileDataSource({
-				quays: [],
-				filter: { type: 'quaysFilter', quays: [] },
-			}),
-		).toBe('stopPlace')
+		expect(resolveTileDataSource({ filter: { type: 'quaysFilter', quays: [] } })).toBe('stopPlace')
 	})
 })
 
 describe('getQuaysToQuery', () => {
-	it('bruker quays fra filter når quaysFilter er satt, ikke tile.quays', () => {
+	it('bruker quays fra filter når quaysFilter er satt', () => {
 		const filterQuays = [filterQuay('F1')]
+		expect(getQuaysToQuery({ filter: { type: 'quaysFilter', quays: filterQuays } })).toBe(
+			filterQuays,
+		)
+	})
+
+	it('returnerer tom liste for stopPlaceFilter', () => {
 		expect(
-			getQuaysToQuery({ quays: [quay('Q1')], filter: { type: 'quaysFilter', quays: filterQuays } }),
-		).toBe(filterQuays)
+			getQuaysToQuery({
+				filter: { type: 'stopPlaceFilter', selectedLines: [], selectedTransportModes: [] },
+			}),
+		).toEqual([])
 	})
 
-	it('faller tilbake til tile.quays når filter mangler', () => {
-		const tileQuays = [quay('Q1'), quay('Q2')]
-		expect(getQuaysToQuery({ quays: tileQuays })).toBe(tileQuays)
-	})
-
-	it('returnerer tom liste når verken quays eller filter finnes', () => {
-		expect(getQuaysToQuery({ quays: undefined as unknown as QuayDB[] })).toEqual([])
+	it('returnerer tom liste når filter mangler', () => {
+		expect(getQuaysToQuery({})).toEqual([])
 	})
 })
 
