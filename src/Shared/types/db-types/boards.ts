@@ -72,8 +72,8 @@ export type TileDB = {
 	stopPlaceId: string
 	name: string
 	uuid: string
-
 	filter?: TileFilterDB
+
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB
 	offset?: number
