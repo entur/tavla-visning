@@ -53,6 +53,8 @@ export type FilterQuayDB = {
 	selectedLines: string[]
 }
 
+export type TileViewMode = 'expandNextDeparture' | 'default'
+
 export type QuaysFilterDB = {
 	type: 'quaysFilter'
 	quays: FilterQuayDB[]
@@ -70,14 +72,15 @@ export type TileDB = {
 	stopPlaceId: string
 	name: string
 	uuid: string
-	filter?: TileFilterDB
 
+	filter?: TileFilterDB
 	walkingDistance?: BoardWalkingDistanceDB
 	drivingDistance?: BoardDrivingDistanceDB
 	offset?: number
 	displayName?: string
 	columns?: TileColumnDB[]
 	county?: string
+	viewMode?: TileViewMode
 
 	/** @deprecated Bruk filter i stedet. Beholdes som fallback inntil alle boards er migrert. */
 	quays?: QuayDB[]

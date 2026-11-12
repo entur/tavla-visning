@@ -13,7 +13,7 @@ import { Platform } from './components/Platform'
 import { AimedTime } from './components/Time/AimedTime'
 import { ArrivalTime } from './components/Time/ArrivalTime'
 import { ExpectedTime } from './components/Time/ExpectedTime'
-import { DeparturesContext, HasFetchErrorContext } from './contexts'
+import { DeparturesContext } from './contexts'
 
 function Table({
 	departures,
@@ -22,7 +22,6 @@ function Table({
 	currentVisibleSituationId,
 	numberOfVisibleSituations,
 	customNames,
-	hasFetchError,
 }: {
 	departures: TDepartureFragment[]
 	columns?: TileColumnDB[]
@@ -30,7 +29,6 @@ function Table({
 	currentVisibleSituationId?: string
 	numberOfVisibleSituations?: number
 	customNames?: CustomName[]
-	hasFetchError?: boolean
 }) {
 	const { isArrivals, language } = useBoardContext()
 
@@ -48,23 +46,21 @@ function Table({
 	return (
 		<div className="flex flex-col">
 			<div className="flex shrink-0">
-				<HasFetchErrorContext.Provider value={!!hasFetchError}>
-					<DeparturesContext.Provider value={departures}>
-						<Deviation
-							currentVisibleSituationId={currentVisibleSituationId}
-							stopPlaceSituations={stopPlaceSituations}
-							numberOfShownSituations={numberOfVisibleSituations}
-						/>
-						{columns.includes('aimedTime') && <AimedTime />}
-						{columns.includes('arrivalTime') && <ArrivalTime />}
-						{columns.includes('line') && <Line />}
-						{columns.includes('destination') && <Destination />}
-						{columns.includes('fromStopPlace') && <FromStopPlace />}
-						{columns.includes('name') && <Name customNames={customNames} />}
-						{columns.includes('platform') && <Platform />}
-						{columns.includes('time') && <ExpectedTime />}
-					</DeparturesContext.Provider>
-				</HasFetchErrorContext.Provider>
+				<DeparturesContext.Provider value={departures}>
+					<Deviation
+						currentVisibleSituationId={currentVisibleSituationId}
+						stopPlaceSituations={stopPlaceSituations}
+						numberOfShownSituations={numberOfVisibleSituations}
+					/>
+					{columns.includes('aimedTime') && <AimedTime />}
+					{columns.includes('arrivalTime') && <ArrivalTime />}
+					{columns.includes('line') && <Line />}
+					{columns.includes('destination') && <Destination />}
+					{columns.includes('fromStopPlace') && <FromStopPlace />}
+					{columns.includes('name') && <Name customNames={customNames} />}
+					{columns.includes('platform') && <Platform />}
+					{columns.includes('time') && <ExpectedTime />}
+				</DeparturesContext.Provider>
 			</div>
 		</div>
 	)

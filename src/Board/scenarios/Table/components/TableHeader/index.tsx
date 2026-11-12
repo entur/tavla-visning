@@ -11,7 +11,7 @@ function TableHeader({
 	drivingDistance?: BoardDrivingDistanceDB
 }) {
 	return (
-		<div className="mb-3 flex min-h-[2.2em] flex-row items-center justify-between">
+		<div className="flex min-h-[2.2em] flex-row items-center justify-between">
 			<h1 className="m-0 line-clamp-2 text-em-xl2 hyphens-auto leading-em-base font-semibold">
 				{heading}
 			</h1>

@@ -1,9 +1,9 @@
-import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import { useBoardContext } from '@/Board/context'
+import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
+import { getColumnLabel } from '@/Shared/utils/translations'
 import type { TSituationFragment } from '@/types/graphql-operations'
 import type { TTransportMode } from '@/types/graphql-schema'
 import { transportModeNames } from '@/utils/transportMode'
-import { getColumnLabel } from '@/Shared/utils/translations'
 
 const SITUATION_SUMMARY_LENGTH_THRESHOLD = 25
 
@@ -102,7 +102,10 @@ export function TileSituations({
 	}
 
 	return (
-		<div className={'text-em-lg/em-lg whitespace-normal'} lang={situationText.language}>
+		<div
+			className={'absolute inset-x-0 bottom-0 bg-secondary text-em-lg/em-lg whitespace-normal'}
+			lang={situationText.language}
+		>
 			<div className="table w-full mt-em-0.5 ml-em-0.25">
 				<div className="table-row">
 					<div className="table-cell align-top w-em-2">
@@ -114,8 +117,10 @@ export function TileSituations({
 							cancelledDeparture ? 'text-error' : 'text-warning'
 						}`}
 					>
-						{transportModeWithPublicCode && <b>{transportModeWithPublicCode}: </b>}
-						{situationText.text}
+						<div className="line-clamp-2">
+							{transportModeWithPublicCode && <b>{transportModeWithPublicCode}: </b>}
+							{situationText.text}
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,17 +1,11 @@
 import { nanoid } from 'nanoid'
-import { useContext } from 'react'
 import { useBoardContext } from '@/Board/context'
-import { DeparturesContext, HasFetchErrorContext } from '@/Board/scenarios/Table/contexts'
+import { DeparturesContext } from '@/Board/scenarios/Table/contexts'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
-import type { BoardLanguage } from '@/Shared/types/db-types/boards'
-import { getServerNow } from '@/Shared/utils/serverTime'
-import { formatDateString, getRelativeTimeString } from '@/Shared/utils/time'
-import { getColumnLabel, getUiLabel } from '@/Shared/utils/translations'
+import { getColumnLabel } from '@/Shared/utils/translations'
 import { TableCell } from '../TableCell'
 import { TableColumn } from '../TableColumn'
-import { FormattedTime } from './components/FormattedTime'
-
-const TWO_MINUTES = 120
+import { Time } from './Time'
 
 function ExpectedTime() {
 	const departures = useNonNullContext(DeparturesContext)
@@ -42,71 +36,6 @@ function ExpectedTime() {
 			))}
 		</TableColumn>
 	)
-}
-
-function Time({
-	expectedTime,
-	aimedTime,
-	cancelled,
-	isArrivalBoard,
-	language,
-}: {
-	expectedTime: string
-	aimedTime: string
-	cancelled: boolean
-	isArrivalBoard?: boolean
-	language: BoardLanguage
-}) {
-	const hasFetchError = useContext(HasFetchErrorContext)
-
-	if (cancelled)
-		return (
-			<>
-				<div className="text-right text-em-lg/em-lg font-semibold text-cancelled-time">
-					{getUiLabel('cancelled', language)}
-				</div>
-				<div className="lineThrough text-right text-em-sm/em-sm">{formatDateString(aimedTime)}</div>
-			</>
-		)
-
-	const secondsSinceArrival = (getServerNow() - Date.parse(expectedTime)) / 1000
-
-	if (isArrivalBoard && secondsSinceArrival > TWO_MINUTES) {
-		return (
-			<>
-				<div className="text-right text-em-xl leading-em-base">
-					{formatDateString(expectedTime)}
-				</div>
-				<div className="text-right text-em-sm/em-xs">{getUiLabel('arrived', language)}</div>
-			</>
-		)
-	}
-	const secondsDeviation = (Date.parse(aimedTime) - Date.parse(expectedTime)) / 1000
-	const timeDeviationInSeconds = Math.abs(secondsDeviation)
-	const isEarly = secondsDeviation > 0
-
-	const delayMoreThanTwoMinutes = !isEarly && timeDeviationInSeconds > TWO_MINUTES
-	const showStrikethrough = timeDeviationInSeconds > TWO_MINUTES
-
-	if (delayMoreThanTwoMinutes)
-		return (
-			<>
-				<div className="text-right text-em-xl leading-em-base">
-					{getRelativeTimeString(expectedTime, language, hasFetchError)}
-				</div>
-				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
-			</>
-		)
-
-	if (showStrikethrough)
-		return (
-			<>
-				<FormattedTime time={expectedTime} />
-				<div className="lineThrough text-right text-em-sm/em-xs">{formatDateString(aimedTime)}</div>
-			</>
-		)
-
-	return <FormattedTime time={expectedTime} />
 }
 
 export { ExpectedTime }
