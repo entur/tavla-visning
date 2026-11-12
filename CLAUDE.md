@@ -36,6 +36,8 @@ pnpm smoketest    # BrowserStack smoketest against a deployed URL (see README.md
 
 Formatting is enforced via husky + lint-staged on pre-commit.
 
+`biome.json`'s `$schema` is pinned to the installed `@biomejs/biome` version in `package.json` — bump both together. `.vscode/settings.json` (tracked) sets Biome as the default formatter with format-on-save for every file type, but Biome itself only acts on what `biome.json`'s `files.includes` covers (ts/tsx/js/jsx/css) — other types (json, md, yml, …) get no formatting on save.
+
 ## Local Development Requirement
 
 **You must run the legacy Tavla database locally** (from the original Next.js repo) before this app will function. The app fetches board configurations from `localhost:3000`. Navigate to `localhost:5173/[boardId]` with a UUID from that database to test a board.
