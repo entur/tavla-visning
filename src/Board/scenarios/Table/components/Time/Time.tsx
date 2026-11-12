@@ -79,7 +79,7 @@ function Time({
 		return (
 			<>
 				<FormattedTime time={expectedTime} size={size} />
-				<div className={`lineThrough${secondaryClass}`}>{formatDateString(aimedTime)}</div>
+				<div className={`lineThrough ${secondaryClass}`}>{formatDateString(aimedTime)}</div>
 			</>
 		)
 
