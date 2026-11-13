@@ -99,7 +99,6 @@ function filterPastDepartures(
  * @returns 'quays' hvis det finnes konkrete quays å spørre mot, ellers 'stopPlace'
  */
 export function resolveTileDataSource(tile: Pick<TileDB, 'filter'>): TileDataSource {
-	// Hvis det er 0 valgte quays, er filteret å betrakte som et helt stoppested
 	return tile.filter?.type === 'quaysFilter' && tile.filter.quays.length > 0 ? 'quays' : 'stopPlace'
 }
 
