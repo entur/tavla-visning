@@ -82,7 +82,7 @@ export type TileDB = {
 	county?: string
 	viewMode?: TileViewMode
 
-	/** @deprecated Bruk filter i stedet. Beholdes som fallback inntil alle boards er migrert. */
+	/** @deprecated Bruk filter i stedet.*/
 	quays?: QuayDB[]
 }
 

@@ -17,6 +17,7 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 				quays: [{ id: nsr, whitelistedLines: [] }],
 				name: '',
 				uuid: 'direktelenke',
+				filter: { type: 'quaysFilter', quays: [{ id: nsr, selectedLines: [] }] },
 			}
 		: {
 				stopPlaceId: nsr,
