@@ -70,8 +70,6 @@ export type TileFilterDB = QuaysFilterDB | StopPlaceFilterDB
 
 export type TileDB = {
 	stopPlaceId: string
-	/** @deprecated Bruk filter i stedet. */
-	quays: QuayDB[]
 	name: string
 	uuid: string
 	filter?: TileFilterDB
@@ -83,6 +81,9 @@ export type TileDB = {
 	columns?: TileColumnDB[]
 	county?: string
 	viewMode?: TileViewMode
+
+	/** @deprecated Bruk filter i stedet.*/
+	quays?: QuayDB[]
 }
 
 export type TileColumnDB =
