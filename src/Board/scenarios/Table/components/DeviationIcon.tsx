@@ -95,7 +95,7 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 					opacity={0.5}
 					color="var(--info-color)"
 					size="1.17em"
-					aria-label="Denne avgangen har informasjon"
+					aria-label="Denne avgangen har informasjon som ikke bør påvirke reisen"
 				/>
 			)}
 		</div>
