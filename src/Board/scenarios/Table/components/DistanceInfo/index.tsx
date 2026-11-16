@@ -1,6 +1,6 @@
+import { CarIcon, WalkIcon } from '@entur/icons'
 import type { BoardDrivingDistanceDB, BoardWalkingDistanceDB } from '@/Shared/types/db-types/boards'
 import { formatDuration } from '@/utils/time'
-import { CarIcon, WalkIcon } from '@entur/icons'
 import { getDistanceDisplay } from './utils'
 
 export function DistanceInfo({
@@ -11,7 +11,7 @@ export function DistanceInfo({
 	drivingDistance?: BoardDrivingDistanceDB
 }) {
 	const { walking, driving } = getDistanceDisplay(
-		walkingDistance?.visible === false ? undefined : walkingDistance?.distance,
+		walkingDistance?.distance,
 		drivingDistance?.distance,
 	)
 
