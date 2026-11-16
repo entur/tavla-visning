@@ -43,11 +43,6 @@ export type BoardMetaDB = {
 
 export type BoardFontSize = 'small' | 'medium' | 'large'
 
-export type QuayDB = {
-	id: string
-	whitelistedLines: string[]
-}
-
 export type FilterQuayDB = {
 	id: string
 	selectedLines: string[]
@@ -81,9 +76,6 @@ export type TileDB = {
 	columns?: TileColumnDB[]
 	county?: string
 	viewMode?: TileViewMode
-
-	/** @deprecated Bruk filter i stedet.*/
-	quays?: QuayDB[]
 }
 
 export type TileColumnDB =
