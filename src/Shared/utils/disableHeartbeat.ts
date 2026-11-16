@@ -1,5 +1,5 @@
 const DISABLE_HEARTBEAT_STORAGE_KEY = 'tavla_disable_heartbeat'
-const MODE_QUERY_PARAM = 'disableHeartbeat'
+const DISABLE_HEARTBEAT_QUERY_PARAM = 'disableHeartbeat'
 
 /**
  * Leser query-parameteret for å sjekke om heartbeat skal deaktiveres
@@ -15,12 +15,12 @@ function readQueryParam(): boolean | null {
 
 	try {
 		const params = new URLSearchParams(search)
-		const value = params.get(MODE_QUERY_PARAM)
+		const value = params.get(DISABLE_HEARTBEAT_QUERY_PARAM)
 		if (value === 'true') return true
 		if (value === 'false') return false
 	} catch {
-		if (search.includes(`${MODE_QUERY_PARAM}=true`)) return true
-		if (search.includes(`${MODE_QUERY_PARAM}=false`)) return false
+		if (search.includes(`${DISABLE_HEARTBEAT_QUERY_PARAM}=true`)) return true
+		if (search.includes(`${DISABLE_HEARTBEAT_QUERY_PARAM}=false`)) return false
 	}
 
 	return null

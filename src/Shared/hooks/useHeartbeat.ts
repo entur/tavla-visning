@@ -164,10 +164,10 @@ function initializeTabId(): string {
  */
 function shouldSkipHeartbeat(boardId: string): boolean {
 	return (
+		isHeartbeatDisabled() ||
 		isDemoBoardId(boardId) ||
 		isPreviewBoardId(boardId) ||
-		hasPreviewQueryParam() ||
-		isHeartbeatDisabled()
+		hasPreviewQueryParam()
 	)
 }
 
