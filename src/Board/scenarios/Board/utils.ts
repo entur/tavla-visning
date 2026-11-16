@@ -149,3 +149,25 @@ export function getAccumulatedTileSituations(
 		transportModeList: Array.from(entry.transportModeSet),
 	}))
 }
+
+export type TDeviationType = 'cancellation' | 'incident' | 'general' | 'no-deviation'
+
+/**
+ * Derives the single deviation state to display for a departure, used to pick icon/color.
+ * Cancellation always wins over situations. Among situations, an incident (or a situation with
+ * no reportType) wins over general info.
+ * @param cancelled - Whether the departure itself is cancelled.
+ * @param situations - The situations associated with the departure.
+ * @returns the deviation type to display.
+ */
+export function getDeviationType(
+	cancelled: boolean,
+	situations: TSituationFragment[],
+): TDeviationType {
+	if (cancelled) return 'cancellation'
+	if (situations.length === 0) return 'no-deviation'
+
+	const hasIncident = situations.some((situation) => situation.reportType !== 'general')
+
+	return hasIncident ? 'incident' : 'general'
+}

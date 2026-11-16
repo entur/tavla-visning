@@ -40,6 +40,7 @@ module.exports = {
 				error: 'var(--error-color)',
 				success: 'var(--success-color)',
 				warning: 'var(--warning-color)',
+				info: 'var(--info-color)',
 				highlight: 'var(--highlight-text-color)',
 				'cancelled-time': 'var(--error-color)',
 				tooltip: 'var(--tooltip-color)',
