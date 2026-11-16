@@ -97,8 +97,12 @@ export function TileSituations({
 		publicCodeList,
 	)
 	const deviationType = getDeviationType(cancelledDeparture, [situation])
-	const textColor =
-		deviationType === 'cancellation' ? 'error' : deviationType === 'incident' ? 'warning' : 'info'
+	const textColorClass =
+		deviationType === 'cancellation'
+			? 'text-error'
+			: deviationType === 'incident'
+				? 'text-warning'
+				: 'text-primary'
 
 	if (!situationText) {
 		return null
@@ -116,7 +120,7 @@ export function TileSituations({
 					</div>
 
 					<div
-						className={`table-cell align-top whitespace-normal break-words font-normal text-${textColor}`}
+						className={`table-cell align-top whitespace-normal break-words font-normal ${textColorClass}`}
 					>
 						<div className="line-clamp-2">
 							{transportModeWithPublicCode && <b>{transportModeWithPublicCode}: </b>}
@@ -127,7 +131,7 @@ export function TileSituations({
 			</div>
 			<span className="inline-block w-full mt-em-0.25 mb-em-0.5">
 				<div className="flex flex-row w-full items-center justify-end">
-					<span className={`whitespace-nowrap text-${textColor} font-semibold`}>
+					<span className={`whitespace-nowrap ${textColorClass} font-semibold`}>
 						{currentSituationNumber !== undefined && numberOfSituations !== undefined && (
 							<>
 								{currentSituationNumber + 1} / {numberOfSituations}

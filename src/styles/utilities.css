@@ -63,9 +63,6 @@
 	.text-success {
 		color: var(--success-color);
 	}
-	.text-info {
-		color: var(--info-color);
-	}
 	.text-error {
 		color: var(--error-color);
 	}
