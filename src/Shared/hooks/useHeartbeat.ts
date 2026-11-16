@@ -156,16 +156,19 @@ function initializeTabId(): string {
 }
 
 /**
- * Determines whether heartbeat functionality should be skipped for a given board.
+ * Determines whether heartbeat should be skipped for a given board.
+ *
  * @param boardId - The unique identifier of the board to check.
- * @returns `true` if the board is a demo or preview board; otherwise `false`.
+ * @returns `true` if the board is a demo or preview board, shown in preview mode, or heartbeat
+ * is disabled (see `isHeartbeatDisabled`); otherwise `false`.
  */
 function shouldSkipHeartbeat(boardId: string): boolean {
-	if (isDemoBoardId(boardId) || isPreviewBoardId(boardId)) {
-		return true
-	}
-
-	return hasPreviewQueryParam()
+	return (
+		isDemoBoardId(boardId) ||
+		isPreviewBoardId(boardId) ||
+		hasPreviewQueryParam() ||
+		isHeartbeatDisabled()
+	)
 }
 
 function parseServerTime(body: string): number | null {
@@ -248,16 +251,7 @@ export function useHeartbeat(
 
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
-		if (!board || !board.id || !tabIdRef.current) {
-			return
-		}
-
-		if (isHeartbeatDisabled()) {
-			console.info('Heartbeat er deaktivert for denne tavlevisningen.')
-			return
-		}
-
-		if (shouldSkipHeartbeat(board.id)) {
+		if (!board || !board.id || !tabIdRef.current || shouldSkipHeartbeat(board.id)) {
 			return
 		}
 
