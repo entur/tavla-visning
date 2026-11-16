@@ -158,9 +158,7 @@ function initializeTabId(): string {
 /**
  * Determines whether heartbeat functionality should be skipped for a given board.
  * @param boardId - The unique identifier of the board to check.
- * @returns `true` if the board is a demo or preview board, or shown in preview mode; otherwise
- * `false`. Does not cover `isHeartbeatDisabled()` — callers check that separately so they can
- * log when it's the reason heartbeat is skipped.
+ * @returns `true` if the board is a demo or preview board; otherwise `false`.
  */
 function shouldSkipHeartbeat(boardId: string): boolean {
 	if (isDemoBoardId(boardId) || isPreviewBoardId(boardId)) {
