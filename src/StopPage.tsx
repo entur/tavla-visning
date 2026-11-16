@@ -14,15 +14,14 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 	const tile: TileDB = isQuay
 		? {
 				stopPlaceId: '',
-				quays: [{ id: nsr, whitelistedLines: [] }],
 				name: '',
 				uuid: 'direktelenke',
 				filter: { type: 'quaysFilter', quays: [{ id: nsr, selectedLines: [] }] },
 			}
 		: {
 				stopPlaceId: nsr,
-				quays: [],
 				name: '',
+				filter: { type: 'stopPlaceFilter', selectedTransportModes: [], selectedLines: [] },
 				uuid: 'direktelenke',
 			}
 
