@@ -3,7 +3,7 @@ import { useBoardContext } from '@/Board/context'
 import { GetQuayQuery, StopPlaceQuery } from '@/graphql'
 import { useQueries, useQuery } from '@/Shared/hooks/useQuery'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
-import type { FilterQuayDB, QuayDB, TileDB } from '@/Shared/types/db-types/boards'
+import type { FilterQuayDB, TileDB } from '@/Shared/types/db-types/boards'
 import { getServerNow } from '@/Shared/utils/serverTime'
 import { getPlatformLabel } from '@/Shared/utils/translations'
 import type { TDepartureFragment, TSituationFragment } from '@/types/graphql-operations'
@@ -108,22 +108,9 @@ export function resolveTileDataSource(tile: Pick<TileDB, 'filter'>): TileDataSou
  * @param tile Tile (eller utdrag av felter) quays skal hentes for
  * @returns Quays fra filter.quays hvis satt, ellers tomt array
  */
-export function getQuaysToQuery(tile: Pick<TileDB, 'filter'>): QuayDB[] | FilterQuayDB[] {
+export function getQuaysToQuery(tile: Pick<TileDB, 'filter'>): FilterQuayDB[] {
 	if (tile.filter?.type === 'quaysFilter') return tile.filter.quays
 	return []
-}
-
-/**
- * Henter valgte linjer for et quay, uavhengig av om det er et vanlig QuayDB eller et FilterQuayDB.
- *
- * De to typene bruker ulike feltnavn for samme konsept (selectedLines vs. whitelistedLines),
- * så funksjonen normaliserer dette til ett felles resultat.
- *
- * @param quay Quay (QuayDB eller FilterQuayDB) linjer skal hentes for
- * @returns Liste med linje-IDer valgt for quayet
- */
-function getQuaySelectedLines(quay: QuayDB | FilterQuayDB): string[] {
-	return 'selectedLines' in quay ? quay.selectedLines : quay.whitelistedLines
 }
 
 /**
@@ -204,7 +191,7 @@ export function useQuaysTileData(
 				query: GetQuayQuery,
 				variables: {
 					quayId: q.id,
-					filters: buildEstimatedCallFilters(getQuaySelectedLines(q)),
+					filters: buildEstimatedCallFilters(q.selectedLines),
 					arrivalDeparture: isArrivals ? ('arrivals' as const) : undefined,
 				},
 				options: {
@@ -368,7 +355,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 			query: GetQuayQuery,
 			variables: {
 				quayId: q.id,
-				filters: buildEstimatedCallFilters(getQuaySelectedLines(q)),
+				filters: buildEstimatedCallFilters(q.selectedLines),
 				arrivalDeparture,
 			},
 			options: { poll: true, offset: (tile.offset ?? 0) + holdTimeOffset },
