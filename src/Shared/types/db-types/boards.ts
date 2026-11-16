@@ -98,7 +98,6 @@ export type TileColumnDB =
 
 export type BoardWalkingDistanceDB = {
 	distance?: number
-	visible?: boolean
 }
 
 export type BoardDrivingDistanceDB = {
