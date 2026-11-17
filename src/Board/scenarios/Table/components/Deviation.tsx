@@ -1,7 +1,11 @@
 import { nanoid } from 'nanoid'
+import {
+	getDeviationType,
+	removeStopPlaceSituations,
+	type TDeviationType,
+} from '@/Board/scenarios/Board/utils'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { TSituationFragment } from '@/types/graphql-operations'
-import { getDeviationType, removeStopPlaceSituations, type TDeviationType } from '../../Board/utils'
 import { DeparturesContext } from '../contexts'
 import { DeviationIcon } from './DeviationIcon'
 import { TableCell } from './TableCell'
