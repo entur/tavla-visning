@@ -74,8 +74,6 @@ function getSymbolIconPath(deviationType: Exclude<DeviationType, 'no-deviation'>
 }
 
 export const DeviationIcon = ({ isHighlighted = true, deviationType }: DeviationIconProps) => {
-	const size = '1.3em'
-
 	if (deviationType === 'no-deviation') {
 		return null
 	}
@@ -84,7 +82,7 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 		return (
 			<div
 				className="relative inline-flex items-center justify-center"
-				style={{ width: size, height: size }}
+				style={{ width: DEVIATION_ICON_SIZE, height: DEVIATION_ICON_SIZE }}
 			>
 				<div className="flex items-center justify-center">
 					<HighlightedDeviationIcon deviationType={deviationType} />
@@ -94,7 +92,10 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 	}
 
 	return (
-		<div className="flex items-center justify-center" style={{ width: size, height: size }}>
+		<div
+			className="flex items-center justify-center"
+			style={{ width: DEVIATION_ICON_SIZE, height: DEVIATION_ICON_SIZE }}
+		>
 			{deviationType === 'cancellation' ? (
 				<ValidationErrorFilledIcon
 					opacity={0.5}
