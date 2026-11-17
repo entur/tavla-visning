@@ -1,10 +1,11 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <Need backwards compatibility> */
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
-import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
-import { hasPreviewQueryParam } from '@/Shared/utils/preview'
+import { isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
+import { isHeartbeatDisabled } from '@/Shared/utils/disableHeartbeat'
 import { applyServerTime } from '@/Shared/utils/serverTime'
 import type { BoardDB } from '../types/db-types/boards'
+import { hasPreviewQueryParam } from '../utils/queryParam'
 
 const HEARTBEAT_INTERVAL_MS = 60000
 
@@ -148,23 +149,20 @@ function initializeTabId(): string {
 		sessionStorage.setItem('tabId', newId)
 		return newId
 	} catch {
-		// Fallback til window.__tabId hvis sessionStorage ikke er tilgjengelig
+		// Fallback to window.__tabId if sessionStorage is not available
 		window.__tabId = newId
 		return newId
 	}
 }
 
 /**
- * Determines whether heartbeat functionality should be skipped for a given board.
+ * Determines whether heartbeat should be skipped for a given board.
+ *
  * @param boardId - The unique identifier of the board to check.
- * @returns `true` if the board is a demo or preview board; otherwise `false`.
+ * @returns `true` if heartbeat should be skipped for the board, otherwise `false`
  */
 function shouldSkipHeartbeat(boardId: string): boolean {
-	if (isDemoBoardId(boardId) || isPreviewBoardId(boardId)) {
-		return true
-	}
-
-	return hasPreviewQueryParam()
+	return isHeartbeatDisabled() || isPreviewBoardId(boardId) || hasPreviewQueryParam()
 }
 
 function parseServerTime(body: string): number | null {
@@ -247,11 +245,11 @@ export function useHeartbeat(
 
 	// Set up heartbeat interval for active board tracking
 	useEffect(() => {
-		if (!board || !board.id || shouldSkipHeartbeat(board.id) || !tabIdRef.current) {
+		if (!board || !board.id || !tabIdRef.current || shouldSkipHeartbeat(board.id)) {
 			return
 		}
 
-		// Antar at første element i board.tiles representerer fylket for hele tavlen, hvis det er tilgjengelig
+		// Assumes the first element in board.tiles represents the county for the whole board, if available
 		const county = board.tiles?.[0]?.county
 
 		sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink, county)

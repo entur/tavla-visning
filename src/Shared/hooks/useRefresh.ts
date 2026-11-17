@@ -1,7 +1,7 @@
 import { delay } from 'lodash'
 import { useCallback, useEffect, useState } from 'react'
-import { hasPreviewQueryParam } from '@/Shared/utils/preview'
 import type { BoardDB } from '../types/db-types/boards'
+import { hasPreviewQueryParam } from '../utils/queryParam'
 
 type Message = { type: 'refresh'; payload: BoardDB } | { type: 'update' } | { type: 'timeout' }
 
