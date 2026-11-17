@@ -53,7 +53,7 @@
     "@types/node": "26.6.6",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
-    "@vitejs/plugin-legacy": "8.2.3",
+    "@vitejs/plugin-legacy": "8.2.4",
     "@vitejs/plugin-react-swc": "4.3.3",
     "autoprefixer": "10.6.2",
     "core-js": "3.51.0",
