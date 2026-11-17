@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid'
 import {
+	type DeviationType,
 	getDeviationType,
 	removeStopPlaceSituations,
-	type TDeviationType,
 } from '@/Board/scenarios/Board/utils'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { TSituationFragment } from '@/types/graphql-operations'
@@ -12,7 +12,7 @@ import { TableCell } from './TableCell'
 import { TableColumn } from './TableColumn'
 
 type Deviation = {
-	deviationType: TDeviationType
+	deviationType: DeviationType
 	isHighlighted: boolean
 }
 

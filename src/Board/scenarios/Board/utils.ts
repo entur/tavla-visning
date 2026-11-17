@@ -150,7 +150,7 @@ export function getAccumulatedTileSituations(
 	}))
 }
 
-export type TDeviationType = 'cancellation' | 'incident' | 'general' | 'no-deviation'
+export type DeviationType = 'cancellation' | 'incident' | 'general' | 'no-deviation'
 
 /**
  * Derives the single deviation state to display for a departure, used to pick icon/color.
@@ -163,7 +163,7 @@ export type TDeviationType = 'cancellation' | 'incident' | 'general' | 'no-devia
 export function getDeviationType(
 	cancelled: boolean,
 	situations: TSituationFragment[],
-): TDeviationType {
+): DeviationType {
 	if (cancelled) return 'cancellation'
 	if (situations.length === 0) return 'no-deviation'
 

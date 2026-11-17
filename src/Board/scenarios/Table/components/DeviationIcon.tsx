@@ -4,10 +4,10 @@ import {
 	ValidationExclamationCircleFilledIcon,
 	ValidationInfoFilledIcon,
 } from '@entur/icons'
-import type { TDeviationType } from '../../Board/utils'
+import type { DeviationType } from '../../Board/utils'
 
 type DeviationIconProps = {
-	deviationType: TDeviationType
+	deviationType: DeviationType
 	isHighlighted?: boolean
 }
 
