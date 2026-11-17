@@ -42,7 +42,7 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.4",
+    "@biomejs/biome": "2.6.6",
     "@graphql-codegen/cli": "7.4.6",
     "@graphql-codegen/import-types-preset": "4.0.1",
     "@graphql-codegen/typed-document-node": "7.2.0",
