@@ -4,9 +4,9 @@ const DISABLE_HEARTBEAT_STORAGE_KEY = 'tavla_disable_heartbeat'
 const DISABLE_HEARTBEAT_QUERY_PARAM = 'disableHeartbeat'
 
 /**
- * Leser lagret Heartbeat-verdi fra localStorage om heartbeat skal deaktiveres
+ * Reads the stored heartbeat-disabled value from localStorage.
  *
- * @returns Representerer om heartbeat skal deaktiveres
+ * @returns Whether heartbeat should be disabled
  */
 function readDisableHeartbeatValue(): boolean {
 	try {
@@ -17,9 +17,9 @@ function readDisableHeartbeatValue(): boolean {
 }
 
 /**
- * Skriver om heartbeat skal deaktiveres
+ * Writes whether heartbeat should be disabled.
  *
- * @param enabled Om heartbeat skal deaktiveres
+ * @param enabled Whether heartbeat should be disabled
  * @returns void
  */
 function writeDisableHeartbeatValue(enabled: boolean): void {
@@ -33,9 +33,10 @@ function writeDisableHeartbeatValue(enabled: boolean): void {
 }
 
 /**
- * Leser query-parmeterne som er satt, og evt lagret fra før og returnerer om heartbeatlogging skal være deaktivert
+ * Reads the `disableHeartbeat` query param, falling back to the previously stored value, and
+ * returns whether heartbeat should be disabled.
  *
- * @returns boolean Representerer om hearbeat skal deaktiveres
+ * @returns Whether heartbeat should be disabled
  */
 export function isHeartbeatDisabled(): boolean {
 	const queryParamValue = readBooleanQueryParamValue(DISABLE_HEARTBEAT_QUERY_PARAM)

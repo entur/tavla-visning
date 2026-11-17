@@ -149,7 +149,7 @@ function initializeTabId(): string {
 		sessionStorage.setItem('tabId', newId)
 		return newId
 	} catch {
-		// Fallback til window.__tabId hvis sessionStorage ikke er tilgjengelig
+		// Fallback to window.__tabId if sessionStorage is not available
 		window.__tabId = newId
 		return newId
 	}
@@ -249,7 +249,7 @@ export function useHeartbeat(
 			return
 		}
 
-		// Antar at første element i board.tiles representerer fylket for hele tavlen, hvis det er tilgjengelig
+		// Assumes the first element in board.tiles represents the county for the whole board, if available
 		const county = board.tiles?.[0]?.county
 
 		sendHeartbeat(board.id, tabIdRef.current, backend_url, isDirectLink, county)
