@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: <Need backwards compatibility> */
 /** biome-ignore-all lint/complexity/useOptionalChain: <Need backwards compatibility> */
 import { useEffect, useRef } from 'react'
-import { isDemoBoardId, isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
+import { isPreviewBoardId } from '@/Shared/hooks/useGetBoard'
 import { isHeartbeatDisabled } from '@/Shared/utils/disableHeartbeat'
-import { hasPreviewQueryParam } from '@/Shared/utils/preview'
 import { applyServerTime } from '@/Shared/utils/serverTime'
 import type { BoardDB } from '../types/db-types/boards'
+import { hasPreviewQueryParam } from '../utils/queryParam'
 
 const HEARTBEAT_INTERVAL_MS = 60000
 
@@ -159,16 +159,10 @@ function initializeTabId(): string {
  * Determines whether heartbeat should be skipped for a given board.
  *
  * @param boardId - The unique identifier of the board to check.
- * @returns `true` if the board is a demo or preview board, shown in preview mode, or heartbeat
- * is disabled (see `isHeartbeatDisabled`); otherwise `false`.
+ * @returns `true` if heartbeat should be skipped for the board, otherwise `false`
  */
 function shouldSkipHeartbeat(boardId: string): boolean {
-	return (
-		isHeartbeatDisabled() ||
-		isDemoBoardId(boardId) ||
-		isPreviewBoardId(boardId) ||
-		hasPreviewQueryParam()
-	)
+	return isHeartbeatDisabled() || isPreviewBoardId(boardId) || hasPreviewQueryParam()
 }
 
 function parseServerTime(body: string): number | null {

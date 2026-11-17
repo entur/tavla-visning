@@ -66,7 +66,6 @@ function boardReducer(state: BoardState, action: BoardAction): BoardState {
 	}
 }
 
-export const isDemoBoardId = (boardId: string): boolean => boardId === 'demo'
 export const isPreviewBoardId = (boardId: string): boolean => boardId.startsWith('preview-')
 
 /**

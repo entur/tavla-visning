@@ -1,37 +1,14 @@
+import { readBooleanQueryParamValue } from './queryParam'
+
 const DISABLE_HEARTBEAT_STORAGE_KEY = 'tavla_disable_heartbeat'
 const DISABLE_HEARTBEAT_QUERY_PARAM = 'disableHeartbeat'
 
 /**
- * Leser query-parameteret for å sjekke om heartbeat skal deaktiveres
+ * Leser lagret Heartbeat-verdi fra localStorage om heartbeat skal deaktiveres
  *
- * @returns boolean Representerer om hearbeat skal deaktiveres
- * @returns null Hvis query-parameteret ikke er satt
+ * @returns Representerer om heartbeat skal deaktiveres
  */
-function readQueryParam(): boolean | null {
-	if (typeof window === 'undefined') return null
-
-	const search = window.location.search
-	if (!search) return null
-
-	try {
-		const params = new URLSearchParams(search)
-		const value = params.get(DISABLE_HEARTBEAT_QUERY_PARAM)
-		if (value === 'true') return true
-		if (value === 'false') return false
-	} catch {
-		if (search.includes(`${DISABLE_HEARTBEAT_QUERY_PARAM}=true`)) return true
-		if (search.includes(`${DISABLE_HEARTBEAT_QUERY_PARAM}=false`)) return false
-	}
-
-	return null
-}
-
-/**
- * Leser lagret verdi fra localStorage for å sjekke om heartbeat skal deaktiveres
- *
- * @returns booolean Representerer om hearbeat skal deaktiveres basert på lagret verdi
- */
-function readStoredValue(): boolean {
+function readDisableHeartbeatValue(): boolean {
 	try {
 		return localStorage.getItem(DISABLE_HEARTBEAT_STORAGE_KEY) === 'true'
 	} catch {
@@ -42,10 +19,10 @@ function readStoredValue(): boolean {
 /**
  * Skriver om heartbeat skal deaktiveres
  *
- * @param enabled boolean Om heartbeat skal deaktiveres
+ * @param enabled Om heartbeat skal deaktiveres
  * @returns void
  */
-function writeValue(enabled: boolean): void {
+function writeDisableHeartbeatValue(enabled: boolean): void {
 	try {
 		if (enabled) {
 			localStorage.setItem(DISABLE_HEARTBEAT_STORAGE_KEY, 'true')
@@ -61,11 +38,11 @@ function writeValue(enabled: boolean): void {
  * @returns boolean Representerer om hearbeat skal deaktiveres
  */
 export function isHeartbeatDisabled(): boolean {
-	const queryParam = readQueryParam()
-	if (queryParam !== null) {
-		writeValue(queryParam)
-		return queryParam
+	const queryParamValue = readBooleanQueryParamValue(DISABLE_HEARTBEAT_QUERY_PARAM)
+	if (queryParamValue !== null) {
+		writeDisableHeartbeatValue(queryParamValue)
+		return queryParamValue
 	}
 
-	return readStoredValue()
+	return readDisableHeartbeatValue()
 }
