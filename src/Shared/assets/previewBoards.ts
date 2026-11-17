@@ -14,7 +14,6 @@ export const PREVIEW_BOARDS: BoardDB[] = [
 				uuid: 'WPLoeygP7d173RifiQDvd',
 				walkingDistance: {
 					distance: 694,
-					visible: true,
 				},
 				filter: {
 					type: 'stopPlaceFilter',
