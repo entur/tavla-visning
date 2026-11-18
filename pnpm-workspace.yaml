@@ -1,5 +1,4 @@
 overrides:
   "lodash@<4.18.0": 4.18.1
-  "@graphql-tools/utils": 12.0.4
 onlyBuiltDependencies:
   - esbuild
