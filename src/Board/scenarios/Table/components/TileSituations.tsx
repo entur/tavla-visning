@@ -1,4 +1,5 @@
 import { useBoardContext } from '@/Board/context'
+import { getDeviationType } from '@/Board/scenarios/Board/utils'
 import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import { getColumnLabel } from '@/Shared/utils/translations'
 import type { TSituationFragment } from '@/types/graphql-operations'
@@ -95,7 +96,13 @@ export function TileSituations({
 		transportModeList,
 		publicCodeList,
 	)
-	const textColor = cancelledDeparture ? 'error' : 'warning'
+	const deviationType = getDeviationType(cancelledDeparture, [situation])
+	const textColorClass =
+		deviationType === 'cancellation'
+			? 'text-error'
+			: deviationType === 'incident'
+				? 'text-warning'
+				: 'text-primary'
 
 	if (!situationText) {
 		return null
@@ -109,13 +116,11 @@ export function TileSituations({
 			<div className="table w-full mt-em-0.5 ml-em-0.25">
 				<div className="table-row">
 					<div className="table-cell align-top w-em-2">
-						<DeviationIcon deviationType={cancelledDeparture ? 'cancellation' : 'situation'} />
+						<DeviationIcon deviationType={deviationType} />
 					</div>
 
 					<div
-						className={`table-cell align-top whitespace-normal break-words font-normal ${
-							cancelledDeparture ? 'text-error' : 'text-warning'
-						}`}
+						className={`table-cell align-top whitespace-normal break-words font-normal ${textColorClass}`}
 					>
 						<div className="line-clamp-2">
 							{transportModeWithPublicCode && <b>{transportModeWithPublicCode}: </b>}
@@ -126,7 +131,7 @@ export function TileSituations({
 			</div>
 			<span className="inline-block w-full mt-em-0.25 mb-em-0.5">
 				<div className="flex flex-row w-full items-center justify-end">
-					<span className={`whitespace-nowrap text-${textColor} font-semibold`}>
+					<span className={`whitespace-nowrap ${textColorClass} font-semibold`}>
 						{currentSituationNumber !== undefined && numberOfSituations !== undefined && (
 							<>
 								{currentSituationNumber + 1} / {numberOfSituations}

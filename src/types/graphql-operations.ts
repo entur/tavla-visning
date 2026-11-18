@@ -32,6 +32,12 @@ export type TEstimatedCallSelectInput = {
 	transportModes?: Array<TTransportModes> | null | undefined
 }
 
+export type TReportType =
+	/** Indicates a general info-message that should not affect trip. */
+	| 'general'
+	/** Indicates an incident that may affect trip. */
+	| 'incident'
+
 export type TTransportMode =
 	| 'air'
 	| 'bus'
@@ -194,6 +200,7 @@ export type TDepartureFragment = {
 	}
 	situations: Array<{
 		id: string
+		reportType: Types.TReportType | null
 		description: Array<{ value: string; language: string | null }>
 		summary: Array<{ value: string; language: string | null }>
 		validityPeriod: { endTime: DateTime | null } | null
@@ -211,6 +218,7 @@ export type TLinesFragment = {
 
 export type TSituationFragment = {
 	id: string
+	reportType: Types.TReportType | null
 	description: Array<{ value: string; language: string | null }>
 	summary: Array<{ value: string; language: string | null }>
 	validityPeriod: { endTime: DateTime | null } | null
@@ -255,6 +263,7 @@ export type TGetQuayQuery = {
 			}
 			situations: Array<{
 				id: string
+				reportType: Types.TReportType | null
 				description: Array<{ value: string; language: string | null }>
 				summary: Array<{ value: string; language: string | null }>
 				validityPeriod: { endTime: DateTime | null } | null
@@ -262,6 +271,7 @@ export type TGetQuayQuery = {
 		}>
 		situations: Array<{
 			id: string
+			reportType: Types.TReportType | null
 			description: Array<{ value: string; language: string | null }>
 			summary: Array<{ value: string; language: string | null }>
 			validityPeriod: { endTime: DateTime | null } | null
@@ -269,6 +279,7 @@ export type TGetQuayQuery = {
 		stopPlace: {
 			situations: Array<{
 				id: string
+				reportType: Types.TReportType | null
 				description: Array<{ value: string; language: string | null }>
 				summary: Array<{ value: string; language: string | null }>
 				validityPeriod: { endTime: DateTime | null } | null
@@ -321,6 +332,7 @@ export type TGetQuaysQuery = {
 			}
 			situations: Array<{
 				id: string
+				reportType: Types.TReportType | null
 				description: Array<{ value: string; language: string | null }>
 				summary: Array<{ value: string; language: string | null }>
 				validityPeriod: { endTime: DateTime | null } | null
@@ -328,6 +340,7 @@ export type TGetQuaysQuery = {
 		}>
 		situations: Array<{
 			id: string
+			reportType: Types.TReportType | null
 			description: Array<{ value: string; language: string | null }>
 			summary: Array<{ value: string; language: string | null }>
 			validityPeriod: { endTime: DateTime | null } | null
@@ -335,6 +348,7 @@ export type TGetQuaysQuery = {
 		stopPlace: {
 			situations: Array<{
 				id: string
+				reportType: Types.TReportType | null
 				description: Array<{ value: string; language: string | null }>
 				summary: Array<{ value: string; language: string | null }>
 				validityPeriod: { endTime: DateTime | null } | null
@@ -387,6 +401,7 @@ export type TStopPlaceQuery = {
 			}
 			situations: Array<{
 				id: string
+				reportType: Types.TReportType | null
 				description: Array<{ value: string; language: string | null }>
 				summary: Array<{ value: string; language: string | null }>
 				validityPeriod: { endTime: DateTime | null } | null
@@ -394,6 +409,7 @@ export type TStopPlaceQuery = {
 		}>
 		situations: Array<{
 			id: string
+			reportType: Types.TReportType | null
 			description: Array<{ value: string; language: string | null }>
 			summary: Array<{ value: string; language: string | null }>
 			validityPeriod: { endTime: DateTime | null } | null
@@ -403,6 +419,7 @@ export type TStopPlaceQuery = {
 			publicCode: string | null
 			situations: Array<{
 				id: string
+				reportType: Types.TReportType | null
 				description: Array<{ value: string; language: string | null }>
 				summary: Array<{ value: string; language: string | null }>
 				validityPeriod: { endTime: DateTime | null } | null

@@ -1,5 +1,5 @@
 import { useBoardContext } from '@/Board/context'
-import { removeStopPlaceSituations } from '@/Board/scenarios/Board/utils'
+import { getDeviationType, removeStopPlaceSituations } from '@/Board/scenarios/Board/utils'
 import { DeviationIcon } from '@/Board/scenarios/Table/components/DeviationIcon'
 import { Time } from '@/Board/scenarios/Table/components/Time/Time'
 import { TravelTag } from '@/Shared/components/TravelTag'
@@ -21,11 +21,7 @@ function ExpandedNextDeparture({
 	const { isArrivals, language } = useBoardContext()
 
 	const situations = removeStopPlaceSituations(departure.situations, stopPlaceSituations)
-	const deviationType = departure.cancellation
-		? 'cancellation'
-		: situations.length > 0
-			? 'situation'
-			: 'no-deviation'
+	const deviationType = getDeviationType(departure.cancellation, situations)
 
 	const isHighlighted =
 		numberOfVisibleSituations && numberOfVisibleSituations > 0

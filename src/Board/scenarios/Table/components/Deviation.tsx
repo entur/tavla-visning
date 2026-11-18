@@ -1,26 +1,20 @@
 import { nanoid } from 'nanoid'
+import {
+	type DeviationType,
+	getDeviationType,
+	removeStopPlaceSituations,
+} from '@/Board/scenarios/Board/utils'
 import { useNonNullContext } from '@/Shared/hooks/useNonNullContext'
 import type { TSituationFragment } from '@/types/graphql-operations'
-import { removeStopPlaceSituations } from '../../Board/utils'
 import { DeparturesContext } from '../contexts'
 import { DeviationIcon } from './DeviationIcon'
 import { TableCell } from './TableCell'
 import { TableColumn } from './TableColumn'
 
-type Situation = {
-	type: 'situation'
-	situations: TSituationFragment[]
+type Deviation = {
+	deviationType: DeviationType
 	isHighlighted: boolean
 }
-
-type Cancellation = {
-	type: 'cancellation'
-	isHighlighted: boolean
-}
-
-type NoDeviation = { type: 'no-deviation' }
-
-type Deviation = Situation | Cancellation | NoDeviation
 
 function Deviation({
 	currentVisibleSituationId,
@@ -42,17 +36,10 @@ function Deviation({
 		const filteredSituations =
 			removeStopPlaceSituations(departure.situations, stopPlaceSituations) ?? []
 
-		if (departure.cancellation) {
-			return { type: 'cancellation', isHighlighted }
+		return {
+			deviationType: getDeviationType(departure.cancellation, filteredSituations),
+			isHighlighted,
 		}
-		if (filteredSituations.length > 0) {
-			return {
-				type: 'situation',
-				situations: filteredSituations,
-				isHighlighted,
-			}
-		}
-		return { type: 'no-deviation' }
 	})
 
 	return (
@@ -67,13 +54,16 @@ function Deviation({
 }
 
 function DeviationCell({ deviation }: { deviation: Deviation }) {
-	if (deviation.type === 'no-deviation') {
+	if (deviation.deviationType === 'no-deviation') {
 		return null
 	}
 
 	return (
 		<div className="flex items-center justify-center" style={{ height: '3em' }}>
-			<DeviationIcon deviationType={deviation.type} isHighlighted={deviation.isHighlighted} />
+			<DeviationIcon
+				deviationType={deviation.deviationType}
+				isHighlighted={deviation.isHighlighted}
+			/>
 		</div>
 	)
 }

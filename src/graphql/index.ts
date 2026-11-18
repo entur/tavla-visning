@@ -34,6 +34,7 @@ export const SituationFragment = new TypedDocumentString(
   validityPeriod {
     endTime
   }
+  reportType
 }
     `,
 	{ fragmentName: 'situation' },
@@ -88,6 +89,7 @@ export const DepartureFragment = new TypedDocumentString(
   validityPeriod {
     endTime
   }
+  reportType
 }`,
 	{ fragmentName: 'departure' },
 ) as unknown as TypedDocumentString<Types.TDepartureFragment, unknown>
@@ -186,6 +188,7 @@ fragment situation on PtSituationElement {
   validityPeriod {
     endTime
   }
+  reportType
 }`) as unknown as TypedDocumentString<Types.TGetQuayQuery, Types.TGetQuayQueryVariables>
 export const GetQuaysQuery = new TypedDocumentString(`
     query getQuays($quayIds: [String!], $filters: [EstimatedCallFilterInput!], $numberOfDepartures: Int = 20, $startTime: DateTime) {
@@ -268,6 +271,7 @@ fragment situation on PtSituationElement {
   validityPeriod {
     endTime
   }
+  reportType
 }`) as unknown as TypedDocumentString<Types.TGetQuaysQuery, Types.TGetQuaysQueryVariables>
 export const StopPlaceQuery = new TypedDocumentString(`
     query StopPlace($stopPlaceId: String!, $filters: [EstimatedCallFilterInput!], $numberOfDepartures: Int = 20, $startTime: DateTime, $arrivalDeparture: ArrivalDeparture) {
@@ -343,4 +347,5 @@ fragment situation on PtSituationElement {
   validityPeriod {
     endTime
   }
+  reportType
 }`) as unknown as TypedDocumentString<Types.TStopPlaceQuery, Types.TStopPlaceQueryVariables>
