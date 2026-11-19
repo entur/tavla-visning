@@ -44,10 +44,7 @@ export type CacheStatus = {
 
 export function getCacheStatus(tileData: TileData): CacheStatus {
 	return {
-		showingCachedData:
-			!!tileData.error &&
-			tileData.hasData &&
-			(tileData.estimatedCalls.length > 0 || !tileData.hasFetchedDepartures),
+		showingCachedData: !!tileData.error && tileData.hasData,
 		lastUpdated: tileData.lastUpdated ?? null,
 	}
 }
