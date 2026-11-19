@@ -32,6 +32,7 @@ interface TileData {
 	isLoading: boolean
 	error?: Error
 	hasData: boolean
+	hasFetchedDepartures: boolean
 	customNames?: CustomName[]
 	lastUpdated: number | null
 }
@@ -43,7 +44,10 @@ export type CacheStatus = {
 
 export function getCacheStatus(tileData: TileData): CacheStatus {
 	return {
-		showingCachedData: !!tileData.error && tileData.hasData && tileData.estimatedCalls.length > 0,
+		showingCachedData:
+			!!tileData.error &&
+			tileData.hasData &&
+			(tileData.estimatedCalls.length > 0 || !tileData.hasFetchedDepartures),
 		lastUpdated: tileData.lastUpdated ?? null,
 	}
 }
@@ -242,6 +246,7 @@ export function useQuaysTileData(
 		isLoading: quaysLoading,
 		error: quaysError,
 		hasData: quayResults.length > 0,
+		hasFetchedDepartures: quayResults.some((quay) => quay.estimatedCalls.length > 0),
 		lastUpdated,
 	}
 }
@@ -327,6 +332,7 @@ export function useStopPlaceTileData(
 		isLoading: stopPlaceLoading,
 		error: stopPlaceError,
 		hasData: !!stopPlaceData?.stopPlace,
+		hasFetchedDepartures: (stopPlaceData?.stopPlace?.estimatedCalls?.length ?? 0) > 0,
 		lastUpdated,
 	}
 }
@@ -470,6 +476,7 @@ export function useCombinedTileData(combinedTile: TileDB[], isArrivals?: boolean
 		isLoading: stopPlaceLoading || quaysLoading,
 		error: stopPlaceError || quaysError,
 		hasData: !!(stopPlaceData?.length || quaysData?.length),
+		hasFetchedDepartures: estimatedCalls.length > 0,
 		customNames,
 		lastUpdated,
 	}

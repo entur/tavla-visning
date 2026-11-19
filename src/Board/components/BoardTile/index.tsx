@@ -31,6 +31,7 @@ interface BaseTileProps {
 	isLoading: boolean
 	error?: Error
 	hasData: boolean
+	hasFetchedDepartures: boolean
 
 	columns: TileColumnDB[]
 	walkingDistance?: BoardWalkingDistanceDB
@@ -78,6 +79,7 @@ export function BoardTile({
 	isLoading,
 	error,
 	hasData,
+	hasFetchedDepartures,
 	columns,
 	walkingDistance,
 	drivingDistance,
@@ -89,8 +91,8 @@ export function BoardTile({
 }: BaseTileProps) {
 	const { isArrivals, language, boardId } = useBoardContext()
 	const hasFetchError = !!error
-	const showingCachedData = hasFetchError && hasData && estimatedCalls.length > 0
-	const isCacheExpired = hasFetchError && hasData && estimatedCalls.length === 0
+	const isCacheExpired = hasFetchedDepartures && hasFetchError && estimatedCalls.length === 0
+	const showingCachedData = hasFetchError && hasData && !isCacheExpired
 
 	useEffect(() => {
 		if (showingCachedData) {
@@ -119,7 +121,7 @@ export function BoardTile({
 		)
 	}
 
-	if (!hasData || (error && estimatedCalls.length === 0)) {
+	if (!hasData || isCacheExpired) {
 		return (
 			<Tile state="error" size={size}>
 				<DataFetchingFailed error={error} />
