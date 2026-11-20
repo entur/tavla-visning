@@ -10,7 +10,7 @@ function getHeading(error?: Error) {
 		case FetchErrorTypes.ABORT:
 			return 'Innlasting av avganger tok for lang tid!'
 		default:
-			return 'Au da! Vi greide ikke å hente avgangene!'
+			return 'Får ikke hentet avganger'
 	}
 }
 
@@ -20,7 +20,7 @@ function DataFetchingFailed({ error }: { error?: Error }) {
 			<div className="w-full text-center">
 				<Heading3 className="!text-primary">{getHeading(error)}</Heading3>
 				<Paragraph className="!text-primary">
-					Prøv å laste inn siden på nytt. Hvis dette ikke hjelper, kontakt oss på tavla@entur.org
+					Tavla prøver igjen automatisk. Hvis feilen vedvarer, kontakt oss på tavla@entur.org
 				</Paragraph>
 			</div>
 		</div>
