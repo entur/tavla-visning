@@ -26,11 +26,11 @@
     ]
   },
   "dependencies": {
-    "@entur/button": "5.2.1",
-    "@entur/icons": "10.1.1",
-    "@entur/loader": "0.9.1",
-    "@entur/tokens": "4.3.1",
-    "@entur/typography": "3.2.0",
+    "@entur/button": "5.2.2",
+    "@entur/icons": "10.1.2",
+    "@entur/loader": "0.9.2",
+    "@entur/tokens": "4.4.0",
+    "@entur/typography": "3.2.1",
     "abortcontroller-polyfill": "1.7.8",
     "class-variance-authority": "0.7.1",
     "graphql": "17.1.0",
@@ -42,7 +42,7 @@
     "whatwg-fetch": "3.6.20"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
+    "@biomejs/biome": "2.6.8",
     "@graphql-codegen/cli": "8.0.0",
     "@graphql-codegen/import-types-preset": "5.0.0",
     "@graphql-codegen/typed-document-node": "8.0.0",
@@ -59,10 +59,10 @@
     "core-js": "3.51.0",
     "husky": "9.1.7",
     "jsdom": "31.0.1",
-    "lint-staged": "17.6.0",
+    "lint-staged": "17.6.1",
     "postcss": "8.5.32",
     "regenerator-runtime": "0.14.1",
-    "selenium-webdriver": "4.52.0",
+    "selenium-webdriver": "4.53.0",
     "tailwindcss": "3.4.19",
     "typescript": "7.0.2",
     "vite": "8.3.8",
