@@ -36,7 +36,7 @@ function Header({
 					{!hideLogo && (
 						<img
 							src={logoSrc}
-							alt={getUiLabel('boardLogoAlt', language)}
+							alt={getUiLabel(folderLogo ? 'boardLogoAlt' : 'tavlaLogoAlt', language)}
 							className="h-full w-auto object-contain object-left"
 							width="100"
 							height="100"

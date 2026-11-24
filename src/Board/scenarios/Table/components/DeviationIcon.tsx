@@ -1,9 +1,10 @@
-/** biome-ignore-all lint/a11y/noSvgWithoutTitle: <comes later> */
 import {
 	ValidationErrorFilledIcon,
 	ValidationExclamationCircleFilledIcon,
 	ValidationInfoFilledIcon,
 } from '@entur/icons'
+import { useBoardContext } from '@/Board/context'
+import { getUiLabel } from '@/Shared/utils/translations'
 import type { DeviationType } from '../../Board/utils'
 
 type DeviationIconProps = {
@@ -20,7 +21,8 @@ const HighlightedDeviationIcon = ({
 }) => {
 	const color = getColorFromDeviationType(deviationType)
 	const symbolIconPath = getSymbolIconPath(deviationType)
-	const altText = getAltTextFromDeviationType(deviationType)
+	const { language } = useBoardContext()
+	const label = getUiLabel(getLabelKeyFromDeviationType(deviationType), language)
 
 	return (
 		<svg
@@ -29,7 +31,8 @@ const HighlightedDeviationIcon = ({
 			viewBox="0 0 18 18"
 			fill="none"
 			xmlns="http://www.w3.org/2000/svg"
-			alt-text={altText}
+			role="img"
+			aria-label={label}
 		>
 			<path
 				d="M18 9C18 13.9706 13.9706 18 9 18C4.02944 18 0 13.9706 0 9C0 4.02944 4.02944 0 9 0C13.9706 0 18 4.02944 18 9ZM1.44 9C1.44 13.1753 4.82473 16.56 9 16.56C13.1753 16.56 16.56 13.1753 16.56 9C16.56 4.82473 13.1753 1.44 9 1.44C4.82473 1.44 1.44 4.82473 1.44 9Z"
@@ -51,14 +54,14 @@ function getColorFromDeviationType(deviationType: Exclude<DeviationType, 'no-dev
 	}
 }
 
-function getAltTextFromDeviationType(deviationType: Exclude<DeviationType, 'no-deviation'>) {
+function getLabelKeyFromDeviationType(deviationType: Exclude<DeviationType, 'no-deviation'>) {
 	switch (deviationType) {
 		case 'cancellation':
-			return 'Denne avgangen er innstilt'
+			return 'deviationCancelled'
 		case 'incident':
-			return 'Denne avgangen har avvik'
+			return 'deviationIncident'
 		case 'general':
-			return 'Denne avgangen har informasjon som ikke bør påvirke reisen'
+			return 'deviationGeneral'
 	}
 }
 
@@ -74,6 +77,8 @@ function getSymbolIconPath(deviationType: Exclude<DeviationType, 'no-deviation'>
 }
 
 export const DeviationIcon = ({ isHighlighted = true, deviationType }: DeviationIconProps) => {
+	const { language } = useBoardContext()
+
 	if (deviationType === 'no-deviation') {
 		return null
 	}
@@ -101,21 +106,24 @@ export const DeviationIcon = ({ isHighlighted = true, deviationType }: Deviation
 					opacity={0.5}
 					color="var(--error-color)"
 					size="1.17em"
-					aria-label="Denne avgangen er innstilt"
+					role="img"
+					aria-label={getUiLabel('deviationCancelled', language)}
 				/>
 			) : deviationType === 'incident' ? (
 				<ValidationExclamationCircleFilledIcon
 					opacity={0.5}
 					color="var(--warning-color)"
 					size="1.17em"
-					aria-label="Denne avgangen har avvik"
+					role="img"
+					aria-label={getUiLabel('deviationIncident', language)}
 				/>
 			) : (
 				<ValidationInfoFilledIcon
 					opacity={0.5}
 					color="var(--info-color)"
 					size="1.17em"
-					aria-label="Denne avgangen har informasjon som ikke bør påvirke reisen"
+					role="img"
+					aria-label={getUiLabel('deviationGeneral', language)}
 				/>
 			)}
 		</div>

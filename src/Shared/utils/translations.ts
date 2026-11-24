@@ -47,6 +47,15 @@ const uiLabels = {
 		en: "You haven't added any stop places yet.",
 	},
 	boardLogoAlt: { nb: 'Logo til tavlen', en: 'Board logo' },
+	tavlaLogoAlt: { nb: 'Entur Tavla', en: 'Entur Tavla' },
+	deviationCancelled: { nb: 'Denne avgangen er innstilt', en: 'This departure is cancelled' },
+	deviationIncident: { nb: 'Denne avgangen har avvik', en: 'This departure has a disruption' },
+	deviationGeneral: {
+		nb: 'Denne avgangen har informasjon som ikke bør påvirke reisen',
+		en: 'This departure has information that should not affect the journey',
+	},
+	walkingTime: { nb: 'Gangtid', en: 'Walking time' },
+	drivingTime: { nb: 'Kjøretid', en: 'Driving time' },
 	offlineShowingCachedData: {
 		nb: 'Tavla er uten nett. Avgangene ble sist oppdatert for {x} minutter siden.',
 		en: 'The display is offline. Departures were last updated {x} minutes ago.',
