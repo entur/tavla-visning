@@ -1,20 +1,26 @@
 import { SingleTile } from '@board/scenarios/SingleTile'
 import { Tile } from '@components/Tile'
-import type { CacheStatus } from '@/Board/hooks/useTileData'
+import { ValidationInfoFilledIcon } from '@entur/icons'
+import { LeadParagraph } from '@entur/typography'
+import { useCallback, useState } from 'react'
 import { BoardContext } from '@/Board/context'
+import type { CacheStatus } from '@/Board/hooks/useTileData'
 import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
+import { useServerNow } from '@/Shared/hooks/useServerNow'
 import type { BoardDB } from '@/Shared/types/db-types/boards'
 import { getUiLabel } from '@/Shared/utils/translations'
 import { CombinedTile } from '../CombinedTile'
 import { getFontScale } from './utils'
-import { LeadParagraph } from '@entur/typography'
-import { ValidationInfoFilledIcon } from '@entur/icons'
-import { useCallback, useState } from 'react'
-import { useServerNow } from '@/Shared/hooks/useServerNow'
 
 const CACHE_INFO_MESSAGE_THRESHOLD_MINUTES = 2
 
-function Board({ board }: { board: BoardDB }) {
+function Board({
+	board,
+	onDisplayNameChange,
+}: {
+	board: BoardDB
+	onDisplayNameChange?: (name: string | undefined) => void
+}) {
 	const [cacheStatuses, setCacheStatuses] = useState<Record<string, CacheStatus>>({})
 	const now = useServerNow()
 
@@ -91,6 +97,7 @@ function Board({ board }: { board: BoardDB }) {
 								{...tile}
 								size={getTileSize(index)}
 								onCachedDataChange={handleCachedDataChange}
+								onDisplayNameChange={onDisplayNameChange}
 							/>
 						)
 					})

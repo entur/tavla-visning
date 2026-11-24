@@ -2,6 +2,7 @@ import { ErrorBoundary } from '@board/components/ErrorBoundary'
 import { PageWrapper } from '@components/PageWrapper.tsx'
 import { useHeartbeat } from '@hooks/useHeartbeat'
 import { useReloadDaily } from '@hooks/useReloadDaily'
+import { useState } from 'react'
 import { BACKEND_API_URL } from '@/Shared/assets/env'
 import { Board } from './Board/scenarios/Board'
 import { Header } from './Shared/components/Header'
@@ -45,11 +46,14 @@ function StopPage() {
 
 	const brand = new URLSearchParams(window.location.search).get('brand') ?? undefined
 
+	const [displayName, setDisplayName] = useState<string>()
+	const title = displayName ? `${displayName} | Entur Tavla` : undefined
+
 	return (
 		<ErrorBoundary boardId={board.id}>
-			<PageWrapper transportPalette={brand}>
+			<PageWrapper transportPalette={brand} title={title}>
 				<Header theme="dark" />
-				<Board board={board} />
+				<Board board={board} onDisplayNameChange={setDisplayName} />
 				<InfoMessage board={board} showEnturLogo={false} />
 			</PageWrapper>
 		</ErrorBoundary>

@@ -18,6 +18,7 @@ import type { TileDB } from '@/Shared/types/db-types/boards'
 type Props = TileDB & {
 	size?: TileVariants['size']
 	onCachedDataChange?: (tileId: string, status: CacheStatus | null) => void
+	onDisplayNameChange?: (name: string | undefined) => void
 }
 
 export function SingleTile(props: Props) {
@@ -42,6 +43,10 @@ function QuaysTile(props: Props) {
 			props.onCachedDataChange?.(props.uuid, null)
 		}
 	}, [props.onCachedDataChange, props.uuid, cacheStatus.showingCachedData, cacheStatus.lastUpdated])
+
+	useEffect(() => {
+		props.onDisplayNameChange?.(tileData.displayName)
+	}, [props.onDisplayNameChange, tileData.displayName])
 
 	return (
 		<BoardTile
@@ -71,6 +76,10 @@ function StopPlaceTile(props: Props) {
 			props.onCachedDataChange?.(props.uuid, null)
 		}
 	}, [props.onCachedDataChange, props.uuid, cacheStatus.showingCachedData, cacheStatus.lastUpdated])
+
+	useEffect(() => {
+		props.onDisplayNameChange?.(tileData.displayName)
+	}, [props.onDisplayNameChange, tileData.displayName])
 
 	return (
 		<BoardTile
