@@ -144,7 +144,7 @@ export function BoardTile({
 
 					{customDeviation ?? <StopPlaceQuayDeviation situations={situations} />}
 				</div>
-				<div className="flex h-full w-full items-center justify-center text-center text-tertiary">
+				<div className="flex h-full w-full items-center justify-center text-center text-primary">
 					{getUiLabel(isArrivals ? 'noArrivalsNearFuture' : 'noDeparturesNearFuture', language)}
 				</div>
 			</Tile>
