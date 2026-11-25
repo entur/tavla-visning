@@ -32,6 +32,7 @@ function buildSyntheticBoard(nsr: string): BoardDB {
 		},
 		id: nsr,
 		tiles: [tile],
+		language: 'nb',
 	}
 }
 
@@ -51,7 +52,7 @@ function StopPage() {
 
 	return (
 		<ErrorBoundary boardId={board.id}>
-			<PageWrapper transportPalette={brand} title={title}>
+			<PageWrapper transportPalette={brand} title={title} language={board.language}>
 				<Header theme="dark" />
 				<Board board={board} onDisplayNameChange={setDisplayName} />
 				<InfoMessage board={board} showEnturLogo={false} />

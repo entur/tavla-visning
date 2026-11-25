@@ -121,6 +121,10 @@ Boards support Norwegian (default) and English display via `board.language`
 (`BoardDB['language']`, `'nb' | 'en'`). Threaded through `BoardContext`
 (`src/Board/context.ts`) so any component can read it via `useBoardContext()`.
 
+- Page language (WCAG 3.1.1): `PageWrapper` takes a `language` prop and sets
+  `document.documentElement.lang` from it (default `'nb'`, matching
+  `index.html`). Both `Page.tsx` and `StopPage.tsx` pass `board.language`
+  (the synthetic stop board is hard-coded to `'nb'` for now).
 - Column headers and UI text: `getColumnLabel()` / `getUiLabel()` in
   `src/Shared/utils/translations.ts` — the single lookup table for all
   board-language strings.

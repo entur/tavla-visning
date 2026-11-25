@@ -40,7 +40,12 @@ function BoardPage() {
 		: 'Entur Tavla'
 
 	return (
-		<PageWrapper theme={theme} transportPalette={updatedBoard?.transportPalette} title={title}>
+		<PageWrapper
+			theme={theme}
+			transportPalette={updatedBoard?.transportPalette}
+			title={title}
+			language={updatedBoard?.language}
+		>
 			{loading || error || !updatedBoard ? (
 				<BoardStatus loading={loading} error={error} board={updatedBoard} />
 			) : (
