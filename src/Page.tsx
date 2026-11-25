@@ -49,7 +49,7 @@ function BoardPage() {
 			{loading || error || !updatedBoard ? (
 				<BoardStatus loading={loading} error={error} board={updatedBoard} />
 			) : (
-				<ErrorBoundary boardId={updatedBoard.id}>
+				<ErrorBoundary boardId={updatedBoard.id} language={updatedBoard.language}>
 					<Header
 						theme={updatedBoard.theme}
 						hideLogo={updatedBoard.hideLogo}

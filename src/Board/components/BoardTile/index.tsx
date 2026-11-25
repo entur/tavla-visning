@@ -124,7 +124,7 @@ export function BoardTile({
 	if (!hasData || isCacheExpired) {
 		return (
 			<Tile state="error" size={size}>
-				<DataFetchingFailed error={error} />
+				<DataFetchingFailed error={error} language={language} />
 			</Tile>
 		)
 	}

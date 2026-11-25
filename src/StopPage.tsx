@@ -51,7 +51,7 @@ function StopPage() {
 	const title = displayName ? `${displayName} | Entur Tavla` : undefined
 
 	return (
-		<ErrorBoundary boardId={board.id}>
+		<ErrorBoundary boardId={board.id} language={board.language}>
 			<PageWrapper transportPalette={brand} title={title} language={board.language}>
 				<Header theme="dark" />
 				<Board board={board} onDisplayNameChange={setDisplayName} />

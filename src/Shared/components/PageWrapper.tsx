@@ -17,7 +17,7 @@ export function PageWrapper({
 	children,
 }: Props) {
 	useEffect(() => {
-		document.documentElement.lang = language
+		document.documentElement.lang = language ?? 'nb'
 	}, [language])
 
 	return (
