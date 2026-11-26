@@ -15,6 +15,7 @@
 - [ ] Testet i Chrome, Firefox og Safari
 - [ ] Testet i BrowserStack
 - [ ] Oppdatert dokumentasjon (hvis relevant)
+- [ ] Kjørt `/tavla:pr-avgjorelser` 
 
 
 ### 🧩 Testing
