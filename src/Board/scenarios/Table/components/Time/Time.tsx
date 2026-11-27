@@ -8,7 +8,7 @@ import { FormattedTime } from './components/FormattedTime'
 
 const TWO_MINUTES = 120
 
-type TimeSize = 'default' | 'large'
+type TimeSize = 'default' | 'large' | 'hero'
 
 function Time({
 	expectedTime,
@@ -26,21 +26,24 @@ function Time({
 	size?: TimeSize
 }) {
 	const hasFetchError = useContext(HasFetchErrorContext)
-	const isLarge = size === 'large'
+	const isLarge = size !== 'default'
+	const align = size === 'hero' ? 'text-center' : 'text-right'
+	const primaryTextSize =
+		size === 'hero' ? 'text-em-xl5' : size === 'large' ? 'text-em-xl3 lg:text-em-xl4' : 'text-em-xl'
 
-	const primaryClass = `text-right leading-em-base ${isLarge ? 'text-em-xl3 lg:text-em-xl4' : 'text-em-xl'}`
-	const secondaryClass = `text-right ${isLarge ? 'text-em-lg' : 'text-em-sm/em-xs'}`
+	const primaryClass = `${align} leading-em-base ${primaryTextSize}`
+	const secondaryClass = `${align} ${isLarge ? 'text-em-lg' : 'text-em-sm/em-xs'}`
 
 	if (cancelled)
 		return (
 			<>
 				<div
-					className={`text-right font-semibold text-cancelled-time leading-tight ${isLarge ? 'text-em-xl2' : 'text-em-lg/em-lg'}`}
+					className={`${align} font-semibold text-cancelled-time leading-tight ${size === 'hero' ? 'text-em-xl4' : isLarge ? 'text-em-xl2' : 'text-em-lg/em-lg'}`}
 				>
 					{getUiLabel('cancelled', language)}
 				</div>
 				<div
-					className={`lineThrough text-right ${isLarge ? 'text-em-lg leading-tight' : 'text-em-sm/em-sm'}`}
+					className={`lineThrough ${align} ${isLarge ? 'text-em-lg leading-tight' : 'text-em-sm/em-sm'}`}
 				>
 					{formatDateString(aimedTime)}
 				</div>
