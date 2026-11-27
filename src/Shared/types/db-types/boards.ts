@@ -12,6 +12,7 @@ export type BoardDB = {
 	hideLogo?: boolean
 	hideClock?: boolean
 	language?: BoardLanguage
+	layout?: BoardLayout
 }
 
 export type BoardId = string
@@ -33,6 +34,8 @@ export type TransportPalette =
 	| 'svipper'
 	| 'reis'
 	| 'brakar'
+
+export type BoardLayout = 'auto' | 'horizontal' | 'vertical' | 'highlight' | 'grid'
 
 export type BoardMetaDB = {
 	title?: string

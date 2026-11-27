@@ -5,7 +5,7 @@ import { LeadParagraph } from '@entur/typography'
 import { useCallback, useState } from 'react'
 import { BoardContext } from '@/Board/context'
 import type { CacheStatus } from '@/Board/hooks/useTileData'
-import { TileGrid } from '@/Board/scenarios/Board/components/TileGrid'
+import { BoardLayout } from '@/Board/scenarios/Board/components/BoardLayout'
 import { useServerNow } from '@/Shared/hooks/useServerNow'
 import type { BoardDB } from '@/Shared/types/db-types/boards'
 import { getUiLabel } from '@/Shared/utils/translations'
@@ -76,11 +76,10 @@ function Board({
 					</LeadParagraph>
 				</div>
 			)}
-			<TileGrid
+			<BoardLayout
+				layout={board.layout}
 				tileCount={board.isCombinedTiles ? 1 : tiles.length}
 				fontScale={fontScaleClass}
-				data-transport-palette={board.transportPalette}
-				data-theme={board.theme}
 			>
 				{board.isCombinedTiles ? (
 					<CombinedTile
@@ -102,7 +101,7 @@ function Board({
 						)
 					})
 				)}
-			</TileGrid>
+			</BoardLayout>
 		</BoardContext.Provider>
 	)
 }
