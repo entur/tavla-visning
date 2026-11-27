@@ -69,8 +69,8 @@ function Board({
 			}}
 		>
 			{tilesShowingCachedData.length > 0 && minutesAgo >= CACHE_INFO_MESSAGE_THRESHOLD_MINUTES && (
-				<div className="flex flex-row items-center gap-2">
-					<ValidationInfoFilledIcon color="var(--info-color)" size={24} />
+				<div className="flex flex-row items-center gap-2" role="status">
+					<ValidationInfoFilledIcon color="var(--info-color)" size={24} aria-hidden />
 					<LeadParagraph className="m-0">
 						{getUiLabel('offlineShowingCachedData', language).replace('{x}', String(minutesAgo))}
 					</LeadParagraph>

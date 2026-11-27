@@ -114,7 +114,7 @@ export function BoardTile({
 	if (isLoading && !hasData) {
 		return (
 			<Tile state="loading" size={size}>
-				<Loader>
+				<Loader role="status">
 					{getUiLabel(isArrivals ? 'loadingArrivals' : 'loadingDepartures', language)}
 				</Loader>
 			</Tile>

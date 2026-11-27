@@ -16,7 +16,7 @@ function getHeading(error?: Error) {
 
 function DataFetchingFailed({ error }: { error?: Error }) {
 	return (
-		<div className="flex h-full w-full flex-col items-center justify-center">
+		<div className="flex h-full w-full flex-col items-center justify-center" role="alert">
 			<div className="w-full text-center">
 				<Heading3 className="!text-primary">{getHeading(error)}</Heading3>
 				<Paragraph className="!text-primary">
