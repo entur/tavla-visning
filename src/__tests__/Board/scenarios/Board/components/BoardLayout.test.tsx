@@ -43,10 +43,15 @@ function isLinearLayout(el: HTMLElement, direction: 'row' | 'col') {
 }
 
 function isGridLayout(el: HTMLElement) {
-	if (!(el.className.includes('flex-row') && el.className.includes('flex-wrap'))) return false
-	return Array.from(el.children).every((child) =>
-		(child as HTMLElement).className.includes('calc(50%'),
-	)
+	if (!isLinearLayout(el, 'row')) return false
+	if (el.children.length !== 2) return false
+
+	return Array.from(el.children).every((wrapper) => {
+		const nestedColumn = (wrapper as HTMLElement).firstElementChild as HTMLElement | null
+		if (!nestedColumn) return false
+		if (!isLinearLayout(nestedColumn, 'col')) return false
+		return nestedColumn.children.length === 2
+	})
 }
 
 function isHighlightLayout(el: HTMLElement, tileCount: number) {
@@ -153,7 +158,6 @@ describe('BoardLayout', () => {
 			renderBoardLayout(container, 'grid', 4)
 			const el = rootEl(container)
 			expect(isGridLayout(el)).toBe(true)
-			expect(el.children.length).toBe(4)
 		})
 
 		it.each([1, 2, 3])('faller tilbake til AutoLayout for ugyldig tileCount %i', (tileCount) => {
