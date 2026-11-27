@@ -7,7 +7,7 @@ const ERROR_RELOAD_DELAY_MS = 30 * 1000
 
 interface Props {
 	boardId: string | undefined
-	language?: BoardLanguage
+	language: BoardLanguage
 	children: React.ReactNode
 }
 

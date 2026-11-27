@@ -16,13 +16,7 @@ function getHeading(language: BoardLanguage, error?: Error) {
 	}
 }
 
-function DataFetchingFailed({
-	error,
-	language = 'nb',
-}: {
-	error?: Error
-	language?: BoardLanguage
-}) {
+function DataFetchingFailed({ error, language }: { error?: Error; language: BoardLanguage }) {
 	return (
 		<div className="flex h-full w-full flex-col items-center justify-center">
 			<div className="w-full text-center">

@@ -35,6 +35,7 @@ function BoardPage() {
 	useReloadDaily()
 
 	const theme = updatedBoard?.theme ?? 'dark'
+	const language = updatedBoard?.language ?? 'nb'
 	const title = updatedBoard?.meta?.title
 		? `${updatedBoard.meta.title} | Entur tavla`
 		: 'Entur Tavla'
@@ -44,19 +45,19 @@ function BoardPage() {
 			theme={theme}
 			transportPalette={updatedBoard?.transportPalette}
 			title={title}
-			language={updatedBoard?.language}
+			language={language}
 		>
 			{loading || error || !updatedBoard ? (
 				<BoardStatus loading={loading} error={error} board={updatedBoard} />
 			) : (
-				<ErrorBoundary boardId={updatedBoard.id} language={updatedBoard.language}>
+				<ErrorBoundary boardId={updatedBoard.id} language={language}>
 					<Header
 						theme={updatedBoard.theme}
 						hideLogo={updatedBoard.hideLogo}
 						hideClock={updatedBoard.hideClock}
 						folderLogo={folderLogo}
 						isArrivals={updatedBoard.isArrivals ?? false}
-						language={updatedBoard.language ?? 'nb'}
+						language={language}
 					/>
 
 					<Board board={updatedBoard} />

@@ -43,6 +43,7 @@ function StopPage() {
 	useReloadDaily()
 
 	const board = buildSyntheticBoard(nsr)
+	const language = board.language ?? 'nb'
 	useHeartbeat(board, BACKEND_API_URL, true)
 
 	const brand = new URLSearchParams(window.location.search).get('brand') ?? undefined
@@ -51,8 +52,8 @@ function StopPage() {
 	const title = displayName ? `${displayName} | Entur Tavla` : undefined
 
 	return (
-		<ErrorBoundary boardId={board.id} language={board.language}>
-			<PageWrapper transportPalette={brand} title={title} language={board.language}>
+		<ErrorBoundary boardId={board.id} language={language}>
+			<PageWrapper transportPalette={brand} title={title} language={language}>
 				<Header theme="dark" />
 				<Board board={board} onDisplayNameChange={setDisplayName} />
 				<InfoMessage board={board} showEnturLogo={false} />
