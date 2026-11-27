@@ -19,12 +19,7 @@ function isValidLayout(layout: TBoardLayout | undefined, tileCount: number) {
 	return true
 }
 
-function getLayout(
-	layout: TBoardLayout | undefined,
-	tileCount: number,
-	fontScale: string,
-	children: ReactNode,
-) {
+export function BoardLayout({ layout, tileCount, children, fontScale }: Props) {
 	if (isValidLayout(layout, tileCount)) {
 		switch (layout) {
 			case 'horizontal':
@@ -50,8 +45,4 @@ function getLayout(
 			{children}
 		</AutoLayout>
 	)
-}
-
-export function BoardLayout({ layout, tileCount, children, fontScale }: Props) {
-	return getLayout(layout, tileCount, fontScale, children)
 }
