@@ -43,34 +43,30 @@ function ExpandedNextDeparture({
 
 	return (
 		<div className="flex h-1/2 flex-col justify-center text-em-xl2 -mt-12 md:-mt-24 ">
-			<div className="self-start">
-				<TravelTag
-					transportMode={transportMode}
-					transportSubmode={transportSubmode}
-					publicCode={publicCode}
-					cancelled={departure.cancellation}
-				/>
-			</div>
-			<div className="flex justify-between items-center mt-4">
-				<div
-					className={`mt-4 mr-4 lg:mt-8 ${deviationType !== 'no-deviation' ? 'block' : 'hidden'}`}
-				>
+			<div className="flex items-center">
+				<div className="shrink-0">
+					<TravelTag
+						transportMode={transportMode}
+						transportSubmode={transportSubmode}
+						publicCode={publicCode}
+						cancelled={departure.cancellation}
+					/>
+				</div>
+				<div className={`ml-4 shrink-0 ${deviationType !== 'no-deviation' ? 'block' : 'hidden'}`}>
 					<DeviationIcon deviationType={deviationType} isHighlighted={isHighlighted} />
 				</div>
-				<div className="flex w-full justify-between items-center mt-4">
-					<div className="text-em-xl3 hyphens-auto lg:text-em-xl4 leading-tight">
-						{via ? `${destination} via ${via}` : destination}
-					</div>
-					<div className="text-right ml-8">
-						<Time
-							expectedTime={expectedTime}
-							aimedTime={aimedTime}
-							cancelled={departure.cancellation}
-							isArrivalBoard={isArrivals}
-							language={language}
-							size="large"
-						/>
-					</div>
+				<div className="ml-6 min-w-0 flex-1 text-em-xl3 hyphens-auto lg:text-em-xl4 leading-tight">
+					{via ? `${destination} via ${via}` : destination}
+				</div>
+				<div className="ml-8 shrink-0 text-right">
+					<Time
+						expectedTime={expectedTime}
+						aimedTime={aimedTime}
+						cancelled={departure.cancellation}
+						isArrivalBoard={isArrivals}
+						language={language}
+						size="large"
+					/>
 				</div>
 			</div>
 		</div>
