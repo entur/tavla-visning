@@ -74,6 +74,33 @@ URL (boardId) → Page.tsx
   (`src/Board/components/BoardTile/index.tsx`) owns the split between hero and table. Not wired up
   for `CombinedTile`. Add new modes to the `TileViewMode` union and branch on them in `BoardTile`.
 
+### Board Layout Selection
+
+`BoardDB.layout` (`src/Shared/types/db-types/boards.ts`) selects how a board's tiles are arranged:
+`'auto' | 'horizontal' | 'vertical' | 'highlight' | 'grid'`; unset behaves like `'auto'`.
+`BoardLayout` (`src/Board/scenarios/Board/components/BoardLayout.tsx`) is the selector `Board`
+(`src/Board/scenarios/Board/index.tsx`) renders tiles through instead of going straight to a layout
+component. It composes four sibling components in the same folder:
+
+- **`AutoLayout`** — the original CSS Grid layout (with a flex fallback for browsers without grid
+  support), font size scales with tile count
+- **`LinearLayout`** — tiles in a single row (`horizontal`) or column (`vertical`), parameterized by
+  `direction`
+- **`HighlightLayout`** — one enlarged tile (always the first tile in `BoardDB.tiles`, in board
+  order — admin controls which tile is "first") plus the rest stacked in a column; built by nesting
+  `LinearLayout`
+- **`GridLayout`** — a 2×2 grid built with `flex-wrap`, not CSS grid
+
+Each non-auto layout is only valid for a specific tile-count range, enforced by `isValidLayout` in
+`BoardLayout.tsx`: `highlight` only at 3–4 tiles, `grid` only at exactly 4, and any layout falls back
+to `AutoLayout` once there are 5 or more tiles (regardless of what was requested) or if the
+requested layout isn't valid for the current tile count. These bounds are structural, not an
+arbitrary product choice — a 2×2 grid only makes sense with 4 tiles, and `highlight` needs at least
+2 other tiles to stack — so tavla-admin's layout picker enforcing the same bounds isn't duplicated
+business logic that could drift independently; both sides are just reflecting what each layout is.
+Add a new layout by adding a variant to the `BoardLayout` union, a new sibling component, a case in
+`getLayout`'s switch, and (if it has tile-count constraints) a branch in `isValidLayout`.
+
 ### Real-Time Mechanisms
 
 - **30s polling** via SWR in `useQuery` for departure data
@@ -176,6 +203,7 @@ There is no dedicated `@graphql` alias for app code — GraphQL fragments/querie
 - [`src/StopPage.tsx`](src/StopPage.tsx) — direct-link entry component for `/stop/:nsrId`, builds a synthetic board from the NSR id instead of fetching one
 - [`src/Shared/hooks/useReloadDaily.ts`](src/Shared/hooks/useReloadDaily.ts) — 24h full-page reload, used by both `Page.tsx` and `StopPage.tsx`
 - [`src/Board/scenarios/Board/index.tsx`](src/Board/scenarios/Board/index.tsx) — grid layout, tile type selection
+- [`src/Board/scenarios/Board/components/BoardLayout.tsx`](src/Board/scenarios/Board/components/BoardLayout.tsx) — selects a board's layout (`BoardDB.layout`) based on the requested layout and tile count
 - [`src/Board/hooks/useTileData.ts`](src/Board/hooks/useTileData.ts) — all tile data fetching logic
 - [`src/Shared/hooks/useGetBoard.ts`](src/Shared/hooks/useGetBoard.ts) — fetching board config
 - [`src/Shared/hooks/useQuery.ts`](src/Shared/hooks/useQuery.ts) — SWR wrapper for GraphQL

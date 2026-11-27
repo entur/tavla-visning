@@ -6,7 +6,7 @@ type Props = {
 	fontScale: string
 }
 
-export function TileGrid({ children, tileCount, fontScale }: Props) {
+export function AutoLayout({ children, tileCount, fontScale }: Props) {
 	const colsStyle = {
 		'--cols': String(tileCount),
 	} as React.CSSProperties
