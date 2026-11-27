@@ -11,7 +11,7 @@ export type BoardDB = {
 	transportPalette?: TransportPalette
 	hideLogo?: boolean
 	hideClock?: boolean
-	language?: BoardLanguage
+	language?: BoardLanguage | null
 }
 
 export type BoardId = string

@@ -60,6 +60,15 @@ const uiLabels = {
 		nb: 'Tavla er uten nett. Avgangene ble sist oppdatert for {x} minutter siden.',
 		en: 'The display is offline. Departures were last updated {x} minutes ago.',
 	},
+	fetchFailedHeading: { nb: 'Får ikke hentet avganger', en: 'Unable to fetch departures' },
+	fetchTimeoutHeading: {
+		nb: 'Innlasting av avganger tok for lang tid!',
+		en: 'Loading departures took too long!',
+	},
+	fetchFailedRetry: {
+		nb: 'Tavla prøver igjen automatisk. Hvis feilen vedvarer, kontakt oss på tavla@entur.org',
+		en: 'The display will try again automatically. If the problem persists, contact us at tavla@entur.org',
+	},
 } as const
 
 function getUiLabel(key: keyof typeof uiLabels, language: BoardLanguage): string {

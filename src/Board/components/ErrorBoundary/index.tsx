@@ -1,11 +1,13 @@
 import { DataFetchingFailed } from '@board/components/DataFetchingFailed'
 import { reportError } from '@utils/report'
 import React from 'react'
+import type { BoardLanguage } from '@/Shared/types/db-types/boards'
 
 const ERROR_RELOAD_DELAY_MS = 30 * 1000
 
 interface Props {
 	boardId: string | undefined
+	language: BoardLanguage
 	children: React.ReactNode
 }
 
@@ -41,7 +43,7 @@ class ErrorBoundary extends React.Component<Props, State> {
 
 	render() {
 		if (this.state.hasError) {
-			return <DataFetchingFailed />
+			return <DataFetchingFailed language={this.props.language} />
 		}
 		return this.props.children
 	}
