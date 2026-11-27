@@ -7,10 +7,10 @@ type Props = {
 }
 
 export function LinearLayout({ children, direction, fontScale = '' }: Props) {
+	const directionClass = direction === 'row' ? 'flex-row space-x-2.5' : 'flex-col space-y-2.5'
+
 	return (
-		<div
-			className={`flex gap-2.5 h-full overflow-hidden ${direction === 'row' ? 'flex-row' : 'flex-col'} ${fontScale}`}
-		>
+		<div className={`flex h-full overflow-hidden ${directionClass} ${fontScale}`}>
 			{Children.map(children, (child) => (
 				<div className="flex-1 overflow-hidden">{child}</div>
 			))}
